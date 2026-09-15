@@ -1,0 +1,103 @@
+.luxury-static{background:#fffaf5;color:#35131d;min-height:60vh}
+.luxury-static-hero{
+  padding:72px 0 56px;
+  border-bottom:1px solid #ead6cf;
+  background:
+    radial-gradient(circle at 88% 30%,#efd4c7 0,transparent 26%),
+    linear-gradient(115deg,#fff3ef,#fffaf6 70%)
+}
+.luxury-static-hero p{
+  margin:0 0 14px;
+  color:#a96355;
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.2em
+}
+.luxury-static-hero h1{
+  margin:0;
+  color:#3a0717;
+  font:600 clamp(42px,6vw,68px)/1 var(--serif)
+}
+.luxury-static-hero span{
+  display:block;
+  margin-top:16px;
+  color:#7d6870;
+  font-size:15px
+}
+.luxury-static-body{padding:56px 0 90px}
+.luxury-static-card,
+.luxury-static-faq,
+.luxury-static-grid{
+  max-width:860px
+}
+.luxury-static-lead{
+  margin:0 0 28px;
+  color:#5c454c;
+  font-size:17px;
+  line-height:1.8
+}
+.luxury-static-card h2{
+  margin:36px 0 12px;
+  color:#3a0717;
+  font:600 32px var(--serif)
+}
+.luxury-static-card p{margin:0 0 14px;color:#6f5a60;line-height:1.75}
+.luxury-static-card a{color:#6b1730;font-weight:700}
+.luxury-static-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:34px}
+.luxury-static-faq details{
+  margin-bottom:12px;
+  padding:18px 22px;
+  border:1px solid #e5d0c8;
+  border-radius:16px;
+  background:#fff
+}
+.luxury-static-faq summary{
+  cursor:pointer;
+  color:#3a0717;
+  font-weight:700
+}
+.luxury-static-faq p{
+  margin:12px 0 0;
+  color:#6f5a60;
+  line-height:1.7
+}
+.luxury-static-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+  margin-bottom:34px
+}
+.luxury-static-grid article{
+  min-height:150px;
+  padding:22px 18px;
+  border:1px solid #e5d0c8;
+  border-radius:18px;
+  background:#fff
+}
+.luxury-static-grid span{
+  display:grid;
+  place-items:center;
+  width:42px;
+  height:42px;
+  margin-bottom:14px;
+  border-radius:50%;
+  color:#6b1730;
+  background:#f8e8ea;
+  font-size:16px
+}
+.luxury-static-grid b{
+  display:block;
+  margin-bottom:6px;
+  color:#3a0717;
+  font:600 20px var(--serif)
+}
+.luxury-static-grid p{margin:0;color:#7d6870;font-size:13px}
+@media(max-width:900px){
+  .luxury-static-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:560px){
+  .luxury-static-hero{padding:48px 0 38px}
+  .luxury-static-hero h1{font-size:40px}
+  .luxury-static-grid{grid-template-columns:1fr}
+  .luxury-static-actions .btn{width:100%}
+}

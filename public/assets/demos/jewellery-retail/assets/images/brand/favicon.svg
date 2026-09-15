@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Zivara">
+  <!-- High-contrast favicon: bold Z on solid wine, readable at 16px -->
+  <rect width="32" height="32" rx="7" fill="#4A1024"/>
+  <path fill="#F4D7C3" d="M7.5 8.2h17v3.4L14.2 20.6H24.5v3.2H7.5v-3.4l10.3-9H7.5V8.2Z"/>
+</svg>

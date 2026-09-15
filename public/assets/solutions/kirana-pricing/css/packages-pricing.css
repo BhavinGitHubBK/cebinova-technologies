@@ -1,0 +1,376 @@
+@scope (.kirana-pricing) {
+/* =========================================================
+   Website packages - pricing psychology & conversion emphasis
+   ========================================================= */
+
+.package-options {
+  align-items: stretch;
+}
+
+/* Equal section bands so plans compare side-by-side */
+.package-select {
+  height: 100%;
+}
+
+.package-select .option-body {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 100%;
+  gap: 10px;
+}
+
+.package-select .package-head {
+  display: grid;
+  gap: 10px;
+  min-height: 9.75rem;
+  align-content: start;
+}
+
+.package-select .best-for {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  min-height: 2.6em;
+  line-height: 1.35;
+}
+
+.package-select .package-price-block {
+  min-height: 2.6rem;
+  align-items: center;
+}
+
+.package-select .pkg-promo-slot {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  min-height: 2.4rem;
+}
+
+.package-select .pkg-trust-line {
+  margin: 0;
+}
+
+/* Support / Training - one row, side by side */
+.package-select .plan-meta {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  gap: 6px;
+  min-width: 0;
+  min-height: 0;
+}
+
+.package-select .plan-meta-item {
+  flex: 1 1 0;
+  width: auto;
+  min-width: 0;
+  max-width: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 6px 8px;
+  box-sizing: border-box;
+  justify-content: center;
+  gap: 4px;
+}
+
+.package-select .plan-meta-label {
+  font-size: 0.62rem;
+  flex-shrink: 0;
+}
+
+.package-select .plan-meta-label::after {
+  margin-left: 4px;
+}
+
+.package-select .plan-meta-value {
+  font-size: 0.72rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.package-select .ideal-for {
+  min-height: 5rem;
+}
+
+.package-select .highlight-group {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 14.5rem;
+}
+
+.package-select .highlight-features {
+  flex: 1 1 auto;
+}
+
+.package-select .package-footer {
+  margin-top: auto;
+  min-height: 3.4rem;
+}
+
+.package-select .plan-insight {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+  margin: 0;
+}
+
+.package-select.pkg-starter .option-body {
+  border-color: rgba(148, 163, 184, 0.2);
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
+}
+
+.package-select.pkg-business .option-body {
+  border-color: rgba(37, 99, 235, 0.35);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.85) inset,
+    0 14px 34px rgba(37, 99, 235, 0.14);
+}
+
+.package-select.pkg-pro .option-body {
+  border-color: rgba(251, 191, 36, 0.45);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.7) inset,
+    0 16px 38px rgba(245, 158, 11, 0.16);
+}
+
+.package-select.pkg-starter:hover .option-body {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+}
+
+.package-select.pkg-business:hover .option-body {
+  transform: translateY(-6px);
+  border-color: rgba(37, 99, 235, 0.5);
+  box-shadow:
+    0 0 0 4px rgba(37, 99, 235, 0.1),
+    0 18px 40px rgba(37, 99, 235, 0.18);
+}
+
+.package-select.pkg-pro:hover .option-body {
+  transform: translateY(-8px);
+  border-color: rgba(251, 191, 36, 0.65);
+  box-shadow:
+    0 0 0 4px rgba(251, 191, 36, 0.14),
+    0 20px 44px rgba(245, 158, 11, 0.22);
+}
+
+.package-select.pkg-starter .best-pill.soft {
+  background: rgba(148, 163, 184, 0.16);
+  color: #475569;
+  box-shadow: none;
+}
+
+.package-select.pkg-business .best-pill {
+  background: linear-gradient(135deg, #2563EB, #3B82F6);
+  color: #fff;
+}
+
+.package-select.pkg-pro .best-pill.soft {
+  background: linear-gradient(135deg, #FBBF24, #F59E0B);
+  color: #0F172A;
+  box-shadow: 0 8px 18px rgba(245, 158, 11, 0.3);
+}
+
+.package-select .option-price {
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #2563EB;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* Price digits: slight spacing so bold numbers don't look connected */
+.option-price,
+.package-select .option-price,
+.app-pick .option-price,
+.hosting-pick .option-price,
+.domain-pick .option-price,
+.est-line-price,
+.estimate-premium .est-grand strong,
+.pq-row-amount strong,
+.pq-hero-invest strong,
+.pq-pay-row strong,
+.pq-pay-today strong,
+.support-counter strong,
+.support-plan-days strong,
+.domain-provider span,
+#grandTotal,
+#subTotal {
+  letter-spacing: 0.04em !important;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.package-select .price-cadence {
+  color: #2563EB;
+  background: rgba(37, 99, 235, 0.1);
+  border-color: rgba(37, 99, 235, 0.28);
+}
+
+.pkg-trust-line {
+  display: block;
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #64748B;
+}
+
+.pkg-trust-line strong {
+  color: #2563EB;
+}
+
+.pkg-upgrade-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: stretch;
+  gap: 2px;
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.22), rgba(245, 158, 11, 0.16));
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  box-shadow: 0 0 10px rgba(251, 191, 36, 0.14);
+  color: #92400E;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.pkg-upgrade-top {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 1.3;
+  white-space: normal;
+}
+
+.pkg-upgrade-top i {
+  font-size: 0.7rem;
+}
+
+.pkg-upgrade-badge strong {
+  display: block;
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #B45309;
+  letter-spacing: 0;
+  line-height: 1.3;
+  white-space: normal;
+}
+
+/* Estimate choice badge tones */
+.est-badge-recommend.is-budget {
+  background: rgba(148, 163, 184, 0.16);
+  color: #475569;
+  border-color: rgba(148, 163, 184, 0.22);
+}
+
+.est-badge-recommend.is-popular {
+  background: rgba(37, 99, 235, 0.1);
+  color: #1D4ED8;
+  border-color: rgba(37, 99, 235, 0.18);
+}
+
+.est-badge-recommend.is-choice {
+  background: rgba(251, 191, 36, 0.16);
+  color: #B45309;
+  border-color: rgba(251, 191, 36, 0.28);
+}
+
+/* Compare modal prices */
+.plan-col-price {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #0F172A;
+}
+
+.plan-col-upgrade {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #B45309;
+}
+
+@media (max-width: 980px) {
+  .package-select.pkg-business:hover .option-body,
+  .package-select.pkg-pro:hover .option-body,
+  .package-select.pkg-starter:hover .option-body {
+    transform: translateY(-3px);
+  }
+
+  .package-select .package-head,
+  .package-select .pkg-promo-slot,
+  .package-select .plan-meta,
+  .package-select .ideal-for,
+  .package-select .highlight-group,
+  .package-select .package-footer {
+    min-height: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .package-select.pkg-starter:hover .option-body,
+  .package-select.pkg-business:hover .option-body,
+  .package-select.pkg-pro:hover .option-body {
+    transform: none;
+  }
+}
+
+/* Square boxes in calculator (keep circular radios / step dots) */
+.calc-section .calculator-panel,
+.calc-section .calc-progress-wrap,
+.calc-section .package-select .option-body,
+.calc-section .app-value-card,
+.calc-section .app-pick .option-body,
+.calc-section .app-value-pill,
+.calc-section .app-upgrade-pill,
+.calc-section .app-upsell,
+.calc-section .app-share,
+.calc-section .app-badge,
+.calc-section .app-no-monthly,
+.calc-section .domain-option .option-body,
+.calc-section .hosting-option .option-body,
+.calc-section .summary-card,
+.calc-section .est-price-summary,
+.calc-section .est-grand,
+.calc-section .est-line-icon,
+.calc-section .est-lines > li,
+.calc-section .plan-meta-item,
+.calc-section .price-cadence,
+.calc-section .best-pill,
+.calc-section .pkg-upgrade-badge,
+.calc-section .pkg-trust-line,
+.calc-section .ideal-tags span,
+.calc-section .included-list li,
+.calc-section .est-badge,
+.calc-section .est-charge-tag,
+.calc-section .est-gst-badge,
+.calc-section .est-app-status,
+.calc-section .live-progress-summary li,
+.calc-section .btn,
+.calc-section .compare-cta .btn {
+  border-radius: 0 !important;
+}
+
+.calc-section .est-actions .btn {
+  border-radius: 0 !important;
+}
+
+}

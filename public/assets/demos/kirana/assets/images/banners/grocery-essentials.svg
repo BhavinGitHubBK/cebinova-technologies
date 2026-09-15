@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 420" role="img" aria-labelledby="title desc">
+  <title id="title">FreshBasket grocery essentials</title>
+  <desc id="desc">A clean illustrated basket containing vegetables, grains, milk and bread.</desc>
+  <rect width="720" height="420" rx="32" fill="#f2f7ed"/>
+  <circle cx="575" cy="96" r="92" fill="#dcebd2"/>
+  <path d="M184 190h352l-35 156H219z" fill="#b8793e"/>
+  <path d="M229 190c16-83 78-122 131-122s115 39 131 122" fill="none" stroke="#81552e" stroke-width="18"/>
+  <path d="M235 220h266M229 258h280M222 296h279" stroke="#e0ad73" stroke-width="12"/>
+  <path d="M276 182c-28-70 34-111 76-58-17 44-36 60-76 58z" fill="#3d8b45"/>
+  <path d="M348 183c-8-92 81-109 100-35-26 29-56 40-100 35z" fill="#64a94f"/>
+  <circle cx="449" cy="166" r="44" fill="#e84632"/>
+  <path d="M443 118c13-23 35-17 45-5-19 2-31 8-45 5z" fill="#2f7a3c"/>
+  <rect x="156" y="112" width="66" height="106" rx="12" fill="#fff"/>
+  <rect x="164" y="136" width="50" height="65" rx="7" fill="#dceaf5"/>
+  <path d="M157 112l20-31h24l21 31" fill="#f4d9a5"/>
+  <path d="M505 117c51-23 91 26 63 73-25 28-69 20-86-11 4-27 10-46 23-62z" fill="#f3b43a"/>
+  <path d="M521 105c-4-29 20-44 39-28-8 19-17 27-39 28z" fill="#438b43"/>
+  <text x="360" y="382" text-anchor="middle" font-family="Arial,sans-serif" font-size="24" font-weight="700" fill="#14532d">Fresh grocery essentials</text>
+</svg>

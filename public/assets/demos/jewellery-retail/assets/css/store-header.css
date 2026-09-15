@@ -1,0 +1,313 @@
+.store-top{height:38px;display:flex;align-items:center;justify-content:center;gap:clamp(25px,7vw,95px);padding:0 16px;background:linear-gradient(90deg,#260812,#430d21 50%,#260812);font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase}.store-top button{border:0;background:none;color:#e4c28b;font-size:20px;cursor:pointer}.store-head{height:80px;gap:22px}.store-logo{display:flex;align-items:center;gap:11px;min-width:205px;font-size:29px}.store-logo-mark{width:40px;height:40px;padding:7px;border:1px solid var(--line);border-radius:11px;fill:none;stroke:var(--wine);stroke-width:1.2;box-shadow:0 7px 18px rgba(90,16,40,.07)}.store-logo span{display:flex;flex-direction:column}.store-logo small{font:700 7px var(--sans);letter-spacing:.24em;color:var(--muted)}.store-search-wrap{position:relative;flex:1;max-width:510px;margin:auto}.store-search{width:100%;max-width:none;height:48px;border-radius:16px;background:#fffdfa;transition:.25s}.store-search:focus-within{border-color:var(--rose);box-shadow:0 0 0 4px rgba(183,110,121,.1)}.store-search svg{width:18px;margin-left:16px;fill:none;stroke:var(--wine);stroke-width:1.7}.search-clear{display:none!important;padding:0 10px!important;background:none!important;color:var(--muted)!important;font-size:18px}.search-clear.visible{display:block!important}.store-suggestions{position:absolute;top:56px;left:0;right:0;z-index:80;display:none;padding:20px;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 24px 55px rgba(38,8,18,.16)}.store-suggestions.open{display:grid;grid-template-columns:1fr 1fr;gap:22px}.store-suggestions b{font-family:var(--serif);font-size:18px;color:var(--wine)}.store-suggestions a{display:block;text-decoration:none;padding:5px 0;color:var(--muted);font-size:12px}.store-icons{gap:5px;align-items:center}.action-icon{position:relative;width:42px!important;height:42px;padding:0!important;display:grid!important;place-items:center;border:1px solid transparent!important;border-radius:50%!important;background:transparent!important;font-size:0!important;cursor:pointer}.action-icon:hover{background:var(--blush)!important;border-color:var(--line)!important}.action-icon svg{width:19px;height:19px;fill:none;stroke:var(--wine-dark);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.action-icon i{position:absolute;right:-1px;top:-3px;min-width:19px;height:19px;padding:0 4px;display:grid;place-items:center;border:2px solid #fff;background:var(--champagne);color:var(--wine);font-size:9px}.action-icon i.zero{display:none}.store-wa{min-height:45px;margin-left:5px;padding:0 17px!important;border-radius:13px!important;background:linear-gradient(120deg,var(--wine),#751b3a)!important;color:#fff!important;box-shadow:0 9px 22px rgba(90,16,40,.18);font-size:11px!important;font-weight:700}.store-wa svg{stroke:#fff!important}.store-menu-toggle{display:none}.mini-overlay{position:fixed;inset:0;z-index:88;background:rgba(26,13,18,.58);opacity:0;visibility:hidden;transition:.3s}.mini-overlay.open{opacity:1;visibility:visible}.mini-cart{position:fixed;z-index:90;top:0;right:0;bottom:0;width:min(430px,100%);display:flex;flex-direction:column;background:var(--ivory);transform:translateX(105%);transition:.4s cubic-bezier(.22,1,.36,1)}.mini-cart.open{transform:none}.mini-head{padding:24px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line)}.mini-head h2{margin:0;font:600 32px var(--serif)}.mini-close{width:40px;height:40px;border:0;background:none;font-size:26px}.mini-body{flex:1;overflow:auto;padding:5px 24px}.mini-item{display:grid;grid-template-columns:68px 1fr auto;gap:12px;align-items:center;padding:15px 0;border-bottom:1px solid var(--line)}.mini-item img{width:68px;height:82px;object-fit:cover;border-radius:8px}.mini-item h3{margin:0;font-size:12px}.mini-item small{color:var(--muted)}.mini-remove{border:0;background:none;color:var(--rose);font-size:20px}.mini-foot{padding:20px 24px;border-top:1px solid var(--line)}.mini-subtotal{display:flex;justify-content:space-between;margin-bottom:14px;font-size:17px}.mini-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.mobile-store-menu{position:fixed;z-index:90;inset:0 auto 0 0;width:min(390px,90%);padding:25px;background:var(--ivory);transform:translateX(-105%);transition:.4s}.mobile-store-menu.open{transform:none}.mobile-store-menu header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line)}.mobile-store-menu h2{font:600 28px var(--serif)}.mobile-store-menu nav{display:grid;margin:15px 0}.mobile-store-menu nav a,.mobile-store-menu details{padding:10px 0;border-bottom:1px solid var(--line);text-decoration:none}.mobile-store-menu details a{display:block;padding:7px 15px;border:0}.mobile-search-row{display:none}
+@media(max-width:1100px){.store-logo{min-width:175px}.store-search-wrap{max-width:390px}.store-wa span{display:none}.store-wa{width:45px;padding:0!important;display:grid!important;place-items:center}.nav-row{gap:20px}}
+@media(max-width:900px){.store-head{height:70px}.store-menu-toggle{display:grid!important}.store-search-wrap{display:none}.store-logo{min-width:0;margin-right:auto}.nav-row{display:none}.store-wa{display:none!important}.mobile-search-row{display:block;padding:10px 0;border-top:1px solid var(--line)}.mobile-search-row form{display:flex;height:44px;border:1px solid var(--line);border-radius:12px;background:#fff;overflow:hidden}.mobile-search-row input{flex:1;min-width:0;border:0;padding:0 14px}.mobile-search-row button{border:0;background:var(--wine);color:#fff;padding:0 17px}.store-icons{margin-left:0}}
+
+/* Luxury WhatsApp concierge - refined in motion.css; keep compact breakpoint here */
+@media(max-width:1100px){
+  .store-wa{width:50px;min-height:50px;margin-left:5px;padding:0!important;border-radius:50%!important}
+  .store-head .store-wa .wa-copy{display:none}
+}
+@media(max-width:520px){.store-top{height:36px;gap:18px;font-size:9px;letter-spacing:.1em}.store-head{height:64px}.store-logo{font-size:24px}.store-logo-mark{width:35px;height:35px;padding:6px}.store-logo small{display:none}.action-icon{width:35px!important;height:35px}.action-icon svg{width:17px;height:17px}.store-icons .account-action{display:none!important}.store-shell{width:calc(100% - 24px)}}
+
+/* Luxury announcement ribbon */
+.store-top {
+  position: relative;
+  isolation: isolate;
+  height: 44px;
+  gap: clamp(28px, 5.5vw, 76px);
+  overflow: hidden;
+  color: #fff8f3;
+  background:
+    radial-gradient(circle at 50% -120%, rgba(216, 164, 143, .24), transparent 56%),
+    linear-gradient(105deg, #23050f 0%, #3a0717 32%, #4a0b20 50%, #3a0717 68%, #23050f 100%);
+  border-bottom: 1px solid rgba(216, 164, 143, .45);
+  box-shadow: inset 0 -1px rgba(0, 0, 0, .18);
+  font-family: "Manrope", Arial, sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .26em;
+}
+
+.store-top::before,
+.store-top::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 50%;
+  width: min(25vw, 330px);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201, 143, 122, .45));
+}
+
+.store-top::before { left: 0; }
+.store-top::after { right: 0; transform: rotate(180deg); }
+
+#storeAnnouncement {
+  position: relative;
+  min-width: min(470px, 52vw);
+  text-align: center;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, .32);
+  transition: opacity .18s ease, transform .18s ease;
+}
+
+#storeAnnouncement::before,
+#storeAnnouncement::after {
+  content: "◆";
+  display: inline-block;
+  margin: 0 16px;
+  color: #c98f7a;
+  font-size: 5px;
+  vertical-align: 2px;
+  text-shadow: 0 0 8px rgba(201, 143, 122, .55);
+}
+
+.store-top button {
+  position: relative;
+  z-index: 2;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  padding: 0 0 2px;
+  border: 1px solid rgba(216, 164, 143, .38);
+  border-radius: 50%;
+  color: #e6b49e;
+  background: rgba(255, 255, 255, .025);
+  font: 300 19px/1 Georgia, serif;
+  transition: color .22s ease, border-color .22s ease, background .22s ease, transform .22s ease;
+}
+
+.store-top button:hover {
+  color: #fff;
+  border-color: rgba(216, 164, 143, .85);
+  background: rgba(216, 164, 143, .12);
+  transform: scale(1.06);
+}
+
+.store-top button:focus-visible {
+  outline: 2px solid #d8a48f;
+  outline-offset: 2px;
+}
+
+@media (max-width: 520px) {
+  .store-top {
+    height: 38px;
+    gap: 8px;
+    padding: 0 8px;
+    font-size: 8px;
+    letter-spacing: .16em;
+  }
+
+  #storeAnnouncement {
+    min-width: 0;
+    width: calc(100vw - 92px);
+  }
+
+  #storeAnnouncement::before,
+  #storeAnnouncement::after {
+    margin: 0 7px;
+    font-size: 4px;
+  }
+
+  .store-top button {
+    width: 25px;
+    height: 25px;
+    flex: 0 0 25px;
+  }
+}
+
+/* Keep the mobile menu control out of desktop headers. */
+.store-menu-toggle {
+  display: none !important;
+}
+
+@media (max-width: 900px) {
+  .store-menu-toggle {
+    display: grid !important;
+  }
+}
+
+/* Keep wishlist/cart counters attached to their header icons. */
+.store-icons .action-icon > i {
+  position: absolute !important;
+  z-index: 2;
+  top: 0 !important;
+  right: 0 !important;
+  width: 18px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 !important;
+  display: grid;
+  place-items: center;
+  border: 2px solid #fff;
+  border-radius: 50% !important;
+  background: var(--champagne);
+  color: var(--wine);
+  font: 800 9px/1 var(--sans);
+  text-align: center;
+  transform: none !important;
+  rotate: 0deg !important;
+}
+
+.store-icons .action-icon > .header-count {
+  position: absolute !important;
+  z-index: 3;
+  top: 1px !important;
+  right: 1px !important;
+  width: 17px !important;
+  min-width: 17px !important;
+  height: 17px !important;
+  min-height: 17px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 2px solid #fff !important;
+  border-radius: 999px !important;
+  background: var(--champagne) !important;
+  color: var(--wine) !important;
+  box-shadow: none !important;
+  clip-path: none !important;
+  font: 800 9px/13px var(--sans) !important;
+  text-align: center;
+  transform: none !important;
+  rotate: 0deg !important;
+}
+.store-icons .action-icon > .header-count.zero {
+  display: none;
+}
+
+/* Motion effects must not clip counters that sit outside the icon circle. */
+.store-icons .action-icon.motion-action,
+.store-icons .action-icon {
+  overflow: visible !important;
+}
+.store-icons .action-icon > .motion-ripple {
+  display: none !important;
+}
+
+/* Fixed header chrome so nav stays visible on all internal pages */
+.store-chrome {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 60;
+  background: rgba(255, 249, 243, 0.98);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 5px 25px rgba(38, 8, 18, 0.08);
+  transition: box-shadow 0.28s ease;
+}
+.store-chrome .store-header {
+  position: relative !important;
+  top: auto !important;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+.store-chrome .store-top {
+  max-height: 44px;
+  transition: max-height 0.28s ease, opacity 0.22s ease, transform 0.28s ease;
+}
+.store-chrome .store-head {
+  transition: height 0.28s ease;
+}
+.store-chrome .nav-row {
+  transition: height 0.28s ease;
+}
+.store-chrome .store-logo img,
+.store-chrome .store-logo {
+  transition: height 0.28s ease, width 0.28s ease, transform 0.28s ease, min-width 0.28s ease;
+}
+.store-chrome .store-search {
+  transition: height 0.28s ease;
+}
+.store-chrome .store-wa,
+.store-chrome .action-icon {
+  transition: min-height 0.28s ease, width 0.28s ease, height 0.28s ease, transform 0.28s ease;
+}
+
+/* Compact header while scrolling */
+.store-chrome.is-compact {
+  box-shadow: 0 8px 28px rgba(38, 8, 18, 0.12);
+}
+.store-chrome.is-compact .store-top {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+  transform: translateY(-100%);
+}
+.store-chrome.is-compact .store-head {
+  height: 62px;
+}
+.store-chrome.is-compact .nav-row {
+  height: 48px;
+}
+.store-chrome.is-compact .store-logo {
+  min-width: 170px;
+  transform: scale(0.9);
+  transform-origin: left center;
+}
+.store-chrome.is-compact .store-search {
+  height: 42px;
+}
+.store-chrome.is-compact .store-wa {
+  min-height: 40px;
+}
+.store-chrome.is-compact .action-icon {
+  width: 38px !important;
+  height: 38px;
+}
+.store-chrome.is-compact .mega,
+.store-chrome.is-compact .store-header .mega {
+  top: 110px;
+}
+
+/* In-flow spacer keeps page content below the fixed header.
+   Uses expanded height only so compacting the chrome cannot fight scrollY. */
+.store-chrome-spacer {
+  height: var(--store-chrome-spacer-h, var(--store-chrome-h, 180px));
+  flex: 0 0 auto;
+  pointer-events: none;
+}
+body {
+  padding-top: 0;
+}
+html {
+  scroll-padding-top: var(--store-chrome-h, 180px);
+}
+.plp-toolbar-wrap {
+  top: var(--store-chrome-h, 180px) !important;
+  transition: top 0.28s ease;
+}
+.pdp-gallery,
+.pdp-buy-panel {
+  top: calc(var(--store-chrome-h, 180px) + 16px) !important;
+}
+.checkout-progress {
+  top: var(--store-chrome-h, 180px) !important;
+}
+.filters {
+  top: calc(var(--store-chrome-h, 180px) + 16px) !important;
+}
+.account-lounge-nav {
+  top: var(--store-chrome-h, 180px) !important;
+  z-index: 40;
+}
+
+@media (max-width: 900px) {
+  .store-chrome.is-compact .store-head {
+    height: 58px;
+  }
+  .store-chrome.is-compact .store-logo {
+    min-width: 0;
+    transform: scale(0.92);
+  }
+}
+@media (max-width: 520px) {
+  .store-chrome.is-compact .store-head {
+    height: 54px;
+  }
+}
