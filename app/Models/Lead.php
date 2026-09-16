@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Lead extends Model
 {
+    /** @use HasFactory<\Database\Factories\LeadFactory> */
+    use HasFactory;
+
     public const STATUS_NEW = 'New';
 
     public const STATUSES = [
