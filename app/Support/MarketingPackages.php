@@ -2,6 +2,10 @@
 
 namespace App\Support;
 
+use App\Models\MarketingPackage;
+use App\Models\MarketingPlan;
+use Illuminate\Support\Facades\Schema;
+
 class MarketingPackages
 {
     public const SERVICE = 'Digital Marketing';
@@ -11,11 +15,15 @@ class MarketingPackages
      */
     public static function categoryKeys(): array
     {
-        return [
-            'Regular Marketing' => 'regular',
-            'Festival Marketing' => 'festival',
-            'Complete Growth' => 'growth',
-        ];
+        if (! self::tablesReady()) {
+            return self::configCategoryKeys();
+        }
+
+        return MarketingPackage::query()
+            ->active()
+            ->orderBy('sort_order')
+            ->pluck('key', 'title')
+            ->all();
     }
 
     /**
@@ -31,7 +39,36 @@ class MarketingPackages
      */
     public static function durations(): array
     {
-        return config('cebinova.marketing.frequencies', ['Monthly', 'Quarterly', 'Half-Yearly', 'Yearly']);
+        if (! self::tablesReady()) {
+            return config('cebinova.marketing.frequencies', ['Monthly', 'Quarterly', 'Half-Yearly', 'Yearly']);
+        }
+
+        $labels = MarketingPlan::query()
+            ->active()
+            ->whereHas('package', fn ($q) => $q->active())
+            ->pluck('label')
+            ->unique()
+            ->values()
+            ->all();
+
+        $preferred = ['Monthly', 'Quarterly', 'Half-Yearly', 'Yearly'];
+        $ordered = [];
+
+        foreach ($preferred as $label) {
+            if (in_array($label, $labels, true)) {
+                $ordered[] = $label;
+            }
+        }
+
+        foreach ($labels as $label) {
+            if (! in_array($label, $ordered, true)) {
+                $ordered[] = $label;
+            }
+        }
+
+        return $ordered !== []
+            ? $ordered
+            : config('cebinova.marketing.frequencies', ['Monthly', 'Quarterly', 'Half-Yearly', 'Yearly']);
     }
 
     public static function isValid(string $category, string $duration): bool
@@ -41,18 +78,25 @@ class MarketingPackages
 
     public static function priceAmount(?string $category, ?string $duration): ?int
     {
-        $group = self::categoryKeys()[$category] ?? null;
-        if (! $group || ! $duration) {
+        if (! $category || ! $duration) {
             return null;
         }
 
-        foreach (config('cebinova.marketing.'.$group.'.plans', []) as $plan) {
-            if (($plan['label'] ?? null) === $duration && isset($plan['price'])) {
-                return (int) $plan['price'];
-            }
+        if (! self::tablesReady()) {
+            return self::configPriceAmount($category, $duration);
         }
 
-        return null;
+        $plan = MarketingPlan::query()
+            ->active()
+            ->where('label', $duration)
+            ->whereHas('package', function ($query) use ($category) {
+                $query->active()->where(function ($inner) use ($category) {
+                    $inner->where('title', $category)->orWhere('service', $category);
+                });
+            })
+            ->first();
+
+        return $plan?->price;
     }
 
     public static function formattedPrice(?string $category, ?string $duration): ?string
@@ -145,7 +189,7 @@ class MarketingPackages
         $map = [];
 
         foreach (self::categoryKeys() as $label => $key) {
-            foreach (config('cebinova.marketing.'.$key.'.plans', []) as $plan) {
+            foreach (self::packageArray($key)['plans'] ?? [] as $plan) {
                 if (! isset($plan['label'], $plan['price'])) {
                     continue;
                 }
@@ -154,5 +198,113 @@ class MarketingPackages
         }
 
         return $map;
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    public static function packageArray(string $key): ?array
+    {
+        if (! self::tablesReady()) {
+            $config = config('cebinova.marketing.'.$key);
+
+            return is_array($config) ? $config : null;
+        }
+
+        $package = MarketingPackage::query()
+            ->active()
+            ->where('key', $key)
+            ->with(['plans' => fn ($q) => $q->active()->orderBy('sort_order')])
+            ->first();
+
+        if (! $package) {
+            return null;
+        }
+
+        $plans = [];
+
+        foreach ($package->plans as $plan) {
+            $plans[$plan->key] = [
+                'label' => $plan->label,
+                'duration' => $plan->duration,
+                'price' => $plan->price,
+                'period' => $plan->period,
+                'badge' => $plan->badge,
+                'cta' => $plan->cta,
+                'note' => $plan->note,
+                'includes' => $plan->includes ?? [],
+                'monthly_pace' => $plan->monthly_pace,
+            ];
+        }
+
+        return [
+            'key' => $package->key,
+            'title' => $package->title,
+            'heading' => $package->heading,
+            'subheading' => $package->subheading,
+            'teaser' => $package->teaser,
+            'best_if' => $package->best_if,
+            'service' => $package->service,
+            'badge' => $package->badge,
+            'cta' => $package->cta,
+            'secondary_cta' => $package->secondary_cta,
+            'why' => $package->why,
+            'includes' => $package->includes ?? [],
+            'plans' => $plans,
+        ];
+    }
+
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    public static function catalog(): array
+    {
+        $catalog = [];
+
+        foreach (self::categoryKeys() as $title => $key) {
+            $array = self::packageArray($key);
+            if ($array) {
+                $catalog[$key] = $array;
+            }
+        }
+
+        return $catalog;
+    }
+
+    private static function tablesReady(): bool
+    {
+        try {
+            return Schema::hasTable('marketing_packages') && Schema::hasTable('marketing_plans');
+        } catch (\Throwable) {
+            return false;
+        }
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private static function configCategoryKeys(): array
+    {
+        return [
+            'Regular Marketing' => 'regular',
+            'Festival Marketing' => 'festival',
+            'Complete Growth' => 'growth',
+        ];
+    }
+
+    private static function configPriceAmount(string $category, string $duration): ?int
+    {
+        $group = self::configCategoryKeys()[$category] ?? null;
+        if (! $group) {
+            return null;
+        }
+
+        foreach (config('cebinova.marketing.'.$group.'.plans', []) as $plan) {
+            if (($plan['label'] ?? null) === $duration && isset($plan['price'])) {
+                return (int) $plan['price'];
+            }
+        }
+
+        return null;
     }
 }

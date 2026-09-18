@@ -2,10 +2,21 @@
 
 namespace Tests\Feature;
 
+use Database\Seeders\MarketingPackageSeeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class PackageEnquiryTest extends TestCase
 {
+    use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->seed(MarketingPackageSeeder::class);
+    }
+
     public function test_package_enquiry_url_prefills_digital_marketing_without_client_price(): void
     {
         $url = package_enquiry_url('Complete Growth', 'Yearly');

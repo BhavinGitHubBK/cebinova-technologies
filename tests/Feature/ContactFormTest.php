@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Lead;
+use Database\Seeders\MarketingPackageSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
@@ -10,6 +11,13 @@ use Tests\TestCase;
 class ContactFormTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->seed(MarketingPackageSeeder::class);
+    }
 
     private function validPayload(array $overrides = []): array
     {

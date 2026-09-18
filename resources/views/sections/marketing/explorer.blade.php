@@ -1,7 +1,7 @@
 @php
-    $regular = config('cebinova.marketing.regular');
-    $festival = config('cebinova.marketing.festival');
-    $growth = config('cebinova.marketing.growth');
+    $regular = \App\Support\MarketingPackages::packageArray('regular') ?? [];
+    $festival = \App\Support\MarketingPackages::packageArray('festival') ?? [];
+    $growth = \App\Support\MarketingPackages::packageArray('growth') ?? [];
 @endphp
 
 <section id="marketing-plans" class="mkt-page-explorer scroll-mt-28 section-pad-lg" aria-label="Marketing plan prices">

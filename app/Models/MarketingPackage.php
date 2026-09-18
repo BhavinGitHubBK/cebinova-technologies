@@ -16,6 +16,11 @@ class MarketingPackage extends Model
         'teaser',
         'best_if',
         'service',
+        'badge',
+        'cta',
+        'secondary_cta',
+        'why',
+        'includes',
         'sort_order',
         'is_active',
     ];
@@ -23,6 +28,7 @@ class MarketingPackage extends Model
     protected function casts(): array
     {
         return [
+            'includes' => 'array',
             'is_active' => 'boolean',
             'sort_order' => 'integer',
         ];

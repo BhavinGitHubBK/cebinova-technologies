@@ -17,6 +17,7 @@ class MarketingPlan extends Model
         'period',
         'badge',
         'cta',
+        'note',
         'includes',
         'monthly_pace',
         'sort_order',

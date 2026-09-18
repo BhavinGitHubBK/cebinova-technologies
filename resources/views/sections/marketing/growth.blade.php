@@ -1,6 +1,6 @@
 @php
-    $growth = config('cebinova.marketing.growth');
-    $defaultPlan = $growth['plans']['yearly'];
+    $growth = \App\Support\MarketingPackages::packageArray('growth') ?? ['plans' => [], 'badge' => null, 'heading' => '', 'title' => '', 'service' => 'Complete Growth'];
+    $defaultPlan = $growth['plans']['yearly'] ?? reset($growth['plans']) ?: [];
 @endphp
 
 <article class="mkt-page-growth-card">

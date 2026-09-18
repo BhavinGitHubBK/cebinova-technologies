@@ -1,6 +1,6 @@
 @php
     $matrix = config('cebinova.marketing.matrix.rows', []);
-    $growth = config('cebinova.marketing.growth');
+    $growth = \App\Support\MarketingPackages::packageArray('growth') ?? [];
 @endphp
 <section class="mkt-page-compare section-pad-lg bg-white" id="choose-plan">
     <div class="container-wide">
