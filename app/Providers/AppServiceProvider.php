@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\SiteSetting;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -17,6 +18,8 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        SiteSetting::applyToConfig();
+
         View::share('company', config('cebinova'));
 
         RateLimiter::for('contact', function (Request $request) {
