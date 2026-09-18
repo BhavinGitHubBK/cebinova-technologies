@@ -8,9 +8,6 @@ export function initNavbar() {
     if (nav) {
         const onScroll = () => {
             const compact = window.scrollY > 12;
-            nav.classList.toggle('shadow-[0_8px_24px_rgba(11,31,58,0.08)]', compact);
-            nav.classList.toggle('border-line', compact);
-            nav.classList.toggle('border-transparent', !compact);
             nav.classList.toggle('is-scrolled', compact);
         };
         onScroll();
@@ -22,10 +19,10 @@ export function initNavbar() {
     }
 
     const setOpen = (open) => {
-        menu.classList.toggle('translate-x-full', !open);
+        menu.classList.toggle('is-open', open);
         menu.setAttribute('aria-hidden', open ? 'false' : 'true');
         openBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
-        overlay.classList.toggle('hidden', !open);
+        overlay.classList.toggle('is-open', open);
         overlay.hidden = !open;
         document.body.classList.toggle('overflow-hidden', open);
     };

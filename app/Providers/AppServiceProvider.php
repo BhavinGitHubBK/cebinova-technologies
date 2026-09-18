@@ -17,7 +17,7 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        View::share('company', config('sarvix'));
+        View::share('company', config('cebinova'));
 
         RateLimiter::for('contact', function (Request $request) {
             return Limit::perMinute(8)->by($request->ip());

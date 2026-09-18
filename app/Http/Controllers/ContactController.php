@@ -15,7 +15,7 @@ class ContactController extends Controller
 
         $payload = [
             'ok' => true,
-            'message' => 'Thank you for contacting SARVIX Technologies.',
+            'message' => 'Thank you for contacting CEBINOVA Technologies.',
             'detail' => 'Our team will review your requirement and get in touch with you shortly.',
         ];
 

@@ -54,7 +54,7 @@ class ContactFormTest extends TestCase
 
         $response->assertOk()->assertJson([
             'ok' => true,
-            'message' => 'Thank you for contacting SARVIX Technologies.',
+            'message' => 'Thank you for contacting CEBINOVA Technologies.',
         ]);
         $this->assertDatabaseHas('leads', [
             'email' => 'asha@example.com',
@@ -192,14 +192,14 @@ class ContactFormTest extends TestCase
         $this->postJson(route('contact.store'), $this->validPayload([
             'service' => 'Business Solution',
             'business_type' => 'Kirana & Grocery',
-            'source' => 'SARVIX Kirana Solution',
+            'source' => 'CEBINOVA Kirana Solution',
             'message' => "Solution: Kirana & Grocery\nPlan: Starter\nIndicative price: ₹14,999",
         ]))->assertOk();
 
         $this->assertDatabaseHas('leads', [
             'service' => 'Business Solution',
             'business_type' => 'Kirana & Grocery',
-            'source' => 'SARVIX Kirana Solution',
+            'source' => 'CEBINOVA Kirana Solution',
             'package_category' => null,
             'plan_duration' => null,
         ]);

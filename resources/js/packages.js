@@ -137,6 +137,22 @@ export function initPackageTabs() {
 
     const defaultDuration = explorer.querySelector('.js-pack-duration.is-active');
     syncSticky(defaultDuration);
+
+    const applyHash = () => {
+        const hash = window.location.hash.replace('#', '');
+        if (hash === 'festival-marketing' || hash === 'festival') {
+            setCategory('festival');
+            syncSticky(explorer.querySelector('.js-pack-duration.is-active[data-cat="festival"]'));
+            return;
+        }
+        if (hash === 'regular-marketing' || hash === 'regular') {
+            setCategory('regular');
+            syncSticky(explorer.querySelector('.js-pack-duration.is-active[data-cat="regular"]'));
+        }
+    };
+
+    applyHash();
+    window.addEventListener('hashchange', applyHash);
 }
 
 export function initPackageFields() {

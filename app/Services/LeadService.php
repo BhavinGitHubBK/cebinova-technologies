@@ -43,7 +43,7 @@ class LeadService
             return $category;
         }
 
-        $allowed = config('sarvix.leads.sources');
+        $allowed = config('cebinova.leads.sources');
         $submitted = $request->validated('source');
 
         if (is_string($submitted) && in_array($submitted, $allowed, true)) {

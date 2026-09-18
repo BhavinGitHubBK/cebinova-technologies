@@ -24,16 +24,16 @@ class StoreLeadRequest extends FormRequest
             'phone' => ['required', 'string', 'max:20', 'regex:/^[0-9+\s\-()]{8,20}$/'],
             'whatsapp' => ['nullable', 'string', 'max:20', 'regex:/^[0-9+\s\-()]{8,20}$/'],
             'email' => ['nullable', 'email:rfc', 'max:160'],
-            'business_type' => ['nullable', 'string', Rule::in(config('sarvix.form.business_types'))],
-            'service' => ['required', 'string', Rule::in(config('sarvix.form.services'))],
+            'business_type' => ['nullable', 'string', Rule::in(config('cebinova.form.business_types'))],
+            'service' => ['required', 'string', Rule::in(config('cebinova.form.services'))],
             'package_category' => ['nullable', 'string', Rule::requiredIf($packageEnquiry), Rule::in(MarketingPackages::categories())],
             'plan_duration' => ['nullable', 'string', Rule::requiredIf($packageEnquiry), Rule::in(MarketingPackages::durations())],
             'plan_price' => ['nullable', 'string', 'max:40'],
             'city' => ['nullable', 'string', 'max:80'],
-            'budget' => ['nullable', 'string', Rule::in(config('sarvix.form.budgets'))],
+            'budget' => ['nullable', 'string', Rule::in(config('cebinova.form.budgets'))],
             'message' => ['nullable', 'string', 'max:2000'],
             'consultation' => ['sometimes', 'boolean'],
-            'source' => ['nullable', 'string', Rule::in(config('sarvix.leads.sources'))],
+            'source' => ['nullable', 'string', Rule::in(config('cebinova.leads.sources'))],
         ];
     }
 
@@ -84,7 +84,7 @@ class StoreLeadRequest extends FormRequest
 
     public function isPackageEnquiry(): bool
     {
-        return in_array($this->input('service'), config('sarvix.form.package_services'), true)
+        return in_array($this->input('service'), config('cebinova.form.package_services'), true)
             || filled($this->input('package_category'));
     }
 

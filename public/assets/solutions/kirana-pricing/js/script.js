@@ -1,13 +1,13 @@
 /**
- * SARVIX Pricing - Interactive Project Cost Calculator
+ * CEBINOVA Pricing - Interactive Project Cost Calculator
  */
 
 (function () {
   "use strict";
 
   const root = document.querySelector(".kirana-pricing") || document.body;
-  const WHATSAPP_NUMBER = window.SARVIX_WHATSAPP || root.getAttribute("data-wa") || "";
-  const CONTACT_FALLBACK = window.SARVIX_CONTACT || root.getAttribute("data-contact") || "/contact";
+  const WHATSAPP_NUMBER = window.CEBINOVA_WHATSAPP || root.getAttribute("data-wa") || "";
+  const CONTACT_FALLBACK = window.CEBINOVA_CONTACT || root.getAttribute("data-contact") || "/contact";
 
   /** Easy to update later - marketing / plan meta */
   const PLAN_META = {
@@ -222,31 +222,37 @@
     if (progressFill) progressFill.style.width = pct + "%";
     if (progressPct) progressPct.textContent = pct + "%";
 
+    function shortStepValue(kind, label, fallback) {
+      if (!label) return fallback;
+      if (/already have|use existing|existing/i.test(label)) return "Existing";
+      if (kind === "domain" && /^new(\s+domain)?$/i.test(label.trim())) return "New";
+      if (kind === "hosting") return label.replace(/\s+Hosting$/i, "") || fallback;
+      return label;
+    }
+
+    const values = [
+      website ? (website.getAttribute("data-label") || "Selected") : "Choose",
+      androidOn && iosOn
+        ? "Android + iOS"
+        : androidOn
+          ? "Android"
+          : iosOn
+            ? "iPhone"
+            : "Optional",
+      shortStepValue("domain", domain ? domain.getAttribute("data-label") : "", "Choose"),
+      shortStepValue("hosting", hosting ? hosting.getAttribute("data-label") : "", "Choose"),
+      website ? (website.getAttribute("data-support") || "Included") : "Included",
+    ];
+
+    progressItems.forEach(function (item, index) {
+      const valueEl = item.querySelector("[data-step-value]");
+      if (valueEl) valueEl.textContent = values[index] || "-";
+      item.classList.toggle("has-value", done[index]);
+    });
+
     if (liveProgressSummary) {
-      const chips = [];
-      if (website) {
-        chips.push("Website · " + (website.getAttribute("data-label") || "Selected"));
-      }
-      if (androidOn && iosOn) chips.push("Android + iOS Apps");
-      else if (androidOn) chips.push("Android App Added");
-      else if (iosOn) chips.push("iPhone App Added");
-      else if (website) chips.push("Apps · Optional");
-
-      if (domain) {
-        const domainLabel = domain.getAttribute("data-label") || "Domain";
-        chips.push(domainLabel === "Already have" ? "Existing Domain" : "New Domain");
-      }
-      if (hosting) {
-        const hostLabel = hosting.getAttribute("data-label") || "Hosting";
-        chips.push(hostLabel === "Already have" ? "Existing Hosting" : hostLabel);
-      }
-      if (website) {
-        chips.push("Support · " + (website.getAttribute("data-support") || "Included"));
-      }
-
-      liveProgressSummary.innerHTML = chips.map(function (text) {
-        return "<li><i class=\"fa-solid fa-check\" aria-hidden=\"true\"></i> " + text + "</li>";
-      }).join("");
+      liveProgressSummary.innerHTML = "";
+      liveProgressSummary.hidden = true;
     }
   }
 
@@ -515,7 +521,7 @@
     const advance = Math.round(total * 0.4);
 
     const message =
-      "Hello SARVIX, I selected the " +
+      "Hello CEBINOVA, I selected the " +
       selection +
       ". My estimated investment is " +
       formatINR(total) +
@@ -802,13 +808,13 @@
           '<div class="inv-brand">' +
             logoSvg +
             "<div>" +
-              '<p class="inv-wordmark">SARVIX</p>' +
+              '<p class="inv-wordmark">CEBINOVA</p>' +
               '<p class="inv-tag">Technology for Every Business</p>' +
             "</div>" +
           "</div>" +
           '<div class="inv-title-block">' +
             "<h1>Project Estimate</h1>" +
-            "<p>Transparent investment summary for your SARVIX build.</p>" +
+            "<p>Transparent investment summary for your CEBINOVA build.</p>" +
           "</div>" +
         "</div>" +
         '<aside class="inv-quote-box">' +
@@ -826,9 +832,9 @@
       '<section class="inv-parties">' +
         '<div class="inv-party inv-from">' +
           '<p class="inv-party-label">From</p>' +
-          "<strong>SARVIX Technologies</strong>" +
+          "<strong>CEBINOVA Technologies</strong>" +
           "<p>Ahmedabad, Gujarat, India</p>" +
-          "<p>" + (window.SARVIX_EMAIL || "hello@sarvixtechnologies.com") + "</p>" +
+          "<p>" + (window.CEBINOVA_EMAIL || "hello@cebinovatechnologies.com") + "</p>" +
         "</div>" +
         '<div class="inv-party inv-for">' +
           '<p class="inv-party-label">Prepared For</p>' +
@@ -870,7 +876,7 @@
           "</ul>" +
         "</div>" +
         '<div class="inv-sign">' +
-          '<em class="inv-sign-script">SARVIX</em>' +
+          '<em class="inv-sign-script">CEBINOVA</em>' +
           "<span>Authorized Signature</span>" +
         "</div>" +
       "</footer>"
@@ -929,7 +935,7 @@
     downloadBtn.addEventListener("click", function () {
       updateCalculator();
       var prevTitle = document.title;
-      document.title = "SARVIX Project Estimate";
+      document.title = "CEBINOVA Project Estimate";
       window.print();
       window.setTimeout(function () {
         document.title = prevTitle;

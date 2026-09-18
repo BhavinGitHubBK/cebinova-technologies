@@ -30,11 +30,14 @@ function initCatalogFilters() {
 export function initAnimations() {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     initCatalogFilters();
+    initHubMap(reduce);
+    initHeroCaps(reduce);
 
     if (reduce) {
         fillProgress('journey-progress');
         fillProgress('process-progress');
         document.querySelectorAll('[data-journey-node]').forEach((node) => node.classList.add('is-active'));
+        document.querySelectorAll('[data-process-node]').forEach((node) => node.classList.add('is-active'));
         return;
     }
 
@@ -166,6 +169,7 @@ export function initAnimations() {
 
     const process = document.getElementById('process');
     const processProgress = document.getElementById('process-progress');
+    const processNodes = document.querySelectorAll('[data-process-node]');
     if (process && processProgress) {
         gsap.to(processProgress, {
             scaleX: 1,
@@ -173,8 +177,18 @@ export function initAnimations() {
             scrollTrigger: {
                 trigger: process,
                 start: 'top 75%',
-                end: 'top 40%',
+                end: 'top 28%',
                 scrub: 0.6,
+                onUpdate: (self) => {
+                    const count = processNodes.length;
+                    if (!count) {
+                        return;
+                    }
+                    const active = Math.min(count - 1, Math.floor(self.progress * count));
+                    processNodes.forEach((node, index) => {
+                        node.classList.toggle('is-active', index <= active);
+                    });
+                },
             },
         });
     }
@@ -185,5 +199,114 @@ export function initAnimations() {
         block.addEventListener('mouseleave', () => setActive(false));
         block.addEventListener('focus', () => setActive(true));
         block.addEventListener('blur', () => setActive(false));
+    });
+}
+
+function initHubMap(reduce) {
+    document.querySelectorAll('[data-hub-map]').forEach((root) => {
+        const nodes = [...root.querySelectorAll('[data-hub-node]')];
+        const spokes = [...root.querySelectorAll('[data-hub-spoke]')];
+        const beads = [...root.querySelectorAll('[data-hub-bead]')];
+        const statusLabel = root.querySelector('[data-hub-status-label]');
+        const statusCopy = root.querySelector('[data-hub-status-copy]');
+        if (!nodes.length) {
+            return;
+        }
+
+        let index = 0;
+        let timer;
+
+        const setActive = (next) => {
+            index = next;
+            const current = nodes.find((node) => Number(node.dataset.hubNode) === next);
+            nodes.forEach((node) => {
+                node.classList.toggle('is-active', Number(node.dataset.hubNode) === next);
+            });
+            spokes.forEach((spoke) => {
+                spoke.classList.toggle('is-active', Number(spoke.dataset.hubSpoke) === next);
+            });
+            beads.forEach((bead) => {
+                bead.classList.toggle('is-active', Number(bead.dataset.hubBead) === next);
+            });
+            if (statusLabel) {
+                statusLabel.textContent = current?.dataset.hubLabel ?? '';
+            }
+            if (statusCopy) {
+                statusCopy.textContent = current?.dataset.hubCopy ?? '';
+            }
+        };
+
+        const play = () => {
+            if (reduce || timer) {
+                return;
+            }
+            timer = window.setInterval(() => {
+                setActive((index + 1) % nodes.length);
+            }, 2200);
+        };
+
+        const pause = () => {
+            window.clearInterval(timer);
+            timer = undefined;
+        };
+
+        setActive(0);
+        play();
+
+        nodes.forEach((node) => {
+            const activate = () => {
+                pause();
+                setActive(Number(node.dataset.hubNode));
+            };
+            node.addEventListener('mouseenter', activate);
+            node.addEventListener('focus', activate);
+            node.addEventListener('mouseleave', play);
+            node.addEventListener('blur', play);
+        });
+    });
+}
+
+function initHeroCaps(reduce) {
+    const caps = [...document.querySelectorAll('[data-hero-cap]')];
+    if (!caps.length) {
+        return;
+    }
+
+    let index = 0;
+    let timer;
+
+    const setActive = (next) => {
+        index = next;
+        caps.forEach((cap, i) => cap.classList.toggle('is-active', i === next));
+    };
+
+    const play = () => {
+        if (reduce || timer) {
+            return;
+        }
+        timer = window.setInterval(() => {
+            setActive((index + 1) % caps.length);
+        }, 2400);
+    };
+
+    const pause = () => {
+        window.clearInterval(timer);
+        timer = undefined;
+    };
+
+    setActive(0);
+    play();
+
+    caps.forEach((cap, i) => {
+        cap.addEventListener('mouseenter', () => {
+            pause();
+            setActive(i);
+        });
+        cap.addEventListener('focus', () => {
+            pause();
+            setActive(i);
+        });
+        cap.addEventListener('mouseleave', play);
+        cap.addEventListener('blur', play);
     });
 }

@@ -19,13 +19,13 @@ class PageController extends Controller
     public function services(): View
     {
         return view('pages.services.index', [
-            'services' => config('sarvix.services'),
+            'services' => config('cebinova.services'),
         ]);
     }
 
     public function service(string $slug): View
     {
-        $service = collect(config('sarvix.services'))->firstWhere('slug', $slug);
+        $service = collect(config('cebinova.services'))->firstWhere('slug', $slug);
         abort_unless($service, 404);
 
         return view('pages.services.show', compact('service'));
@@ -38,7 +38,7 @@ class PageController extends Controller
 
     public function solution(string $slug): View
     {
-        $solution = collect(config('sarvix.business_solutions'))->firstWhere('slug', $slug);
+        $solution = collect(config('cebinova.business_solutions'))->firstWhere('slug', $slug);
         abort_unless($solution, 404);
 
         return view('pages.solutions.show', compact('solution'));

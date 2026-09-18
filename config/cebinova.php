@@ -1,39 +1,41 @@
 <?php
 
 return [
-    'name' => 'SARVIX Technologies',
-    'short_name' => 'SARVIX',
+    'name' => 'CEBINOVA Technologies',
+    'short_name' => 'CEBINOVA',
     'tagline' => 'Technology for Every Business.',
     'positioning' => 'One Technology Partner for Your Complete Business Journey.',
     'story' => 'Small Business → Digital Business → Growing Business',
 
     'contact' => [
-        'phone' => env('SARVIX_PHONE', '+91 96246 8831'),
-        'email' => env('SARVIX_EMAIL', 'hello@sarvixtechnologies.com'),
-        'whatsapp' => env('SARVIX_WHATSAPP', '91962468831'),
-        'whatsapp_message' => "Hi SARVIX,\nI'd like to know more about your technology solutions.",
-        'whatsapp_package_message' => "Hi SARVIX,\nI'm interested in the {package} – {duration} Plan.\nPlease share more details.",
-        'address' => env('SARVIX_ADDRESS', 'Ahmedabad, Gujarat, India'),
+        'phone' => env('CEBINOVA_PHONE', '+91 96246 8831'),
+        'email' => env('CEBINOVA_EMAIL', 'cebinovatechnologies@gmail.com'),
+        'email_alt' => env('CEBINOVA_EMAIL_ALT', ''),
+        'whatsapp' => env('CEBINOVA_WHATSAPP', '91962468831'),
+        'whatsapp_message' => "Hi CEBINOVA,\nI'd like to know more about your technology solutions.",
+        'whatsapp_package_message' => "Hi CEBINOVA,\nI'm interested in the {package} – {duration} Plan.\nPlease share more details.",
+        'address' => env('CEBINOVA_ADDRESS', '301, Satyam64, opp. Gujarat High Court, Sarkhej - Gandhinagar Hwy, Sola, Ahmedabad, Gujarat 380060'),
+        'maps_url' => env('CEBINOVA_MAPS_URL', 'https://maps.app.goo.gl/2W1U72STLQ9ZEme18'),
         'social' => [
-            'linkedin' => env('SARVIX_LINKEDIN', '#'),
-            'instagram' => env('SARVIX_INSTAGRAM', '#'),
-            'facebook' => env('SARVIX_FACEBOOK', '#'),
+            'linkedin' => env('CEBINOVA_LINKEDIN', '#'),
+            'instagram' => env('CEBINOVA_INSTAGRAM', '#'),
+            'facebook' => env('CEBINOVA_FACEBOOK', '#'),
         ],
     ],
 
     'seo' => [
-        'default_title' => 'SARVIX Technologies | Technology for Every Business',
-        'default_description' => 'SARVIX Technologies provides websites, eCommerce, custom software, AI automation and complete digital solutions for businesses.',
+        'default_title' => 'CEBINOVA Technologies | Technology for Every Business',
+        'default_description' => 'CEBINOVA Technologies provides websites, eCommerce, custom software, AI automation and complete digital solutions for businesses.',
     ],
 
     'nav' => [
         ['label' => 'Home', 'route' => 'home'],
-        ['label' => 'About', 'route' => 'about'],
         ['label' => 'Services', 'route' => 'services.index'],
         ['label' => 'Solutions', 'route' => 'solutions', 'type' => 'mega'],
-        ['label' => 'Marketing Packages', 'route' => 'marketing-packages'],
-        ['label' => 'Pricing', 'route' => 'pricing'],
+        ['label' => 'Marketing Packages', 'route' => 'marketing-packages', 'badge' => 'Popular'],
+        ['label' => 'Pricing', 'route' => 'pricing', 'badge' => 'Hot'],
         ['label' => 'Demos', 'route' => 'demos'],
+        ['label' => 'About', 'route' => 'about'],
         ['label' => 'Contact', 'route' => 'contact'],
     ],
 
@@ -80,7 +82,7 @@ return [
             'category' => 'Web Solutions',
             'title' => 'Website Development',
             'short' => 'Professional, responsive and conversion-focused websites designed around your business goals.',
-            'summary' => 'From a first business website to a full corporate presence, SARVIX designs sites that explain your offer clearly and help customers take the next step.',
+            'summary' => 'From a first business website to a full corporate presence, CEBINOVA designs sites that explain your offer clearly and help customers take the next step.',
             'includes' => ['Business websites', 'Corporate websites', 'Landing pages', 'Lead enquiry systems', 'WhatsApp integration', 'Mobile-first design'],
         ],
         [
@@ -402,7 +404,7 @@ return [
             'capabilities' => ['Product catalogue', 'WhatsApp ordering', 'Offers & banners', 'Admin dashboard'],
             'demo' => 'kirana',
             'preview' => 'solutions/kirana-preview.png',
-            'source' => 'SARVIX Kirana Solution',
+            'source' => 'CEBINOVA Kirana Solution',
             'business_type' => 'Kirana & Grocery',
         ],
         [
@@ -415,7 +417,7 @@ return [
             'capabilities' => ['Luxury catalogue', 'Collections', 'Wishlist & cart', 'Customer accounts'],
             'demo' => 'jewellery-retail',
             'preview' => 'solutions/retail-preview.png',
-            'source' => 'SARVIX Solutions',
+            'source' => 'CEBINOVA Solutions',
             'business_type' => 'Retail',
         ],
         [
@@ -428,7 +430,7 @@ return [
             'capabilities' => ['Service pages', 'Enquiry flow', 'Trust-led layout', 'Mobile-first design'],
             'demo' => 'professional-services',
             'preview' => 'solutions/professional-preview.png',
-            'source' => 'SARVIX Solutions',
+            'source' => 'CEBINOVA Solutions',
             'business_type' => 'Professional Services',
         ],
         [
@@ -441,7 +443,7 @@ return [
             'capabilities' => ['Products & categories', 'Cart & checkout', 'Order management', 'Customer accounts'],
             'demo' => 'kirana',
             'preview' => 'solutions/kirana-preview.png',
-            'source' => 'SARVIX Solutions',
+            'source' => 'CEBINOVA Solutions',
             'business_type' => 'Retail',
         ],
         [
@@ -454,7 +456,7 @@ return [
             'capabilities' => ['CRM & follow-up', 'Inventory', 'Billing', 'Custom portals'],
             'demo' => null,
             'preview' => null,
-            'source' => 'SARVIX Solutions',
+            'source' => 'CEBINOVA Solutions',
             'business_type' => 'Service Business',
         ],
         [
@@ -467,7 +469,7 @@ return [
             'capabilities' => ['AI chatbots', 'Lead automation', 'WhatsApp workflows', 'API integrations'],
             'demo' => null,
             'preview' => null,
-            'source' => 'SARVIX Solutions',
+            'source' => 'CEBINOVA Solutions',
             'business_type' => 'Other',
         ],
     ],
@@ -564,7 +566,7 @@ return [
         'notes' => [
             'tax' => 'GST extra, if applicable. No hidden package charges.',
             'reels' => 'Reels are short videos for Instagram, Facebook and WhatsApp. These are design or motion creatives. Professional video shooting is not included.',
-            'festival' => 'Festival creatives follow the SARVIX Festival Calendar - Diwali, Navratri, Independence Day and other important dates.',
+            'festival' => 'Festival creatives follow the CEBINOVA Festival Calendar - Diwali, Navratri, Independence Day and other important dates.',
             'delivery' => 'On-time delivery means creatives are shared on the regular festival schedule. Early delivery means they are shared sooner, before the festival date.',
             'third_party' => 'Ad spend, photography, video shooting, influencer charges and printing are extra. Ask us only if you need them.',
             'timeline' => 'After a short briefing, the first creatives are shared in 5–7 working days. Then we follow the monthly calendar.',
@@ -691,7 +693,7 @@ return [
             'key' => 'festival',
             'title' => 'Festival Marketing',
             'heading' => 'Festival Marketing Plans',
-            'subheading' => 'Ready-to-post creatives for Diwali, Navratri, national days and other important dates. We follow the SARVIX Festival Calendar.',
+            'subheading' => 'Ready-to-post creatives for Diwali, Navratri, national days and other important dates. We follow the CEBINOVA Festival Calendar.',
             'teaser' => 'Best if you mainly need festival and special-day creatives.',
             'best_if' => 'You mainly need festival and special-day creatives.',
             'service' => 'Festival Marketing',
@@ -1003,11 +1005,11 @@ return [
     ],
 
     'ecosystem' => [
-        ['name' => 'SARVIX Commerce', 'text' => 'Selling, catalogues and order workflows.'],
-        ['name' => 'SARVIX Business', 'text' => 'Operations, CRM and internal systems.'],
-        ['name' => 'SARVIX AI', 'text' => 'Assistants, insights and content support.'],
-        ['name' => 'SARVIX Automate', 'text' => 'WhatsApp, workflow and notification automation.'],
-        ['name' => 'SARVIX Cloud', 'text' => 'A connected home for websites, software and support.'],
+        ['name' => 'CEBINOVA Commerce', 'text' => 'Selling, catalogues and order workflows.'],
+        ['name' => 'CEBINOVA Business', 'text' => 'Operations, CRM and internal systems.'],
+        ['name' => 'CEBINOVA AI', 'text' => 'Assistants, insights and content support.'],
+        ['name' => 'CEBINOVA Automate', 'text' => 'WhatsApp, workflow and notification automation.'],
+        ['name' => 'CEBINOVA Cloud', 'text' => 'A connected home for websites, software and support.'],
     ],
 
     'form' => [
@@ -1071,9 +1073,9 @@ return [
             'Complete Growth',
             'WhatsApp',
             'Technology Solution',
-            'SARVIX Kirana Solution',
-            'SARVIX Demos',
-            'SARVIX Solutions',
+            'CEBINOVA Kirana Solution',
+            'CEBINOVA Demos',
+            'CEBINOVA Solutions',
         ],
     ],
 ];

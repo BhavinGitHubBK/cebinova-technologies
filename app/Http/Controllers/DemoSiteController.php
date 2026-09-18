@@ -91,8 +91,8 @@ class DemoSiteController extends Controller
 
     private function brandHtml(string $html, string $demo): string
     {
-        $html = str_ireplace(['BizPilot', 'Biz Pilot'], 'SARVIX', $html);
-        $html = str_ireplace('bizpilot', 'sarvix', $html);
+        $html = str_ireplace(['BizPilot', 'Biz Pilot'], 'CEBINOVA', $html);
+        $html = str_ireplace('bizpilot', 'cebinova', $html);
         $html = preg_replace('#file:///[^\s"\']+#i', '#', $html) ?? $html;
         $html = preg_replace('#C:\\\\xampp\\\\[^\s"\']+#i', '#', $html) ?? $html;
 
@@ -104,7 +104,7 @@ class DemoSiteController extends Controller
 
         $enquiry = e(solution_enquiry_url([
             'solution' => $titles[$demo] ?? 'Business Solution',
-            'source' => 'SARVIX Demos',
+            'source' => 'CEBINOVA Demos',
         ]));
         $demos = e(route('demos'));
         $home = e(route('home'));
@@ -112,22 +112,22 @@ class DemoSiteController extends Controller
 
         $bar = <<<HTML
 <base href="{$base}">
-<div class="sarvix-demo-bar">
-  <a class="sarvix-demo-bar__brand" href="{$home}">SARVIX Technologies</a>
-  <span class="sarvix-demo-bar__label">Live solution demo</span>
-  <span class="sarvix-demo-bar__actions">
+<div class="cebinova-demo-bar">
+  <a class="cebinova-demo-bar__brand" href="{$home}">CEBINOVA Technologies</a>
+  <span class="cebinova-demo-bar__label">Live solution demo</span>
+  <span class="cebinova-demo-bar__actions">
     <a href="{$demos}">All demos</a>
     <a href="{$enquiry}">Request this solution</a>
   </span>
 </div>
 <style>
-.sarvix-demo-bar{position:sticky;top:0;z-index:9999;display:flex;flex-wrap:wrap;align-items:center;gap:.75rem 1rem;padding:.7rem 1rem;background:#0B1F3A;color:#fff;font-family:Outfit,sans-serif;font-size:13px;line-height:1.4}
-.sarvix-demo-bar__brand{font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#C9A227;text-decoration:none}
-.sarvix-demo-bar__label{color:rgba(255,255,255,.7)}
-.sarvix-demo-bar__actions{margin-left:auto;display:flex;gap:1rem}
-.sarvix-demo-bar a{color:#fff;text-decoration:none;font-weight:600}
-.sarvix-demo-bar a:hover{color:#C9A227}
-@media (max-width:720px){.sarvix-demo-bar{font-size:12px}.sarvix-demo-bar__actions{margin-left:0;width:100%}}
+.cebinova-demo-bar{position:sticky;top:0;z-index:9999;display:flex;flex-wrap:wrap;align-items:center;gap:.75rem 1rem;padding:.7rem 1rem;background:#013A9D;color:#fff;font-family:Outfit,sans-serif;font-size:13px;line-height:1.4}
+.cebinova-demo-bar__brand{font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#FBB50B;text-decoration:none}
+.cebinova-demo-bar__label{color:rgba(255,255,255,.7)}
+.cebinova-demo-bar__actions{margin-left:auto;display:flex;gap:1rem}
+.cebinova-demo-bar a{color:#fff;text-decoration:none;font-weight:600}
+.cebinova-demo-bar a:hover{color:#FBB50B}
+@media (max-width:720px){.cebinova-demo-bar{font-size:12px}.cebinova-demo-bar__actions{margin-left:0;width:100%}}
 </style>
 HTML;
 

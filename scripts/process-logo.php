@@ -181,8 +181,8 @@ function writeFavicon($mark, string $pngPath, string $svgPath): void
     echo "Wrote favicon.png {$size}x{$size}\n";
 
     $svg = <<<'SVG'
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="SARVIX">
-  <rect width="64" height="64" rx="14" fill="#0B1F3A"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="CEBINOVA">
+  <rect width="64" height="64" rx="14" fill="#013A9D"/>
   <path d="M18 46c7.5-1.8 12.5-6.2 14.2-13.2 1.5-6.2-1.8-10.4-8.8-12.4 9.4-1.6 16.8-5.8 15.2-14.2C37 1.8 28.2-0.4 18 4.2" fill="none" stroke="#3B9BFF" stroke-width="5" stroke-linecap="round"/>
   <path d="M14 28c8 1.6 16.5 4.2 18 12 1.2 6.4-3.4 11.6-12 14" fill="none" stroke="#7EC8FF" stroke-width="4.2" stroke-linecap="round"/>
   <rect x="11" y="22" width="5" height="5" rx="1.2" fill="#2F7FE0"/>

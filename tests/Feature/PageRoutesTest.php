@@ -46,27 +46,44 @@ class PageRoutesTest extends TestCase
     {
         $this->get('/')
             ->assertOk()
-            ->assertSee('SARVIX Technologies', false)
+            ->assertSee('CEBINOVA Technologies', false)
             ->assertSee('Technology That Helps', false)
             ->assertSee('Every Business Grow.', false)
-            ->assertSee('What SARVIX builds', false)
+            ->assertSee('What CEBINOVA builds', false)
             ->assertSee('>Web<', false)
             ->assertSee('>eCommerce<', false)
-            ->assertSee('>Growth<', false);
+            ->assertSee('>Growth<', false)
+            ->assertSee('Simple Process. Powerful Results.', false)
+            ->assertSee('A clear path from conversation to launch - without unnecessary complexity.', false)
+            ->assertSee('Understand', false)
+            ->assertSee('Support &amp; Grow', false)
+            ->assertSee('More Than a Service Company.', false)
+            ->assertSee('IT services today. A connected technology platform tomorrow.', false)
+            ->assertSee('CEBINOVA Commerce', false)
+            ->assertSee('CEBINOVA Cloud', false)
+            ->assertSee('Ready to Take Your Business Forward?', false)
+            ->assertSee('Start with the solution you need today. CEBINOVA can grow with you tomorrow.', false)
+            ->assertSee('Talk to CEBINOVA', false)
+            ->assertSee('Start Conversation', false)
+            ->assertSee('Working hours', false)
+            ->assertSee('Quick Links', false)
+            ->assertSee('All Rights Reserved.', false)
+            ->assertSee('Privacy Policy', false);
     }
 
     public function test_site_chrome_uses_current_logo_assets(): void
     {
         $response = $this->get('/')
             ->assertOk()
-            ->assertSee('assets/brand/sarvix-s-icon.webp', false)
-            ->assertSee('assets/brand/sarvix-s-icon.png', false)
-            ->assertSee('class="sarvix-brand-name"', false)
-            ->assertSee('class="sarvix-brand-tech"', false)
+            ->assertSee('assets/brand/cebinova-c-icon.svg', false)
+            ->assertSee('assets/brand/cebinova-c-icon.webp', false)
+            ->assertSee('assets/brand/cebinova-c-icon.png', false)
+            ->assertSee('class="cebinova-brand-name"', false)
+            ->assertSee('class="cebinova-brand-tech"', false)
             ->assertSee('Technology for Every Business.', false)
             ->assertSee('favicon.png', false)
             ->assertDontSee('images/branding/logo-nav.png', false)
-            ->assertDontSee('sarvix-brand-rule', false);
+            ->assertDontSee('cebinova-brand-rule', false);
 
         $html = $response->getContent();
         $this->assertMatchesRegularExpression(
@@ -77,13 +94,13 @@ class PageRoutesTest extends TestCase
         preg_match('/<header id="site-nav"[\s\S]*?<\/header>/', $html, $header);
         $this->assertStringContainsString('Technology for Every Business.', $header[0]);
         $this->assertStringContainsString('TECHNOLOGIES', $header[0]);
-        $this->assertStringContainsString('SARVI', $header[0]);
-        $this->assertStringContainsString('sarvix-accent', $header[0]);
-        $this->assertStringContainsString('sarvix-logo-icon', $header[0]);
+        $this->assertStringContainsString('CEBINOVA', $header[0]);
+        $this->assertStringContainsString('cebinova-logo-icon', $header[0]);
         $this->assertStringNotContainsString('background-image', $header[0]);
 
-        $this->assertFileExists(public_path('assets/brand/sarvix-s-icon.webp'));
-        $this->assertFileExists(public_path('assets/brand/sarvix-s-icon.png'));
+        $this->assertFileExists(public_path('assets/brand/cebinova-c-icon.svg'));
+        $this->assertFileExists(public_path('assets/brand/cebinova-c-icon.webp'));
+        $this->assertFileExists(public_path('assets/brand/cebinova-c-icon.png'));
         $this->assertFileExists(public_path('favicon.png'));
     }
 
@@ -100,13 +117,22 @@ class PageRoutesTest extends TestCase
             ->assertSee('Yearly', false)
             ->assertSee('Explore Marketing Plans', false)
             ->assertSee('Marketing Packages', false)
+            ->assertSee('#regular-marketing', false)
+            ->assertSee('#festival-marketing', false)
+            ->assertSee('#complete-growth', false)
             ->assertDontSee('10 Social Media Posts', false)
             ->assertDontSee('Full package details coming soon', false)
             ->assertDontSee('BizPilot', false)
             ->assertSee('Technology Built Around Your Business.', false)
             ->assertSee('Go Digital', false)
-            ->assertSee('Discover SARVIX', false)
+            ->assertSee('Discover CEBINOVA', false)
             ->assertSee('Solutions Built for Real Businesses.', false)
+            ->assertSee('CEBINOVA does not only talk about services. These working demos show what we can build for different businesses.', false)
+            ->assertSee('Kirana &amp; Grocery', false)
+            ->assertSee('Retail &amp; Jewellery', false)
+            ->assertSee('/demos/kirana', false)
+            ->assertSee('/demos/jewellery-retail', false)
+            ->assertSee('/demos/professional-services', false)
             ->assertSee('View Demos', false)
             ->assertSee('Explore All Solutions', false);
     }
@@ -120,6 +146,21 @@ class PageRoutesTest extends TestCase
     public function test_kirana_url_redirects_to_pricing(): void
     {
         $this->get('/solutions/kirana')->assertRedirect('/pricing');
+    }
+
+    public function test_marketing_packages_page_uses_upgraded_layout(): void
+    {
+        $this->get('/marketing-packages')
+            ->assertOk()
+            ->assertSee('Your Complete Marketing Team - Starting at ₹4,999/month.', false)
+            ->assertSee('mkt-page-explorer', false)
+            ->assertSee('This is the kind of work you receive.', false)
+            ->assertSee('See the exact price and what you get.', false)
+            ->assertSee('Which plan is for you?', false)
+            ->assertSee('A simple path from chat to monthly report.', false)
+            ->assertSee('Clear price. Clear work. Clear next step.', false)
+            ->assertSee('Questions clients ask before they start.', false)
+            ->assertSee('Ready to Take Your Business Forward?', false);
     }
 
     public function test_packages_page_presents_marketing_structure(): void
@@ -152,7 +193,7 @@ class PageRoutesTest extends TestCase
             ->assertSee('/ year', false)
             ->assertSee('Just ₹3,750/month · Save ₹14,989', false)
             ->assertSee('GST extra, if applicable. No hidden package charges.', false)
-            ->assertSee('Festival creatives follow the SARVIX Festival Calendar - Diwali, Navratri, Independence Day and other important dates.', false)
+            ->assertSee('Festival creatives follow the CEBINOVA Festival Calendar - Diwali, Navratri, Independence Day and other important dates.', false)
             ->assertSee('10 Social Media Posts', false)
             ->assertSee('Current Month Festival Coverage', false)
             ->assertSee('Paid Advertising Budget', false)
@@ -185,12 +226,55 @@ class PageRoutesTest extends TestCase
         ];
 
         foreach ($expected as $duration => $item) {
-            $this->assertContains($item, config('sarvix.marketing.festival.plans.'.$duration.'.includes'));
+            $this->assertContains($item, config('cebinova.marketing.festival.plans.'.$duration.'.includes'));
         }
 
         $this->get('/marketing-packages')
             ->assertOk()
             ->assertSee('Reels are short videos for Instagram, Facebook and WhatsApp. These are design or motion creatives. Professional video shooting is not included.', false);
+    }
+
+    public function test_services_page_uses_upgraded_layout(): void
+    {
+        $this->get('/services')
+            ->assertOk()
+            ->assertSee('Complete technology services. One partner.', false)
+            ->assertSee('svc-page-catalog', false)
+            ->assertSee('svc-page-path', false)
+            ->assertSee('Pick the work that matches your stage.', false)
+            ->assertSee('Right-sized technology. One connected journey.', false)
+            ->assertSee('Simple Process. Powerful Results.', false)
+            ->assertSee('Questions people ask before they start.', false)
+            ->assertSee('Ready to Take Your Business Forward?', false);
+    }
+
+    public function test_industries_page_uses_upgraded_layout(): void
+    {
+        $this->get('/industries')
+            ->assertOk()
+            ->assertSee('Technology for every business.', false)
+            ->assertSee('ind-page-catalog', false)
+            ->assertSee('Built for the way different businesses operate.', false)
+            ->assertSee('Kirana &amp; Grocery Stores', false)
+            ->assertSee('Sample solutions', false)
+            ->assertSee("Don't see your business type?", false)
+            ->assertSee('Simple Process. Powerful Results.', false)
+            ->assertSee('Ready to Take Your Business Forward?', false);
+    }
+
+    public function test_solutions_page_uses_upgraded_layout(): void
+    {
+        $this->get('/solutions')
+            ->assertOk()
+            ->assertSee('Business solutions built for real operations.', false)
+            ->assertSee('sol-page-catalog', false)
+            ->assertSee('sol-page-paths', false)
+            ->assertSee('Explore solutions by business type.', false)
+            ->assertSee('LIVE DEMO', false)
+            ->assertSee('View Demo', false)
+            ->assertSee('Starter → Sell Online → Manage → Automate &amp; Scale', false)
+            ->assertSee('Simple Process. Powerful Results.', false)
+            ->assertSee('Ready to Take Your Business Forward?', false);
     }
 
     public function test_service_page_guides_the_next_step(): void
@@ -232,6 +316,20 @@ class PageRoutesTest extends TestCase
             ->assertDontSee('Phone - available on request', false);
     }
 
+    public function test_contact_page_uses_upgraded_layout_and_details(): void
+    {
+        $this->get('/contact')
+            ->assertOk()
+            ->assertSee('Tell us about your business.', false)
+            ->assertSee('Send your requirement.', false)
+            ->assertSee('cebinovatechnologies@gmail.com', false)
+            ->assertSee('301, Satyam64, opp. Gujarat High Court, Sarkhej - Gandhinagar Hwy, Sola, Ahmedabad, Gujarat 380060', false)
+            ->assertSee('Open in Google Maps', false)
+            ->assertSee('https://maps.app.goo.gl/2W1U72STLQ9ZEme18', false)
+            ->assertSee('Simple Process. Powerful Results.', false)
+            ->assertSee('Ready to Take Your Business Forward?', false);
+    }
+
     public function test_contact_form_preselects_package_enquiry(): void
     {
         $this->get(package_enquiry_url('Regular Marketing', 'Quarterly'))
@@ -254,12 +352,39 @@ class PageRoutesTest extends TestCase
             ->assertSee('Selected plan', false);
     }
 
-    public function test_demos_page_is_sarvix_branded(): void
+    public function test_about_page_uses_upgraded_layout(): void
+    {
+        $this->get('/about')
+            ->assertOk()
+            ->assertSee('Technology built around your business.', false)
+            ->assertSee('about-page-why', false)
+            ->assertSee('Why businesses work with one technology partner.', false)
+            ->assertSee('A connected path from presence to growth.', false)
+            ->assertSee('One Technology Partner for Your Complete Business Journey.', false)
+            ->assertSee('Simple Process. Powerful Results.', false)
+            ->assertSee('Ready to Take Your Business Forward?', false);
+    }
+
+    public function test_demos_page_uses_upgraded_layout(): void
     {
         $this->get('/demos')
             ->assertOk()
-            ->assertSee('See What SARVIX Can Build for Your Business.', false)
-            ->assertSee('SARVIX Kirana &amp; Grocery Solution', false)
+            ->assertSee('See what CEBINOVA can build.', false)
+            ->assertSee('demo-page-catalog', false)
+            ->assertSee('Business solutions built for real businesses.', false)
+            ->assertSee('CEBINOVA Kirana &amp; Grocery Solution', false)
+            ->assertSee('LIVE DEMO', false)
+            ->assertSee('View Demo', false)
+            ->assertSee('Simple Process. Powerful Results.', false)
+            ->assertSee('Ready to Take Your Business Forward?', false);
+    }
+
+    public function test_demos_page_is_cebinova_branded(): void
+    {
+        $this->get('/demos')
+            ->assertOk()
+            ->assertSee('See what CEBINOVA can build.', false)
+            ->assertSee('CEBINOVA Kirana &amp; Grocery Solution', false)
             ->assertSee('LIVE DEMO', false)
             ->assertDontSee('BizPilot', false)
             ->assertDontSee('file:///', false);
@@ -267,7 +392,7 @@ class PageRoutesTest extends TestCase
 
     public function test_pricing_estimate_sidebar_styles_are_sticky(): void
     {
-        $overlay = file_get_contents(public_path('assets/solutions/kirana-pricing/css/sarvix-brand.css'));
+        $overlay = file_get_contents(public_path('assets/solutions/kirana-pricing/css/cebinova-brand.css'));
         $estimate = file_get_contents(public_path('assets/solutions/kirana-pricing/css/estimate-premium.css'));
 
         $this->assertNotFalse($overlay);
@@ -291,12 +416,25 @@ class PageRoutesTest extends TestCase
         );
     }
 
+    public function test_pricing_page_uses_upgraded_layout(): void
+    {
+        $this->get('/pricing')
+            ->assertOk()
+            ->assertSee('Build Your Digital Store', false)
+            ->assertSee('price-page-hero', false)
+            ->assertSee('Know your exact investment.', false)
+            ->assertSee('Live calculator', false)
+            ->assertSee('Open Calculator', false)
+            ->assertSee('id="calculator"', false)
+            ->assertSee('Ready to Take Your Business Forward?', false);
+    }
+
     public function test_pricing_page_keeps_source_pricing_separate_from_marketing(): void
     {
         $this->get('/pricing')
             ->assertOk()
             ->assertSee('Build Your Digital Store', false)
-            ->assertSee('SARVIX Pricing', false)
+            ->assertSee('Pricing', false)
             ->assertSee('Choose website', false)
             ->assertSee('Choose Support Plan', false)
             ->assertSee('Book Free Consultation', false)
@@ -312,14 +450,17 @@ class PageRoutesTest extends TestCase
             ->assertDontSee('BizPilot', false)
             ->assertDontSee('file:///', false)
             ->assertDontSee('Regular Marketing', false)
-            ->assertDontSee('SARVIX Kirana Solution', false);
+            ->assertDontSee('CEBINOVA Kirana Solution', false);
     }
 
     public function test_primary_nav_uses_merged_labels(): void
     {
         $nav = $this->get('/')->assertOk()->getContent();
 
-        $this->assertMatchesRegularExpression('/aria-label="Primary"[\s\S]*Marketing Packages[\s\S]*Pricing[\s\S]*Demos[\s\S]*Contact/', $nav);
+        $this->assertMatchesRegularExpression('/aria-label="Primary"[\s\S]*Home[\s\S]*Services[\s\S]*Solutions[\s\S]*Marketing Packages[\s\S]*nav-link-badge[\s\S]*Popular[\s\S]*Pricing[\s\S]*nav-link-badge[\s\S]*Hot[\s\S]*Demos[\s\S]*About[\s\S]*Contact/', $nav);
+        $this->assertStringContainsString('Business Solutions', $nav);
+        $this->assertStringContainsString('View All Solutions', $nav);
+        $this->assertStringContainsString('nav-mega-item', $nav);
         $this->assertDoesNotMatchRegularExpression('/aria-label="Primary"[\s\S]*class="nav-link[^"]*">\s*Industries\s*</', $nav);
         $this->assertDoesNotMatchRegularExpression('/aria-label="Primary"[\s\S]*class="nav-link[^"]*">\s*Packages\s*</', $nav);
         $this->assertDoesNotMatchRegularExpression('/aria-label="Primary"[\s\S]*class="nav-link[^"]*">\s*Marketing\s*</', $nav);
@@ -331,12 +472,12 @@ class PageRoutesTest extends TestCase
             'solution' => 'Kirana & Grocery',
             'plan' => 'Starter',
             'price' => '₹14,999',
-            'source' => 'SARVIX Kirana Solution',
+            'source' => 'CEBINOVA Kirana Solution',
             'business_type' => 'Kirana & Grocery',
         ]))
             ->assertOk()
             ->assertSee('value="Business Solution"', false)
-            ->assertSee('value="SARVIX Kirana Solution"', false)
+            ->assertSee('value="CEBINOVA Kirana Solution"', false)
             ->assertSee('Kirana &amp; Grocery', false)
             ->assertSee('Starter', false)
             ->assertDontSee('package_category=Regular%20Marketing', false);
@@ -346,7 +487,7 @@ class PageRoutesTest extends TestCase
     {
         $this->get('/demos/kirana')
             ->assertOk()
-            ->assertSee('SARVIX Technologies', false)
+            ->assertSee('CEBINOVA Technologies', false)
             ->assertDontSee('BizPilot', false)
             ->assertDontSee('file:///', false);
     }

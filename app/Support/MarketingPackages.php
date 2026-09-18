@@ -31,7 +31,7 @@ class MarketingPackages
      */
     public static function durations(): array
     {
-        return config('sarvix.marketing.frequencies', ['Monthly', 'Quarterly', 'Half-Yearly', 'Yearly']);
+        return config('cebinova.marketing.frequencies', ['Monthly', 'Quarterly', 'Half-Yearly', 'Yearly']);
     }
 
     public static function isValid(string $category, string $duration): bool
@@ -46,7 +46,7 @@ class MarketingPackages
             return null;
         }
 
-        foreach (config('sarvix.marketing.'.$group.'.plans', []) as $plan) {
+        foreach (config('cebinova.marketing.'.$group.'.plans', []) as $plan) {
             if (($plan['label'] ?? null) === $duration && isset($plan['price'])) {
                 return (int) $plan['price'];
             }
@@ -59,7 +59,7 @@ class MarketingPackages
     {
         $amount = self::priceAmount($category, $duration);
 
-        return $amount !== null ? sarvix_inr($amount) : null;
+        return $amount !== null ? cebinova_inr($amount) : null;
     }
 
     public static function months(?string $duration): int
@@ -126,12 +126,12 @@ class MarketingPackages
             default => '/month',
         };
 
-        $headline = sarvix_inr($price).$period;
+        $headline = cebinova_inr($price).$period;
         $saved = self::savingsVsMonthly($category, $duration);
         $effective = self::effectiveMonthly($category, $duration);
 
         if ($saved && $effective && self::months($duration) > 1) {
-            return $headline.' · Just '.sarvix_inr($effective).'/month · Save '.sarvix_inr($saved);
+            return $headline.' · Just '.cebinova_inr($effective).'/month · Save '.cebinova_inr($saved);
         }
 
         return $headline;
@@ -145,11 +145,11 @@ class MarketingPackages
         $map = [];
 
         foreach (self::categoryKeys() as $label => $key) {
-            foreach (config('sarvix.marketing.'.$key.'.plans', []) as $plan) {
+            foreach (config('cebinova.marketing.'.$key.'.plans', []) as $plan) {
                 if (! isset($plan['label'], $plan['price'])) {
                     continue;
                 }
-                $map[$label][$plan['label']] = sarvix_inr((int) $plan['price']);
+                $map[$label][$plan['label']] = cebinova_inr((int) $plan['price']);
             }
         }
 

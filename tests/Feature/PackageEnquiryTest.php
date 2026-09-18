@@ -26,7 +26,7 @@ class PackageEnquiryTest extends TestCase
             ->assertSee('Yearly', false)
             ->assertSee('₹49,999', false)
             ->assertSee('Selected plan', false)
-            ->assertSee('Thank you for contacting SARVIX Technologies.', false)
+            ->assertSee('Thank you for contacting CEBINOVA Technologies.', false)
             ->assertSee('Our team will review your requirement and get in touch with you shortly.', false);
     }
 
@@ -53,21 +53,21 @@ class PackageEnquiryTest extends TestCase
 
     public function test_general_whatsapp_message_is_prefilled(): void
     {
-        config(['sarvix.contact.whatsapp' => '919876543210']);
+        config(['cebinova.contact.whatsapp' => '919876543210']);
 
         $url = whatsapp_url();
 
         $this->assertStringStartsWith('https://wa.me/919876543210?text=', $url);
-        $this->assertStringContainsString(urlencode("Hi SARVIX,\nI'd like to know more about your technology solutions."), $url);
+        $this->assertStringContainsString(urlencode("Hi CEBINOVA,\nI'd like to know more about your technology solutions."), $url);
     }
 
     public function test_package_whatsapp_message_is_prefilled(): void
     {
-        config(['sarvix.contact.whatsapp' => '919876543210']);
+        config(['cebinova.contact.whatsapp' => '919876543210']);
 
         $url = package_whatsapp_url('Complete Growth', 'Yearly');
 
-        $this->assertStringContainsString(urlencode("Hi SARVIX,\nI'm interested in the Complete Growth – Yearly Plan.\nPlease share more details."), $url);
+        $this->assertStringContainsString(urlencode("Hi CEBINOVA,\nI'm interested in the Complete Growth – Yearly Plan.\nPlease share more details."), $url);
     }
 
     public function test_free_consultation_cta_tracks_source(): void

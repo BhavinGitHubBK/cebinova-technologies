@@ -5,8 +5,8 @@ use App\Support\MarketingPackages;
 if (! function_exists('whatsapp_url')) {
     function whatsapp_url(?string $message = null): string
     {
-        $number = preg_replace('/\D+/', '', (string) config('sarvix.contact.whatsapp'));
-        $text = urlencode($message ?: (string) config('sarvix.contact.whatsapp_message'));
+        $number = preg_replace('/\D+/', '', (string) config('cebinova.contact.whatsapp'));
+        $text = urlencode($message ?: (string) config('cebinova.contact.whatsapp_message'));
 
         if ($number !== '') {
             return "https://wa.me/{$number}?text={$text}";
@@ -19,7 +19,7 @@ if (! function_exists('whatsapp_url')) {
 if (! function_exists('package_whatsapp_message')) {
     function package_whatsapp_message(string $package, string $duration): string
     {
-        $template = (string) config('sarvix.contact.whatsapp_package_message');
+        $template = (string) config('cebinova.contact.whatsapp_package_message');
 
         return strtr($template, [
             '{package}' => $package,
@@ -69,7 +69,7 @@ if (! function_exists('page_whatsapp_url')) {
             return whatsapp_url();
         }
 
-        return whatsapp_url('Hi SARVIX, I want to know about '.$topic.'.');
+        return whatsapp_url('Hi CEBINOVA, I want to know about '.$topic.'.');
     }
 }
 
@@ -83,17 +83,17 @@ if (! function_exists('technology_enquiry_url')) {
     }
 }
 
-if (! function_exists('sarvix_phone')) {
-    function sarvix_phone(): ?string
+if (! function_exists('cebinova_phone')) {
+    function cebinova_phone(): ?string
     {
-        $phone = trim((string) config('sarvix.contact.phone'));
+        $phone = trim((string) config('cebinova.contact.phone'));
 
         return $phone !== '' ? $phone : null;
     }
 }
 
-if (! function_exists('sarvix_inr')) {
-    function sarvix_inr(int|string $amount): string
+if (! function_exists('cebinova_inr')) {
+    function cebinova_inr(int|string $amount): string
     {
         return '₹'.number_format((int) $amount, 0, '.', ',');
     }
@@ -135,7 +135,7 @@ if (! function_exists('solution_enquiry_url')) {
         return route('contact', array_filter([
             'service' => $context['service'] ?? 'Business Solution',
             'business_type' => $context['business_type'] ?? null,
-            'source' => $context['source'] ?? 'SARVIX Solutions',
+            'source' => $context['source'] ?? 'CEBINOVA Solutions',
             'solution' => $solution,
             'plan' => $plan,
             'price' => $price,
