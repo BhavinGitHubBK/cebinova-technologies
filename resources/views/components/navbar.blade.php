@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 ﻿@php
+=======
+@php
+>>>>>>> Stashed changes
     $solutionGroups = config('cebinova.nav_solutions');
     $businessIcons = [
         'kirana' => 'bag',
@@ -40,7 +44,11 @@
                                         @foreach ($solutionGroups['business'] as $child)
                                             <a href="{{ nav_solution_href($child) }}" class="nav-mega-item" role="menuitem">
                                                 <span class="nav-mega-icon" aria-hidden="true">
+<<<<<<< Updated upstream
                                                     <x-mark :name="$businessIcons[$child['slug']] ?? 'layers'" class="h-3.5 w-3.5" />
+=======
+                                                    <x-icon :name="$businessIcons[$child['slug']] ?? 'layers'" class="h-3.5 w-3.5" />
+>>>>>>> Stashed changes
                                                 </span>
                                                 <span class="nav-mega-item-label">{{ $child['label'] }}</span>
                                             </a>
@@ -85,7 +93,11 @@
                 @if (cebinova_phone())
                     <a href="tel:{{ preg_replace('/\s+/', '', cebinova_phone()) }}" class="site-nav-phone">
                         <span class="site-nav-phone-icon" aria-hidden="true">
+<<<<<<< Updated upstream
                             <x-mark name="phone" class="h-3.5 w-3.5" />
+=======
+                            <x-icon name="phone" class="h-3.5 w-3.5" />
+>>>>>>> Stashed changes
                         </span>
                         <span class="site-nav-phone-copy">
                             <span class="site-nav-phone-label">Call us</span>
@@ -100,7 +112,11 @@
             </div>
 
             <button type="button" id="menu-open" class="menu-toggle" aria-label="Open menu" aria-controls="mobile-menu" aria-expanded="false">
+<<<<<<< Updated upstream
                 <x-mark name="menu" class="h-5 w-5" />
+=======
+                <x-icon name="menu" class="h-5 w-5" />
+>>>>>>> Stashed changes
                 <span class="menu-toggle-label">Menu</span>
             </button>
         </div>
@@ -113,7 +129,11 @@
     <div class="mobile-menu-top">
         <x-cebinova-logo variant="compact" class="min-w-0" />
         <button type="button" id="menu-close" class="mobile-menu-close" aria-label="Close menu">
+<<<<<<< Updated upstream
             <x-mark name="close" class="h-5 w-5" />
+=======
+            <x-icon name="close" class="h-5 w-5" />
+>>>>>>> Stashed changes
         </button>
     </div>
     <nav class="mobile-menu-nav" aria-label="Mobile">
@@ -152,7 +172,11 @@
     <div class="mobile-menu-actions">
         <x-button href="{{ consultation_url() }}" class="w-full">Get Free Consultation</x-button>
         <x-button href="{{ whatsapp_url() }}" variant="whatsapp" class="w-full">
+<<<<<<< Updated upstream
             <x-mark name="whatsapp" class="h-4 w-4 text-[#25D366]" />
+=======
+            <x-icon name="whatsapp" class="h-4 w-4 text-[#25D366]" />
+>>>>>>> Stashed changes
             Talk to CEBINOVA
         </x-button>
     </div>

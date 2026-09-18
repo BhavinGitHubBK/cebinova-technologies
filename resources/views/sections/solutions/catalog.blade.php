@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 ﻿@php
+=======
+@php
+>>>>>>> Stashed changes
     $icons = [
         'kirana' => 'bag',
         'retail' => 'cart',
@@ -45,7 +49,11 @@
                 >
                     <div class="sol-page-card-top">
                         <span class="sol-page-icon">
+<<<<<<< Updated upstream
                             <x-mark :name="$icons[$item['slug']] ?? 'layers'" class="h-5 w-5" />
+=======
+                            <x-icon :name="$icons[$item['slug']] ?? 'layers'" class="h-5 w-5" />
+>>>>>>> Stashed changes
                         </span>
                         <span class="sol-page-flag{{ $flagClass }}">{{ $item['label'] }}</span>
                     </div>

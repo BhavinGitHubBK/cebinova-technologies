@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 ﻿@php
+=======
+@php
+>>>>>>> Stashed changes
     $steps = [
         ['icon' => 'globe', 'step' => '01', 'title' => 'Presence', 'text' => 'Website, catalogue and a clear way for customers to enquire.'],
         ['icon' => 'store', 'step' => '02', 'title' => 'Sell & manage', 'text' => 'eCommerce, software and operations tools when the process needs them.'],
@@ -23,7 +27,11 @@
             @foreach ($steps as $item)
                 <article class="svc-page-path-card">
                     <span class="svc-page-path-icon">
+<<<<<<< Updated upstream
                         <x-mark :name="$item['icon']" class="h-4 w-4" />
+=======
+                        <x-icon :name="$item['icon']" class="h-4 w-4" />
+>>>>>>> Stashed changes
                     </span>
                     <span class="svc-page-path-step">{{ $item['step'] }}</span>
                     <h3 class="svc-page-path-title">{{ $item['title'] }}</h3>

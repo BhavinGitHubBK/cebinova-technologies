@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 ﻿@php
+=======
+@php
+>>>>>>> Stashed changes
     $icons = [
         'kirana' => 'bag',
         'retail' => 'cart',
@@ -57,7 +61,11 @@
                     <div class="demo-page-body">
                         <div class="demo-page-card-top">
                             <span class="demo-page-icon">
+<<<<<<< Updated upstream
                                 <x-mark :name="$icons[$item['slug']] ?? 'layers'" class="h-5 w-5" />
+=======
+                                <x-icon :name="$icons[$item['slug']] ?? 'layers'" class="h-5 w-5" />
+>>>>>>> Stashed changes
                             </span>
                             <p class="demo-page-industry">{{ $item['industry'] }}</p>
                         </div>

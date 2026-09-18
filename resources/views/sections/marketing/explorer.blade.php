@@ -1,7 +1,13 @@
 @php
+<<<<<<< Updated upstream
     $regular = \App\Support\MarketingPackages::packageArray('regular') ?? [];
     $festival = \App\Support\MarketingPackages::packageArray('festival') ?? [];
     $growth = \App\Support\MarketingPackages::packageArray('growth') ?? [];
+=======
+    $regular = config('cebinova.marketing.regular');
+    $festival = config('cebinova.marketing.festival');
+    $growth = config('cebinova.marketing.growth');
+>>>>>>> Stashed changes
 @endphp
 
 <section id="marketing-plans" class="mkt-page-explorer scroll-mt-28 section-pad-lg" aria-label="Marketing plan prices">

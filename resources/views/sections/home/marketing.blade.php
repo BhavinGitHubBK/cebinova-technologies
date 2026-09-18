@@ -1,25 +1,41 @@
+<<<<<<< Updated upstream
 ﻿@php
+=======
+@php
+>>>>>>> Stashed changes
     $plans = [
         [
             'key' => 'regular',
             'cat' => 'Always on',
             'icon' => 'megaphone',
             'href' => route('marketing-packages').'#regular-marketing',
+<<<<<<< Updated upstream
             'config' => \App\Support\MarketingPackages::packageArray('regular') ?? [],
+=======
+            'config' => config('cebinova.marketing.regular'),
+>>>>>>> Stashed changes
         ],
         [
             'key' => 'festival',
             'cat' => 'Seasonal',
             'icon' => 'clock',
             'href' => route('marketing-packages').'#festival-marketing',
+<<<<<<< Updated upstream
             'config' => \App\Support\MarketingPackages::packageArray('festival') ?? [],
+=======
+            'config' => config('cebinova.marketing.festival'),
+>>>>>>> Stashed changes
         ],
         [
             'key' => 'growth',
             'cat' => 'Combined',
             'icon' => 'trend',
             'href' => route('marketing-packages').'#complete-growth',
+<<<<<<< Updated upstream
             'config' => \App\Support\MarketingPackages::packageArray('growth') ?? [],
+=======
+            'config' => config('cebinova.marketing.growth'),
+>>>>>>> Stashed changes
             'featured' => true,
         ],
     ];
@@ -43,7 +59,11 @@
                 <a href="{{ $plan['href'] }}" class="home-mkt-card{{ ! empty($plan['featured']) ? ' is-featured' : '' }}">
                     <span class="home-mkt-top">
                         <span class="home-mkt-icon">
+<<<<<<< Updated upstream
                             <x-mark :name="$plan['icon']" class="h-4 w-4" />
+=======
+                            <x-icon :name="$plan['icon']" class="h-4 w-4" />
+>>>>>>> Stashed changes
                         </span>
                         @if (! empty($plan['featured']))
                             <span class="home-mkt-flag">Recommended</span>

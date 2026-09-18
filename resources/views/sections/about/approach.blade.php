@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 ﻿@php
+=======
+@php
+>>>>>>> Stashed changes
     $items = [
         ['title' => 'Business first', 'text' => 'We start with how you sell, serve customers and run operations today.', 'icon' => 'briefcase'],
         ['title' => 'Right-sized technology', 'text' => 'No unnecessary features. Start with what you need now, then scale.', 'icon' => 'layers'],
@@ -21,7 +25,11 @@
             @foreach ($items as $item)
                 <article class="about-page-card">
                     <span class="about-page-icon">
+<<<<<<< Updated upstream
                         <x-mark :name="$item['icon']" class="h-5 w-5" />
+=======
+                        <x-icon :name="$item['icon']" class="h-5 w-5" />
+>>>>>>> Stashed changes
                     </span>
                     <h3 class="about-page-card-title">{{ $item['title'] }}</h3>
                     <p class="about-page-card-text">{{ $item['text'] }}</p>

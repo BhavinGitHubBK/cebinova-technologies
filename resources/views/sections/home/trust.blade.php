@@ -71,7 +71,11 @@
                 <li class="trust-rail-cell{{ ! empty($item['tone']) ? ' is-'.$item['tone'] : '' }}">
                     <a href="{{ $item['href'] }}" class="trust-rail-item">
                         <span class="trust-rail-icon">
+<<<<<<< Updated upstream
                             <x-mark :name="$item['icon']" class="h-4 w-4" />
+=======
+                            <x-icon :name="$item['icon']" class="h-4 w-4" />
+>>>>>>> Stashed changes
                         </span>
                         <span class="trust-rail-copy">
                             @if (! empty($item['badge']))

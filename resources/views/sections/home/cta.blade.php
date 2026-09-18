@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 ﻿<section class="home-cta section-pad-lg" aria-label="Next step">
+=======
+<section class="home-cta section-pad-lg" aria-label="Next step">
+>>>>>>> Stashed changes
     <div class="pointer-events-none absolute inset-0 bg-dots-light"></div>
     <svg class="home-cta-lines" viewBox="0 0 1200 360" aria-hidden="true">
         <g fill="none" stroke="#FBB50B" stroke-opacity="0.28" stroke-width="1.1">
@@ -51,20 +55,32 @@
                         <svg class="arrow-shift h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></svg>
                     </x-button>
                     <x-button href="{{ whatsapp_url() }}" variant="light" size="lg">
+<<<<<<< Updated upstream
                         <x-mark name="whatsapp" class="h-4 w-4" />
+=======
+                        <x-icon name="whatsapp" class="h-4 w-4" />
+>>>>>>> Stashed changes
                         Talk to CEBINOVA
                     </x-button>
                 </p>
                 <ul class="home-cta-contacts">
                     <li>
                         <a href="tel:{{ preg_replace('/\s+/', '', (string) config('cebinova.contact.phone')) }}">
+<<<<<<< Updated upstream
                             <x-mark name="phone" class="h-3.5 w-3.5" />
+=======
+                            <x-icon name="phone" class="h-3.5 w-3.5" />
+>>>>>>> Stashed changes
                             {{ config('cebinova.contact.phone') }}
                         </a>
                     </li>
                     <li>
                         <a href="mailto:{{ config('cebinova.contact.email') }}">
+<<<<<<< Updated upstream
                             <x-mark name="mail" class="h-3.5 w-3.5" />
+=======
+                            <x-icon name="mail" class="h-3.5 w-3.5" />
+>>>>>>> Stashed changes
                             {{ config('cebinova.contact.email') }}
                         </a>
                     </li>

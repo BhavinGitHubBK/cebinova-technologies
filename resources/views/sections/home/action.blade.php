@@ -37,7 +37,11 @@
                         <span class="home-action-node" aria-hidden="true"></span>
                         <div class="home-action-step">
                             <span class="home-action-icon">
+<<<<<<< Updated upstream
                                 <x-mark :name="$step['icon']" class="h-4 w-4" />
+=======
+                                <x-icon :name="$step['icon']" class="h-4 w-4" />
+>>>>>>> Stashed changes
                             </span>
                             <span class="home-action-cat">{{ $step['cat'] }}</span>
                             <h3 class="home-action-title">{{ $step['label'] }}</h3>
@@ -59,7 +63,11 @@
                 @foreach ($signals as $index => $signal)
                     <li class="js-signal-card home-action-signal" style="animation-delay: {{ $index * 0.55 }}s">
                         <span class="home-action-signal-icon" aria-hidden="true">
+<<<<<<< Updated upstream
                             <x-mark :name="$signal['icon']" class="h-3.5 w-3.5" />
+=======
+                            <x-icon :name="$signal['icon']" class="h-3.5 w-3.5" />
+>>>>>>> Stashed changes
                         </span>
                         {{ $signal['label'] }}
                     </li>

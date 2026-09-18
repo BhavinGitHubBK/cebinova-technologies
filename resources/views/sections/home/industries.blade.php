@@ -28,6 +28,7 @@
                 @if ($industry)
                     <a href="{{ route('industries') }}#{{ $industry['slug'] }}" class="home-ind-card">
                         <span class="home-ind-icon">
+<<<<<<< Updated upstream
                             <x-mark :name="$icons[$industry['slug']] ?? 'globe'" class="h-4 w-4" />
                         </span>
                         <span class="home-ind-copy">
@@ -37,6 +38,17 @@
                         <span class="home-ind-arrow" aria-hidden="true">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></svg>
                         </span>
+=======
+                            <x-icon :name="$icons[$industry['slug']] ?? 'globe'" class="h-4 w-4" />
+                        </span>
+                        <span class="home-ind-copy">
+                            <h3 class="home-ind-title">{{ $item['label'] }}</h3>
+                            <p class="home-ind-note">{{ $industry['need'] }}</p>
+                        </span>
+                        <span class="home-ind-arrow" aria-hidden="true">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></svg>
+                        </span>
+>>>>>>> Stashed changes
                     </a>
                 @endif
             @endforeach

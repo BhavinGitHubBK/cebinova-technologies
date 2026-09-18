@@ -46,7 +46,11 @@
                     <li>
                         <a href="{{ $item['href'] }}" class="hero-cap{{ ! empty($item['accent']) ? ' is-accent' : '' }}" data-hero-cap>
                             <span class="hero-cap-icon-wrap">
+<<<<<<< Updated upstream
                                 <x-mark :name="$item['icon']" class="hero-cap-icon" />
+=======
+                                <x-icon :name="$item['icon']" class="hero-cap-icon" />
+>>>>>>> Stashed changes
                             </span>
                             <span>{{ $item['label'] }}</span>
                         </a>

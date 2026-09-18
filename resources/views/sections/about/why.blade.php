@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 ﻿@php
+=======
+@php
+>>>>>>> Stashed changes
     $whyIcons = ['nodes', 'layers', 'briefcase', 'trend', 'check', 'shield'];
 @endphp
 
@@ -17,7 +21,11 @@
             @foreach (config('cebinova.why') as $index => $item)
                 <article class="about-page-card">
                     <span class="about-page-icon">
+<<<<<<< Updated upstream
                         <x-mark :name="$whyIcons[$index] ?? 'check'" class="h-5 w-5" />
+=======
+                        <x-icon :name="$whyIcons[$index] ?? 'check'" class="h-5 w-5" />
+>>>>>>> Stashed changes
                     </span>
                     <h3 class="about-page-card-title">{{ $item['title'] }}</h3>
                     <p class="about-page-card-text">{{ $item['text'] }}</p>

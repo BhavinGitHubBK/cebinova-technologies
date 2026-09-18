@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 ﻿@php
+=======
+@php
+>>>>>>> Stashed changes
     $icons = ['chat', 'layers', 'cpu', 'rocket', 'trend'];
     $cats = ['Discover', 'Blueprint', 'Deliver', 'Go live', 'Partner'];
 @endphp
@@ -26,7 +30,11 @@
                         <span class="home-proc-node" aria-hidden="true"></span>
                         <article class="home-proc-card">
                             <span class="home-proc-icon">
+<<<<<<< Updated upstream
                                 <x-mark :name="$icons[$index] ?? 'layers'" class="h-4 w-4" />
+=======
+                                <x-icon :name="$icons[$index] ?? 'layers'" class="h-4 w-4" />
+>>>>>>> Stashed changes
                             </span>
                             <span class="home-proc-copy">
                                 <span class="home-proc-cat">{{ $cats[$index] ?? 'Step' }}</span>

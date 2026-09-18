@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 ﻿<footer class="site-footer" aria-label="Site footer">
+=======
+<footer class="site-footer" aria-label="Site footer">
+>>>>>>> Stashed changes
     <div class="site-footer-top">
         <div class="container-wide site-footer-grid">
             <div class="site-footer-brand">
@@ -50,33 +54,53 @@
                     @if (cebinova_phone())
                         <li>
                             <a href="tel:{{ preg_replace('/\s+/', '', cebinova_phone()) }}">
+<<<<<<< Updated upstream
                                 <span class="site-footer-icon" aria-hidden="true"><x-mark name="phone" class="h-3.5 w-3.5" /></span>
+=======
+                                <span class="site-footer-icon" aria-hidden="true"><x-icon name="phone" class="h-3.5 w-3.5" /></span>
+>>>>>>> Stashed changes
                                 <span>{{ cebinova_phone() }}</span>
                             </a>
                         </li>
                     @else
                         <li>
                             <span class="site-footer-static">
+<<<<<<< Updated upstream
                                 <span class="site-footer-icon" aria-hidden="true"><x-mark name="phone" class="h-3.5 w-3.5" /></span>
+=======
+                                <span class="site-footer-icon" aria-hidden="true"><x-icon name="phone" class="h-3.5 w-3.5" /></span>
+>>>>>>> Stashed changes
                                 <span>Phone - available on request</span>
                             </span>
                         </li>
                     @endif
                     <li>
                         <a href="mailto:{{ config('cebinova.contact.email') }}">
+<<<<<<< Updated upstream
                             <span class="site-footer-icon" aria-hidden="true"><x-mark name="mail" class="h-3.5 w-3.5" /></span>
+=======
+                            <span class="site-footer-icon" aria-hidden="true"><x-icon name="mail" class="h-3.5 w-3.5" /></span>
+>>>>>>> Stashed changes
                             <span>{{ config('cebinova.contact.email') }}</span>
                         </a>
                     </li>
                     <li>
                         <a href="{{ whatsapp_url() }}" @if (filled(config('cebinova.contact.whatsapp'))) target="_blank" rel="noopener noreferrer" @endif>
+<<<<<<< Updated upstream
                             <span class="site-footer-icon" aria-hidden="true"><x-mark name="whatsapp" class="h-3.5 w-3.5" /></span>
+=======
+                            <span class="site-footer-icon" aria-hidden="true"><x-icon name="whatsapp" class="h-3.5 w-3.5" /></span>
+>>>>>>> Stashed changes
                             <span>WhatsApp</span>
                         </a>
                     </li>
                     <li>
                         <span class="site-footer-static">
+<<<<<<< Updated upstream
                             <span class="site-footer-icon" aria-hidden="true"><x-mark name="pin" class="h-3.5 w-3.5" /></span>
+=======
+                            <span class="site-footer-icon" aria-hidden="true"><x-icon name="pin" class="h-3.5 w-3.5" /></span>
+>>>>>>> Stashed changes
                             <span>{{ config('cebinova.contact.address') }}</span>
                         </span>
                     </li>
@@ -89,7 +113,11 @@
                 <div class="site-footer-social">
                     @foreach (['linkedin' => 'linkedin', 'instagram' => 'instagram', 'facebook' => 'facebook'] as $network => $icon)
                         <a href="{{ config('cebinova.contact.social.'.$network) }}" class="site-footer-social-link" aria-label="{{ ucfirst($network) }}">
+<<<<<<< Updated upstream
                             <x-mark :name="$icon" class="h-4 w-4" />
+=======
+                            <x-icon :name="$icon" class="h-4 w-4" />
+>>>>>>> Stashed changes
                         </a>
                     @endforeach
                 </div>

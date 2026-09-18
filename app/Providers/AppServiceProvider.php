@@ -18,8 +18,11 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+<<<<<<< Updated upstream
         SiteSetting::applyToConfig();
 
+=======
+>>>>>>> Stashed changes
         View::share('company', config('cebinova'));
 
         RateLimiter::for('contact', function (Request $request) {

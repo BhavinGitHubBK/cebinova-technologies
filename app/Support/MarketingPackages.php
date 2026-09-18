@@ -39,6 +39,7 @@ class MarketingPackages
      */
     public static function durations(): array
     {
+<<<<<<< Updated upstream
         if (! self::tablesReady()) {
             return config('cebinova.marketing.frequencies', ['Monthly', 'Quarterly', 'Half-Yearly', 'Yearly']);
         }
@@ -69,6 +70,9 @@ class MarketingPackages
         return $ordered !== []
             ? $ordered
             : config('cebinova.marketing.frequencies', ['Monthly', 'Quarterly', 'Half-Yearly', 'Yearly']);
+=======
+        return config('cebinova.marketing.frequencies', ['Monthly', 'Quarterly', 'Half-Yearly', 'Yearly']);
+>>>>>>> Stashed changes
     }
 
     public static function isValid(string $category, string $duration): bool
@@ -82,8 +86,15 @@ class MarketingPackages
             return null;
         }
 
+<<<<<<< Updated upstream
         if (! self::tablesReady()) {
             return self::configPriceAmount($category, $duration);
+=======
+        foreach (config('cebinova.marketing.'.$group.'.plans', []) as $plan) {
+            if (($plan['label'] ?? null) === $duration && isset($plan['price'])) {
+                return (int) $plan['price'];
+            }
+>>>>>>> Stashed changes
         }
 
         $plan = MarketingPlan::query()
@@ -189,7 +200,11 @@ class MarketingPackages
         $map = [];
 
         foreach (self::categoryKeys() as $label => $key) {
+<<<<<<< Updated upstream
             foreach (self::packageArray($key)['plans'] ?? [] as $plan) {
+=======
+            foreach (config('cebinova.marketing.'.$key.'.plans', []) as $plan) {
+>>>>>>> Stashed changes
                 if (! isset($plan['label'], $plan['price'])) {
                     continue;
                 }
