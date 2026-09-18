@@ -1,36 +1,44 @@
-<section class="section-pad-lg bg-paper">
+<section class="home-xform section-pad-lg" aria-label="Business transformation">
     <div class="container-wide">
-        <div data-reveal>
-            <x-section-heading eyebrow="Business transformation" title="From Local Business to Digital Business.">
-                SARVIX helps businesses grow step by step instead of forcing complicated technology from day one.
-            </x-section-heading>
+        <div class="home-xform-head" data-reveal>
+            <p class="home-xform-kicker">
+                <span class="home-xform-dot" aria-hidden="true"></span>
+                Business transformation
+            </p>
+            <h2 class="section-title">From Local Business to Digital Business.</h2>
+            <p class="section-support">
+                CEBINOVA helps businesses grow step by step instead of forcing complicated technology from day one.
+            </p>
         </div>
 
-        <div class="mt-12 grid items-stretch gap-5 lg:grid-cols-12" data-stagger>
-            <article class="card-surface p-7 sm:p-8 lg:col-span-4">
-                <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-navy/40">Traditional Business</p>
-                <ul class="mt-6 space-y-3.5 text-[15.5px] text-muted">
+        <div class="home-xform-grid" data-stagger>
+            <article class="home-xform-card is-from">
+                <p class="home-xform-cat">Traditional business</p>
+                <h3 class="home-xform-title">How work looks today</h3>
+                <ul class="home-xform-list">
                     @foreach (['Manual enquiries', 'Offline-only sales', 'Spreadsheet tracking', 'Repeated tasks', 'Limited visibility'] as $item)
-                        <li class="flex items-start gap-3">
-                            <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-navy/25"></span>{{ $item }}
-                        </li>
+                        <li>{{ $item }}</li>
                     @endforeach
                 </ul>
             </article>
 
-            <article class="flex flex-col justify-center rounded-[1.2rem] border border-gold/40 bg-navy px-7 py-10 text-center text-white lg:col-span-4">
-                <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-gold">SARVIX pathway</p>
-                <p class="mt-4 text-2xl font-extrabold tracking-tight">Start → Digital → Grow</p>
-                <p class="mt-4 text-[15px] leading-relaxed text-white/65">A staged move from local operations to connected systems, at the pace your team can use.</p>
+            <article class="home-xform-path">
+                <p class="home-xform-cat is-gold">CEBINOVA pathway</p>
+                <p class="home-xform-path-title">Start → Digital → Grow</p>
+                <ol class="home-xform-nodes" aria-hidden="true">
+                    <li>Start</li>
+                    <li>Digital</li>
+                    <li>Grow</li>
+                </ol>
+                <p class="home-xform-path-note">A staged move from local operations to connected systems, at the pace your team can use.</p>
             </article>
 
-            <article class="card-surface p-7 sm:p-8 lg:col-span-4">
-                <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-gold-dark">Digital Business</p>
-                <ul class="mt-6 space-y-3.5 text-[15.5px] text-navy/80">
+            <article class="home-xform-card is-to">
+                <p class="home-xform-cat is-gold">Digital business</p>
+                <h3 class="home-xform-title">Where the business can go</h3>
+                <ul class="home-xform-list is-gold">
                     @foreach (['Online presence', 'eCommerce', 'Central software', 'Automated workflow', 'Marketing & insights'] as $item)
-                        <li class="flex items-start gap-3">
-                            <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-gold"></span>{{ $item }}
-                        </li>
+                        <li>{{ $item }}</li>
                     @endforeach
                 </ul>
             </article>

@@ -1,17 +1,24 @@
-<section class="section-pad section-soft" id="marketing-trust">
+<section class="mkt-page-trust section-pad-lg bg-white" id="marketing-trust">
     <div class="container-wide">
-        <x-section-heading eyebrow="Trust" title="Clear price. Clear work. Clear next step.">
-            GST and ad spend are never hidden inside the package. You always know what is included.
-        </x-section-heading>
-        <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            @foreach (config('sarvix.marketing.trust') as $item)
-                <article class="rounded-[1.15rem] border border-line bg-white p-6">
-                    <h3 class="text-lg font-extrabold text-navy">{{ $item['title'] }}</h3>
-                    <p class="mt-2 text-[14.5px] leading-relaxed text-muted">{{ $item['text'] }}</p>
+        <div class="mkt-page-head" data-reveal>
+            <p class="mkt-page-kicker">
+                <span class="mkt-page-dot" aria-hidden="true"></span>
+                Trust
+            </p>
+            <h2 class="section-title">Clear price. Clear work. Clear next step.</h2>
+            <p class="section-support">
+                GST and ad spend are never hidden inside the package. You always know what is included.
+            </p>
+        </div>
+        <div class="mkt-page-trust-grid" data-stagger>
+            @foreach (config('cebinova.marketing.trust') as $item)
+                <article class="mkt-page-trust-card">
+                    <h3 class="mkt-page-trust-title">{{ $item['title'] }}</h3>
+                    <p class="mkt-page-trust-text">{{ $item['text'] }}</p>
                 </article>
             @endforeach
         </div>
-        <div class="mt-8 flex flex-col gap-3 sm:flex-row">
+        <div class="mkt-page-trust-actions">
             <x-button href="{{ consultation_url('Digital Marketing') }}">Book a free consultation</x-button>
             <x-button href="{{ whatsapp_url() }}" variant="outline">Ask on WhatsApp</x-button>
         </div>

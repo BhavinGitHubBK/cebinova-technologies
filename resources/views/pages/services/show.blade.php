@@ -1,5 +1,5 @@
 @php
-    $guide = config('sarvix.service_guides.'.$service['slug'], []);
+    $guide = config('cebinova.service_guides.'.$service['slug'], []);
     $nextHref = page_next_url($guide, $service['title']);
     $nextLabel = $guide['next_label'] ?? 'Get Free Consultation';
     $whatsapp = page_whatsapp_url($service['title']);
@@ -7,13 +7,13 @@
     $seen = collect($serviceFaqs)->pluck('q')->all();
     $faqs = array_values(array_merge(
         $serviceFaqs,
-        collect(config('sarvix.page.faq', []))->reject(fn ($item) => in_array($item['q'], $seen, true))->all()
+        collect(config('cebinova.page.faq', []))->reject(fn ($item) => in_array($item['q'], $seen, true))->all()
     ));
 @endphp
 
 @extends('layouts.app')
 
-@section('title', $service['title'].' | SARVIX Technologies')
+@section('title', $service['title'].' | CEBINOVA Technologies')
 @section('description', $service['short'])
 
 @section('content')
@@ -77,7 +77,7 @@
                 Start with this page. Add the next service when the business is ready.
             </x-section-heading>
             <div class="mt-8 grid gap-5 md:grid-cols-3">
-                @foreach (collect(config('sarvix.services'))->reject(fn ($item) => $item['slug'] === $service['slug'])->take(3) as $related)
+                @foreach (collect(config('cebinova.services'))->reject(fn ($item) => $item['slug'] === $service['slug'])->take(3) as $related)
                     <x-service-card
                         :href="route('services.show', $related['slug'])"
                         :icon="$related['icon']"

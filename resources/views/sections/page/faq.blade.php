@@ -2,7 +2,7 @@
     $topic = is_string($topic ?? null) ? $topic : null;
     $items = (isset($faqItems) && is_array($faqItems) && isset($faqItems[0]['q']))
         ? $faqItems
-        : config('sarvix.page.faq', []);
+        : config('cebinova.page.faq', []);
 @endphp
 
 @if (count($items))
@@ -11,7 +11,7 @@
             <x-section-heading :wrap="true" eyebrow="Simple answers" title="Questions people ask before they start.">
                 Short answers. No jargon.
             </x-section-heading>
-            <div class="mt-10 divide-y divide-line overflow-hidden rounded-[1.2rem] border border-line bg-white">
+            <div class="mt-10 divide-y divide-line overflow-hidden rounded-none border border-line bg-white">
                 @foreach ($items as $item)
                     <details class="group">
                         <summary class="flex cursor-pointer list-none items-center justify-between gap-6 px-5 py-5 text-[16px] font-extrabold leading-snug text-navy marker:content-none hover:bg-mist sm:px-8 [&::-webkit-details-marker]:hidden">

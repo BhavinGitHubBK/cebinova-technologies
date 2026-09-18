@@ -3,4 +3,4 @@
     'tone' => 'light',
 ])
 
-<x-sarvix-logo :variant="$variant" :tone="$tone" {{ $attributes }} />
+<x-cebinova-logo :variant="$variant" :tone="$tone" {{ $attributes }} />

@@ -1,13 +1,20 @@
-<section class="section-pad section-soft">
+<section class="mkt-page-addons section-pad-lg bg-white">
     <div class="container-wide">
-        <x-section-heading eyebrow="Optional add-ons" title="Not included - add only if needed.">
-            Marketing plans cover design and content. These extras are quoted separately.
-        </x-section-heading>
-        <ul class="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-            @foreach (config('sarvix.marketing.addons') as $item)
-                <li class="rounded-xl border border-line bg-white px-4 py-4 text-[15px] font-medium text-navy">{{ $item }}</li>
+        <div class="mkt-page-head" data-reveal>
+            <p class="mkt-page-kicker">
+                <span class="mkt-page-dot" aria-hidden="true"></span>
+                Optional add-ons
+            </p>
+            <h2 class="section-title">Not included - add only if needed.</h2>
+            <p class="section-support">
+                Marketing plans cover design and content. These extras are quoted separately.
+            </p>
+        </div>
+        <ul class="mkt-page-addons-grid" data-stagger>
+            @foreach (config('cebinova.marketing.addons') as $item)
+                <li class="mkt-page-addon-chip">{{ $item }}</li>
             @endforeach
         </ul>
-        <p class="mt-8 text-sm text-muted">Start with the plan. Add extras later only if they help your business.</p>
+        <p class="mkt-page-addons-note">Start with the plan. Add extras later only if they help your business.</p>
     </div>
 </section>

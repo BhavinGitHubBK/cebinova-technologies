@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
-@section('title', 'Portfolio | SARVIX Technologies')
-@section('description', 'Concept and demo solutions from SARVIX for retail, restaurants, eCommerce, CRM, inventory and AI automation.')
+@section('title', 'Portfolio | CEBINOVA Technologies')
+@section('description', 'Concept and demo solutions from CEBINOVA for retail, restaurants, eCommerce, CRM, inventory and AI automation.')
 
 @section('content')
     <x-page-hero
         :wrap="true"
         eyebrow="Portfolio"
         title="Concept / Demo Solution gallery"
-        text="These examples show how we approach real business problems. They are labelled as demos and are not claimed as live SARVIX client projects."
+        text="These examples show how we approach real business problems. They are labelled as demos and are not claimed as live CEBINOVA client projects."
     >
         @include('sections.page.hero-ctas', [
             'consultHref' => consultation_url(),
@@ -19,7 +19,7 @@
 
     <section class="section-pad section-soft">
         <div class="container-wide grid gap-5 md:grid-cols-2 xl:grid-cols-3" data-stagger>
-            @foreach (config('sarvix.portfolio') as $project)
+            @foreach (config('cebinova.portfolio') as $project)
                 <article id="{{ $project['slug'] }}" class="demo-card lift-card card-surface flex h-full scroll-mt-28 flex-col overflow-hidden">
                     <div class="relative overflow-hidden">
                         <x-demo-preview :type="$project['preview']" />

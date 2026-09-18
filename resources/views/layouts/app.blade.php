@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     @php
-        $pageTitle = trim($__env->yieldContent('title')) ?: config('sarvix.seo.default_title');
-        $pageDescription = trim($__env->yieldContent('description')) ?: config('sarvix.seo.default_description');
+        $pageTitle = trim($__env->yieldContent('title')) ?: config('cebinova.seo.default_title');
+        $pageDescription = trim($__env->yieldContent('description')) ?: config('cebinova.seo.default_description');
         $canonical = trim($__env->yieldContent('canonical')) ?: url()->current();
         $ogImage = asset('images/branding/logo-original.png');
     @endphp
@@ -13,7 +13,7 @@
     <meta name="description" content="{{ $pageDescription }}">
     <link rel="canonical" href="{{ $canonical }}">
     <meta property="og:type" content="website">
-    <meta property="og:site_name" content="SARVIX Technologies">
+    <meta property="og:site_name" content="CEBINOVA Technologies">
     <meta property="og:title" content="{{ $pageTitle }}">
     <meta property="og:description" content="{{ $pageDescription }}">
     <meta property="og:url" content="{{ $canonical }}">
@@ -22,9 +22,10 @@
     <meta name="twitter:title" content="{{ $pageTitle }}">
     <meta name="twitter:description" content="{{ $pageDescription }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
-    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
-    <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}">
+    <link rel="icon" type="image/png" sizes="64x64" href="{{ asset('favicon.png') }}?v=cebinova">
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}?v=cebinova">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}?v=cebinova">
+    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}?v=cebinova">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
@@ -34,11 +35,11 @@
         {!! json_encode([
             '@context' => 'https://schema.org',
             '@type' => 'Organization',
-            'name' => 'SARVIX Technologies',
+            'name' => 'CEBINOVA Technologies',
             'slogan' => 'Technology for Every Business.',
             'url' => url('/'),
             'logo' => asset('images/branding/logo.png'),
-            'email' => config('sarvix.contact.email'),
+            'email' => config('cebinova.contact.email'),
             'address' => [
                 '@type' => 'PostalAddress',
                 'addressLocality' => 'Ahmedabad',

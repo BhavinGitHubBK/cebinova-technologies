@@ -1,48 +1,67 @@
-@php
+﻿@php
     $steps = [
-        ['label' => 'Customer', 'note' => 'Walk-in, call or message'],
-        ['label' => 'Website / WhatsApp', 'note' => 'First digital touch'],
-        ['label' => 'Lead / Order', 'note' => 'Captured in one place'],
-        ['label' => 'CRM / Software', 'note' => 'Team follows through'],
-        ['label' => 'Automation', 'note' => 'Reminders and routing'],
-        ['label' => 'Reports / Growth', 'note' => 'What to do next'],
+        ['label' => 'Customer', 'note' => 'Walk-in, call or message', 'cat' => 'Origin', 'icon' => 'users'],
+        ['label' => 'Website / WhatsApp', 'note' => 'First digital touch', 'cat' => 'Presence', 'icon' => 'globe'],
+        ['label' => 'Lead / Order', 'note' => 'Captured in one place', 'cat' => 'Capture', 'icon' => 'bag'],
+        ['label' => 'CRM / Software', 'note' => 'Team follows through', 'cat' => 'Operations', 'icon' => 'layers'],
+        ['label' => 'Automation', 'note' => 'Reminders and routing', 'cat' => 'Intelligence', 'icon' => 'spark'],
+        ['label' => 'Reports / Growth', 'note' => 'What to do next', 'cat' => 'Growth', 'icon' => 'trend'],
     ];
     $signals = [
-        'New Lead',
-        'Order Received',
-        'Customer Follow-up',
-        'Automation Completed',
+        ['label' => 'New Lead', 'icon' => 'chat'],
+        ['label' => 'Order Received', 'icon' => 'cart'],
+        ['label' => 'Customer Follow-up', 'icon' => 'phone'],
+        ['label' => 'Automation Completed', 'icon' => 'check'],
     ];
 @endphp
 
-<section class="relative overflow-hidden bg-navy section-pad-lg">
+<section class="home-action section-pad-lg" aria-label="How CEBINOVA connects a customer request">
     <div class="pointer-events-none absolute inset-0 bg-dots-light"></div>
     <div class="container-wide relative">
-        <div class="max-w-3xl" data-reveal>
-            <x-section-heading light eyebrow="Technology in Action" title="See How SARVIX Connects Your Business.">
+        <div class="home-action-head" data-reveal>
+            <p class="home-action-kicker">
+                <span class="home-action-dot" aria-hidden="true"></span>
+                Technology in Action
+            </p>
+            <h2 class="section-title text-white">See How CEBINOVA Connects Your Business.</h2>
+            <p class="home-action-support section-support">
                 An illustrative workflow - not live client data - showing how a customer request can move from first contact to follow-up and growth.
-            </x-section-heading>
+            </p>
         </div>
 
-        <ol class="relative mt-12 grid gap-3 lg:grid-cols-6" data-stagger>
-            @foreach ($steps as $index => $step)
-                <li class="relative rounded-2xl border border-white/12 bg-white/[0.05] p-5">
-                    <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-gold">0{{ $index + 1 }}</p>
-                    <h3 class="mt-3 text-[16px] font-extrabold text-white">{{ $step['label'] }}</h3>
-                    <p class="mt-2 text-[13.5px] leading-relaxed text-white/55">{{ $step['note'] }}</p>
-                    @if (! $loop->last)
-                        <span class="mt-4 hidden text-gold/70 lg:block" aria-hidden="true">→</span>
-                    @endif
-                </li>
-            @endforeach
-        </ol>
+        <div class="home-action-wrap">
+            <div class="home-action-line" aria-hidden="true"></div>
+            <ol class="home-action-list" data-stagger>
+                @foreach ($steps as $step)
+                    <li class="home-action-cell">
+                        <span class="home-action-node" aria-hidden="true"></span>
+                        <div class="home-action-step">
+                            <span class="home-action-icon">
+                                <x-mark :name="$step['icon']" class="h-4 w-4" />
+                            </span>
+                            <span class="home-action-cat">{{ $step['cat'] }}</span>
+                            <h3 class="home-action-title">{{ $step['label'] }}</h3>
+                            <p class="home-action-note">{{ $step['note'] }}</p>
+                            @if (! $loop->last)
+                                <span class="home-action-arrow" aria-hidden="true">
+                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></svg>
+                                </span>
+                            @endif
+                        </div>
+                    </li>
+                @endforeach
+            </ol>
+        </div>
 
-        <div class="mt-10">
-            <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-white/35">Illustrative system events</p>
-            <ul class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="home-action-events">
+            <p class="home-action-events-kicker">Illustrative system events</p>
+            <ul class="home-action-signals">
                 @foreach ($signals as $index => $signal)
-                    <li class="js-signal-card rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3 text-[14px] font-semibold text-white/80" style="animation-delay: {{ $index * 0.55 }}s">
-                        <span class="mr-2 inline-block h-1.5 w-1.5 rounded-full bg-gold"></span>{{ $signal }}
+                    <li class="js-signal-card home-action-signal" style="animation-delay: {{ $index * 0.55 }}s">
+                        <span class="home-action-signal-icon" aria-hidden="true">
+                            <x-mark :name="$signal['icon']" class="h-3.5 w-3.5" />
+                        </span>
+                        {{ $signal['label'] }}
                     </li>
                 @endforeach
             </ul>

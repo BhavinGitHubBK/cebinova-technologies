@@ -1,4 +1,4 @@
-@php
+﻿@php
     $labels = ['Go Digital', 'Sell Online', 'Manage', 'Automate', 'Grow'];
     $icons = ['globe', 'cart', 'layers', 'spark', 'trend'];
     $hrefs = [
@@ -9,40 +9,57 @@
         route('services.show', 'digital-growth'),
     ];
     $tones = ['', '', '', 'ai', 'growth'];
+    $cats = ['Presence', 'Commerce', 'Operations', 'Intelligence', 'Growth'];
+    $notes = [
+        'Be findable and clear online.',
+        'Take orders without extra admin.',
+        'Run day-to-day work in one system.',
+        'Cut repetitive follow-ups and tasks.',
+        'Bring in the next set of customers.',
+    ];
 
     $stages = array_merge(
         [[
-            'step' => '00',
             'label' => 'Start',
             'icon' => 'chat',
             'href' => consultation_url(),
             'tone' => 'start',
+            'cat' => 'Brief',
+            'note' => 'Map the need, then pick the first move.',
             'items' => ['Business conversation', 'Current process', 'Clear next step'],
         ]],
-        collect(config('sarvix.journey'))->values()->map(function ($item, $index) use ($labels, $icons, $hrefs, $tones) {
+        collect(config('cebinova.journey'))->values()->map(function ($item, $index) use ($labels, $icons, $hrefs, $tones, $cats, $notes) {
             return [
-                'step' => $item['step'],
                 'label' => $labels[$index] ?? $item['title'],
                 'icon' => $icons[$index] ?? 'layers',
                 'href' => $hrefs[$index] ?? route('about'),
                 'tone' => $tones[$index] ?? '',
+                'cat' => $cats[$index] ?? 'Stage',
+                'note' => $notes[$index] ?? '',
                 'items' => $item['items'],
             ];
         })->all()
     );
 @endphp
 
-<section class="section-pad-lg bg-mist" id="journey">
+<section class="home-about section-pad-lg" id="journey" aria-label="How CEBINOVA works with your business">
     <div class="container-wide">
-        <div class="grid items-end gap-8 lg:grid-cols-12" data-reveal>
-            <div class="lg:col-span-7">
-                <x-section-heading eyebrow="About SARVIX" title="Technology Built Around Your Business.">
-                    SARVIX Technologies provides complete digital and technology solutions designed around real business needs.
-                </x-section-heading>
-            </div>
-            <p class="max-w-xl text-[16px] leading-relaxed text-muted lg:col-span-5">
-                We help businesses build their online presence, sell digitally, streamline operations, automate repetitive work and create scalable systems for future growth. We understand business first, then build the right technology.
+        <div class="home-about-head" data-reveal>
+            <p class="home-about-kicker">
+                <span class="home-about-dot" aria-hidden="true"></span>
+                About CEBINOVA
             </p>
+            <div class="home-about-intro">
+                <div>
+                    <h2 class="section-title">Technology Built Around Your Business.</h2>
+                    <p class="home-about-lead">
+                        CEBINOVA Technologies provides complete digital and technology solutions designed around real business needs.
+                    </p>
+                </div>
+                <p class="home-about-copy">
+                    We help businesses build their online presence, sell digitally, streamline operations, automate repetitive work and create scalable systems for future growth. We understand business first, then build the right technology.
+                </p>
+            </div>
         </div>
 
         <div class="home-journey-wrap">
@@ -50,36 +67,39 @@
                 <span id="journey-progress"></span>
             </div>
             <ol class="home-journey" data-stagger>
-            @foreach ($stages as $item)
-                <li>
-                    <a
-                        href="{{ $item['href'] }}"
-                        class="home-journey-step{{ $item['tone'] ? ' is-'.$item['tone'] : '' }}"
-                        data-journey-node
-                    >
-                        <span class="home-journey-top">
-                            <span class="home-journey-dot">{{ $item['step'] }}</span>
+                @foreach ($stages as $item)
+                    <li class="home-journey-cell{{ $item['tone'] ? ' is-'.$item['tone'] : '' }}" data-journey-node>
+                        <span class="home-journey-node" aria-hidden="true"></span>
+                        <a href="{{ $item['href'] }}" class="home-journey-step">
                             <span class="home-journey-icon">
-                                <x-icon :name="$item['icon']" class="h-4 w-4" />
+                                <x-mark :name="$item['icon']" class="h-4 w-4" />
                             </span>
-                        </span>
-                        <h3 class="home-journey-title">{{ $item['label'] }}</h3>
-                        <ul class="home-journey-items">
-                            @foreach (array_slice($item['items'], 0, 3) as $line)
-                                <li>{{ $line }}</li>
-                            @endforeach
-                        </ul>
-                    </a>
-                </li>
-            @endforeach
+                            <span class="home-journey-copy">
+                                <span class="home-journey-cat">{{ $item['cat'] }}</span>
+                                <h3 class="home-journey-title">{{ $item['label'] }}</h3>
+                                @if ($item['note'] !== '')
+                                    <span class="home-journey-note">{{ $item['note'] }}</span>
+                                @endif
+                                <ul class="home-journey-items">
+                                    @foreach (array_slice($item['items'], 0, 3) as $line)
+                                        <li>{{ $line }}</li>
+                                    @endforeach
+                                </ul>
+                            </span>
+                            <span class="home-journey-arrow" aria-hidden="true">
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></svg>
+                            </span>
+                        </a>
+                    </li>
+                @endforeach
             </ol>
         </div>
 
-        <p class="mt-8 text-center">
-            <a href="{{ route('about') }}" class="trust-rail-link group">
-                Discover SARVIX
+        <p class="home-about-cta">
+            <x-button :href="route('about')" variant="outline" size="sm">
+                Discover CEBINOVA
                 <svg class="arrow-shift h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></svg>
-            </a>
+            </x-button>
         </p>
     </div>
 </section>

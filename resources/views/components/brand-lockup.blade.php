@@ -3,7 +3,7 @@
     'tagline' => true,
 ])
 
-<x-sarvix-logo
+<x-cebinova-logo
     :variant="$tagline ? 'full' : 'compact'"
     :tone="$tone"
     {{ $attributes }}

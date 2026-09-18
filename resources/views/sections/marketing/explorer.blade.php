@@ -1,23 +1,29 @@
 @php
-    $regular = config('sarvix.marketing.regular');
-    $festival = config('sarvix.marketing.festival');
-    $growth = config('sarvix.marketing.growth');
+    $regular = config('cebinova.marketing.regular');
+    $festival = config('cebinova.marketing.festival');
+    $growth = config('cebinova.marketing.growth');
 @endphp
 
-<section id="marketing-plans" class="bg-white pt-12 pb-10 lg:pt-16 lg:pb-12">
+<section id="marketing-plans" class="mkt-page-explorer scroll-mt-28 section-pad-lg" aria-label="Marketing plan prices">
     <div class="container-wide">
-        <div data-reveal>
-            <x-section-heading eyebrow="Prices" title="See the exact price and what you get.">
+        <div class="mkt-page-head" data-reveal>
+            <p class="mkt-page-kicker">
+                <span class="mkt-page-dot" aria-hidden="true"></span>
+                Prices
+            </p>
+            <h2 class="section-title">See the exact price and what you get.</h2>
+            <p class="section-support">
                 Tap a plan. Then pick Monthly, Quarterly, Half-Yearly or Yearly. Yearly costs less every month.
-            </x-section-heading>
+            </p>
         </div>
 
-        <div class="js-pack-explorer mt-10" data-default-cat="regular" data-default-duration="yearly">
-            <div class="grid gap-3 sm:grid-cols-2" role="tablist" aria-label="Marketing package categories">
+        <div class="js-pack-explorer mkt-page-explorer-shell" data-default-cat="regular" data-default-duration="yearly">
+            <div class="mkt-page-cat-grid" role="tablist" aria-label="Marketing package categories">
                 @foreach (['regular' => $regular, 'festival' => $festival] as $key => $category)
                     <button
                         type="button"
-                        class="pack-cat js-pack-cat {{ $key === 'regular' ? 'is-active' : '' }}"
+                        class="pack-cat js-pack-cat scroll-mt-28 {{ $key === 'regular' ? 'is-active' : '' }}"
+                        id="{{ $key }}-marketing"
                         data-cat="{{ $key }}"
                         role="tab"
                         aria-selected="{{ $key === 'regular' ? 'true' : 'false' }}"
@@ -28,25 +34,33 @@
                 @endforeach
             </div>
 
-            <a href="#complete-growth" class="mt-3 flex items-center justify-between gap-4 rounded-xl border border-gold/40 bg-gold/10 px-5 py-4">
-                <span>
-                    <span class="text-[15px] font-extrabold text-navy">{{ $growth['title'] }} <span class="ml-2 inline-flex rounded-full bg-navy px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.12em] text-gold">Most Popular</span></span>
-                    <span class="mt-0.5 block text-[13.5px] leading-snug text-navy/65">{{ $growth['teaser'] }} From {{ sarvix_inr($growth['plans']['monthly']['price']) }} / month - only ₹1,000 more than Regular.</span>
+            <a href="#complete-growth" class="mkt-page-growth-banner">
+                <span class="mkt-page-growth-banner-copy">
+                    <span class="mkt-page-growth-banner-title">
+                        {{ $growth['title'] }}
+                        <span class="mkt-page-growth-banner-badge">Most Popular</span>
+                    </span>
+                    <span class="mkt-page-growth-banner-text">{{ $growth['teaser'] }} From {{ cebinova_inr($growth['plans']['monthly']['price']) }} / month - only ₹1,000 more than Regular.</span>
                 </span>
-                <span class="shrink-0 text-sm font-semibold text-navy">View →</span>
+                <span class="mkt-page-growth-banner-link">View →</span>
             </a>
 
-            <div class="mt-9">
+            <div class="mkt-page-panels">
                 @foreach ([$regular, $festival] as $category)
                     <div class="js-pack-cat-panel {{ $category['key'] === 'regular' ? '' : 'hidden' }}" data-cat="{{ $category['key'] }}" @if ($category['key'] !== 'regular') hidden @endif>
-                        <p class="kicker">{{ $category['title'] }}</p>
-                        <h2 class="text-[1.85rem] font-extrabold leading-tight tracking-tight text-navy sm:text-4xl">{{ $category['heading'] }}</h2>
-                        <p class="mt-3 max-w-3xl text-[17px] leading-relaxed text-muted">{{ $category['subheading'] }}</p>
-                        @if (! empty($category['best_if']))
-                            <p class="mt-2 text-[15px] font-semibold text-navy">{{ $category['best_if'] }}</p>
-                        @endif
+                        <div class="mkt-page-panel-head">
+                            <p class="mkt-page-kicker">
+                                <span class="mkt-page-dot" aria-hidden="true"></span>
+                                {{ $category['title'] }}
+                            </p>
+                            <h3 class="section-title">{{ $category['heading'] }}</h3>
+                            <p class="section-support">{{ $category['subheading'] }}</p>
+                            @if (! empty($category['best_if']))
+                                <p class="mkt-page-best-if">{{ $category['best_if'] }}</p>
+                            @endif
+                        </div>
 
-                        <div class="mt-6 grid grid-cols-2 gap-2.5 md:grid-cols-4" role="tablist" aria-label="{{ $category['title'] }} durations">
+                        <div class="mkt-page-duration-grid" role="tablist" aria-label="{{ $category['title'] }} durations">
                             @foreach ($category['plans'] as $durationKey => $plan)
                                 <button
                                     type="button"
@@ -61,7 +75,7 @@
                                     aria-selected="{{ $durationKey === 'yearly' ? 'true' : 'false' }}"
                                 >
                                     <span class="pack-duration-label">{{ $plan['label'] }}</span>
-                                    <span class="pack-duration-price">{{ sarvix_inr($plan['price']) }}</span>
+                                    <span class="pack-duration-price">{{ cebinova_inr($plan['price']) }}</span>
                                     @if ($plan['badge'])
                                         <span class="pack-duration-badge">{{ $plan['badge'] }}</span>
                                     @endif
@@ -69,59 +83,53 @@
                             @endforeach
                         </div>
 
-                        <div class="mt-6">
+                        <div class="mkt-page-plan-stack">
                             @foreach ($category['plans'] as $durationKey => $plan)
-                                <article class="js-pack-plan card-surface {{ $durationKey === 'yearly' ? '' : 'hidden' }} overflow-hidden" data-cat="{{ $category['key'] }}" data-duration="{{ $durationKey }}" @if ($durationKey !== 'yearly') hidden @endif>
-                                    <div class="grid lg:grid-cols-12">
-                                        <div class="border-b border-line bg-mist px-6 py-7 sm:px-8 lg:col-span-4 lg:border-b-0 lg:border-r">
+                                <article class="js-pack-plan mkt-page-plan-card {{ $durationKey === 'yearly' ? '' : 'hidden' }}" data-cat="{{ $category['key'] }}" data-duration="{{ $durationKey }}" @if ($durationKey !== 'yearly') hidden @endif>
+                                    <div class="mkt-page-plan-grid">
+                                        <div class="mkt-page-plan-pricing">
                                             @if ($plan['badge'])
-                                                <p class="mb-3 inline-flex rounded-full bg-gold px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-navy-deep">{{ $plan['badge'] }}</p>
+                                                <p class="mkt-page-plan-badge">{{ $plan['badge'] }}</p>
                                             @endif
-                                            <h3 class="text-2xl font-extrabold text-navy sm:text-[1.85rem]">{{ $plan['label'] }}</h3>
-                                            <p class="mt-2 text-[15px] font-semibold text-navy/60">Duration: {{ $plan['duration'] }}</p>
+                                            <h4 class="mkt-page-plan-label">{{ $plan['label'] }}</h4>
+                                            <p class="mkt-page-plan-duration">Duration: {{ $plan['duration'] }}</p>
                                             @include('sections.marketing.price-stack', ['service' => $category['service'], 'plan' => $plan, 'tone' => 'light'])
                                             @if ($category['key'] === 'regular' && $durationKey === 'monthly')
-                                                <p class="mt-4 rounded-xl border border-gold/35 bg-gold/10 px-3 py-3 text-[13.5px] font-semibold leading-snug text-navy">Need festivals too? Complete Growth is only ₹1,000 more and includes them.</p>
+                                                <p class="mkt-page-plan-note">Need festivals too? Complete Growth is only ₹1,000 more and includes them.</p>
                                             @endif
-                                            <div class="mt-7 flex flex-col gap-3">
+                                            <div class="mkt-page-plan-actions">
                                                 <x-button href="{{ package_enquiry_url($category['service'], $plan['label']) }}" size="lg" class="w-full">Get This Plan</x-button>
                                                 <x-button href="{{ package_whatsapp_url($category['service'], $plan['label']) }}" variant="outline" size="lg" class="w-full">Ask on WhatsApp</x-button>
                                             </div>
                                         </div>
-                                        <div class="px-6 py-7 sm:px-8 lg:col-span-8">
+                                        <div class="mkt-page-plan-details">
                                             @if (! empty($plan['monthly_pace']))
-                                                <p class="text-xs font-semibold uppercase tracking-[0.16em] text-gold-dark">What you get every month</p>
-                                                <ul class="mt-3 grid gap-2 sm:grid-cols-2">
+                                                <p class="mkt-page-plan-section-label">What you get every month</p>
+                                                <ul class="mkt-page-plan-list mkt-page-plan-list--pace">
                                                     @foreach ($plan['monthly_pace'] as $item)
-                                                        <li class="flex items-start gap-2 text-[15.5px] leading-snug text-navy">
-                                                            <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-gold"></span>
-                                                            <span>{{ $item }}</span>
-                                                        </li>
+                                                        <li>{{ $item }}</li>
                                                     @endforeach
                                                 </ul>
-                                                <p class="mt-5 text-xs font-semibold uppercase tracking-[0.16em] text-navy/45">Full {{ strtolower($plan['label']) }} total</p>
+                                                <p class="mkt-page-plan-section-label mkt-page-plan-section-label--muted">Full {{ strtolower($plan['label']) }} total</p>
                                             @else
-                                                <p class="text-xs font-semibold uppercase tracking-[0.16em] text-navy/45">What you get</p>
+                                                <p class="mkt-page-plan-section-label">What you get</p>
                                             @endif
-                                            <ul class="mt-4 grid gap-2.5 sm:grid-cols-2">
+                                            <ul class="mkt-page-plan-list">
                                                 @foreach ($plan['includes'] as $item)
-                                                    <li class="flex items-start gap-2 text-[16px] leading-snug text-navy/85">
-                                                        <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-gold"></span>
-                                                        <span>{{ $item }}</span>
-                                                    </li>
+                                                    <li>{{ $item }}</li>
                                                 @endforeach
                                             </ul>
-                                            <div class="mt-6 space-y-2 border-t border-line pt-5 text-[14px] leading-relaxed text-muted">
-                                                <p>{{ config('sarvix.marketing.notes.tax') }}</p>
-                                                <p>{{ config('sarvix.marketing.notes.timeline') }}</p>
-                                                <p>{{ config('sarvix.marketing.notes.payment') }}</p>
-                                                <p>{{ config('sarvix.marketing.notes.support') }}</p>
-                                                <p>{{ config('sarvix.marketing.notes.reels') }}</p>
+                                            <div class="mkt-page-plan-notes">
+                                                <p>{{ config('cebinova.marketing.notes.tax') }}</p>
+                                                <p>{{ config('cebinova.marketing.notes.timeline') }}</p>
+                                                <p>{{ config('cebinova.marketing.notes.payment') }}</p>
+                                                <p>{{ config('cebinova.marketing.notes.support') }}</p>
+                                                <p>{{ config('cebinova.marketing.notes.reels') }}</p>
                                                 @if ($category['key'] === 'festival')
-                                                    <p>{{ config('sarvix.marketing.notes.festival') }}</p>
-                                                    <p>{{ config('sarvix.marketing.notes.delivery') }}</p>
+                                                    <p>{{ config('cebinova.marketing.notes.festival') }}</p>
+                                                    <p>{{ config('cebinova.marketing.notes.delivery') }}</p>
                                                 @endif
-                                                <p>{{ config('sarvix.marketing.notes.third_party') }}</p>
+                                                <p>{{ config('cebinova.marketing.notes.third_party') }}</p>
                                             </div>
                                         </div>
                                     </div>

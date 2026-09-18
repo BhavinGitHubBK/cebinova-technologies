@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Terms | SARVIX Technologies')
-@section('description', 'Website terms for SARVIX Technologies.')
+@section('title', 'Terms | CEBINOVA Technologies')
+@section('description', 'Website terms for CEBINOVA Technologies.')
 
 @section('content')
     <x-page-hero
@@ -16,7 +16,7 @@
     </x-page-hero>
     <section class="section-pad bg-white">
         <div class="container-wide max-w-3xl space-y-5 text-base leading-relaxed text-muted">
-            <p>This website describes services and demo solutions for SARVIX Technologies. Content is for information and presentation. It is not a binding offer until we confirm scope and pricing in writing.</p>
+            <p>This website describes services and demo solutions for CEBINOVA Technologies. Content is for information and presentation. It is not a binding offer until we confirm scope and pricing in writing.</p>
             <p>Demo projects are labelled as concept / demo solutions and should not be read as live client case studies.</p>
             <p>Enquiry submissions do not create a contract. We will confirm next steps after reviewing your business needs.</p>
             <div class="pt-4">

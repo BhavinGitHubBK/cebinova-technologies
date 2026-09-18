@@ -1,4 +1,4 @@
-<section class="hero-section relative overflow-hidden bg-paper">
+﻿<section class="hero-section relative overflow-hidden bg-paper">
     <div class="pointer-events-none absolute inset-0 bg-dots opacity-70"></div>
     <div class="hero-mesh pointer-events-none absolute inset-0"></div>
     <div class="hero-lines pointer-events-none absolute inset-0"></div>
@@ -7,16 +7,15 @@
         <div class="hero-copy">
             <p class="hero-eyebrow" data-hero-item>
                 <span class="hero-eyebrow-dot" aria-hidden="true"></span>
-                {{ config('sarvix.positioning') }}
+                {{ config('cebinova.positioning') }}
             </p>
 
             <h1 class="hero-heading" data-hero-item>
-                Technology That Helps
-                <span class="hero-heading-line">Every Business Grow.</span>
+                <span class="hero-heading-navy">Technology That Helps</span> <span class="hero-heading-line">Every Business Grow.</span>
             </h1>
 
             <p class="hero-lead" data-hero-item>
-                From your first website to eCommerce, custom software and AI-powered automation, SARVIX gives your business the technology it needs to start, operate and grow.
+                From your first website to eCommerce, custom software and AI-powered automation, <strong>CEBINOVA</strong> gives your business the technology it needs to start, operate and grow.
             </p>
 
             <div class="hero-actions" data-hero-item>
@@ -36,17 +35,19 @@
                     ['label' => 'eCommerce', 'icon' => 'store', 'href' => route('services.show', 'ecommerce')],
                     ['label' => 'Software', 'icon' => 'layers', 'href' => route('services.show', 'custom-software')],
                     ['label' => 'Mobile', 'icon' => 'device', 'href' => route('pricing')],
-                    ['label' => 'AI', 'icon' => 'spark', 'href' => route('services.show', 'ai-automation'), 'accent' => true],
+                    ['label' => 'AI', 'icon' => 'spark', 'href' => route('services.show', 'ai-automation')],
                     ['label' => 'Automation', 'icon' => 'nodes', 'href' => route('services.show', 'ai-automation')],
                     ['label' => 'Marketing', 'icon' => 'megaphone', 'href' => route('marketing-packages')],
                     ['label' => 'Growth', 'icon' => 'trend', 'href' => route('services.show', 'digital-growth')],
                 ];
             @endphp
-            <ul class="hero-caps" data-hero-item aria-label="What SARVIX builds">
+            <ul class="hero-caps" data-hero-item aria-label="What CEBINOVA builds">
                 @foreach ($heroCaps as $item)
                     <li>
-                        <a href="{{ $item['href'] }}" class="hero-cap{{ ! empty($item['accent']) ? ' is-accent' : '' }}">
-                            <x-icon :name="$item['icon']" class="hero-cap-icon" />
+                        <a href="{{ $item['href'] }}" class="hero-cap{{ ! empty($item['accent']) ? ' is-accent' : '' }}" data-hero-cap>
+                            <span class="hero-cap-icon-wrap">
+                                <x-mark :name="$item['icon']" class="hero-cap-icon" />
+                            </span>
                             <span>{{ $item['label'] }}</span>
                         </a>
                     </li>
@@ -59,9 +60,9 @@
         </div>
 
         <div class="hero-advantage" data-hero-item>
-            <p class="hero-advantage-kicker">SARVIX Advantage</p>
+            <p class="hero-advantage-kicker">CEBINOVA Advantage</p>
             <ul class="hero-advantage-list">
-                @foreach (config('sarvix.capabilities') as $item)
+                @foreach (config('cebinova.capabilities') as $item)
                     <li class="hero-advantage-item">
                         <span class="hero-advantage-value">{{ $item['value'] }}</span>
                         <span class="hero-advantage-label">{{ $item['label'] }}</span>

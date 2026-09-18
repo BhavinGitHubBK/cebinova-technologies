@@ -2,13 +2,13 @@
 
 @php
     $urls = [
-        'store' => 'sarvix.demo/retail',
-        'restaurant' => 'sarvix.demo/food',
-        'website' => 'sarvix.demo/services',
-        'ecommerce' => 'sarvix.demo/shop',
-        'crm' => 'sarvix.demo/crm',
-        'inventory' => 'sarvix.demo/ops',
-        'ai' => 'sarvix.demo/automation',
+        'store' => 'cebinova.demo/retail',
+        'restaurant' => 'cebinova.demo/food',
+        'website' => 'cebinova.demo/services',
+        'ecommerce' => 'cebinova.demo/shop',
+        'crm' => 'cebinova.demo/crm',
+        'inventory' => 'cebinova.demo/ops',
+        'ai' => 'cebinova.demo/automation',
     ];
 @endphp
 
@@ -17,7 +17,7 @@
         <span class="demo-dot bg-[#e8b4b4]"></span>
         <span class="demo-dot bg-[#e6d48a]"></span>
         <span class="demo-dot bg-[#9dcea8]"></span>
-        <span class="demo-url">{{ $urls[$type] ?? 'sarvix.demo' }}</span>
+        <span class="demo-url">{{ $urls[$type] ?? 'cebinova.demo' }}</span>
     </div>
     <div class="p-3.5 sm:p-4">
         @switch($type)

@@ -7,30 +7,41 @@
     $variant = in_array($variant, ['header', 'full', 'compact'], true) ? $variant : 'header';
     $tone = $tone === 'dark' ? 'dark' : 'light';
     $showTagline = $variant !== 'compact';
+    $logoVer = (int) @filemtime(public_path('assets/brand/cebinova-c-icon.png'));
+    $logoPng = asset('assets/brand/cebinova-c-icon.png').($logoVer ? '?v='.$logoVer : '');
+    $logoWebp = asset('assets/brand/cebinova-c-icon.webp').($logoVer ? '?v='.$logoVer : '');
+    $logoSvg = asset('assets/brand/cebinova-c-icon.svg').($logoVer ? '?v='.$logoVer : '');
 @endphp
 
 <a
     href="{{ route('home') }}"
-    {{ $attributes->class(['sarvix-logo', 'sarvix-logo--'.$variant, 'sarvix-logo--'.$tone]) }}
-    aria-label="SARVIX Technologies home"
+    {{ $attributes->class(['cebinova-logo', 'cebinova-logo--'.$variant, 'cebinova-logo--'.$tone]) }}
+    aria-label="CEBINOVA Technologies home"
 >
     <picture>
-        <source type="image/webp" srcset="{{ asset('assets/brand/sarvix-s-icon.webp') }}">
+        <source type="image/png" srcset="{{ $logoPng }}">
+        <source type="image/webp" srcset="{{ $logoWebp }}">
+        <source type="image/svg+xml" srcset="{{ $logoSvg }}">
         <img
-            src="{{ asset('assets/brand/sarvix-s-icon.png') }}"
+            src="{{ $logoPng }}"
             alt=""
-            class="sarvix-logo-icon"
-            width="835"
-            height="981"
+            class="cebinova-logo-icon"
+            width="425"
+            height="356"
+            decoding="async"
         >
     </picture>
-    <span class="sarvix-logo-content">
-        <span class="sarvix-brand-row">
-            <span class="sarvix-brand-name">SARVI<span class="sarvix-accent">X</span></span>
-            <span class="sarvix-brand-tech">TECHNOLOGIES</span>
+    <span class="cebinova-logo-content">
+        <span class="cebinova-brand-row">
+            <span class="cebinova-brand-name">CEBI<span class="cebinova-accent">NOVA</span></span>
+            <span class="cebinova-brand-tech">TECHNOLOGIES</span>
+        </span>
+        <span class="cebinova-brand-line" aria-hidden="true">
+            <span class="cebinova-brand-line-sheen"></span>
+            <span class="cebinova-brand-line-node"></span>
         </span>
         @if ($showTagline)
-            <span class="sarvix-tagline">{{ config('sarvix.tagline') }}</span>
+            <span class="cebinova-tagline">{{ config('cebinova.tagline') }}</span>
         @endif
     </span>
 </a>

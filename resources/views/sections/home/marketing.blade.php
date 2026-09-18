@@ -1,35 +1,81 @@
-<section class="section-pad-lg bg-white" id="home-marketing">
+﻿@php
+    $plans = [
+        [
+            'key' => 'regular',
+            'cat' => 'Always on',
+            'icon' => 'megaphone',
+            'href' => route('marketing-packages').'#regular-marketing',
+            'config' => config('cebinova.marketing.regular'),
+        ],
+        [
+            'key' => 'festival',
+            'cat' => 'Seasonal',
+            'icon' => 'clock',
+            'href' => route('marketing-packages').'#festival-marketing',
+            'config' => config('cebinova.marketing.festival'),
+        ],
+        [
+            'key' => 'growth',
+            'cat' => 'Combined',
+            'icon' => 'trend',
+            'href' => route('marketing-packages').'#complete-growth',
+            'config' => config('cebinova.marketing.growth'),
+            'featured' => true,
+        ],
+    ];
+@endphp
+
+<section class="home-mkt section-pad-lg" id="home-marketing" aria-label="CEBINOVA marketing packages">
     <div class="container-wide">
-        <div data-reveal>
-            <x-section-heading eyebrow="Marketing" title="Technology Builds the Business. Marketing Helps It Grow.">
+        <div class="home-mkt-head" data-reveal>
+            <p class="home-mkt-kicker">
+                <span class="home-mkt-dot" aria-hidden="true"></span>
+                Marketing
+            </p>
+            <h2 class="section-title">Technology Builds the Business. Marketing Helps It Grow.</h2>
+            <p class="section-support">
                 Three marketing solutions. Four subscription durations. Full launch plans live on Marketing Packages.
-            </x-section-heading>
+            </p>
         </div>
 
-        <div class="mt-12 grid gap-5 lg:grid-cols-3" data-stagger>
-            <article class="lift-card card-surface flex h-full flex-col p-7 sm:p-8">
-                <p class="text-[12px] font-bold uppercase tracking-[0.16em] text-navy/45">Always on</p>
-                <h3 class="mt-2 text-[1.45rem] font-extrabold text-navy">Regular Marketing</h3>
-                <p class="mt-3 flex-1 text-[15.5px] leading-relaxed text-muted">{{ config('sarvix.marketing.regular.teaser') }}</p>
-            </article>
-            <article class="lift-card card-surface flex h-full flex-col bg-mist p-7 sm:p-8">
-                <p class="text-[12px] font-bold uppercase tracking-[0.16em] text-navy/45">Seasonal</p>
-                <h3 class="mt-2 text-[1.45rem] font-extrabold text-navy">Festival Marketing</h3>
-                <p class="mt-3 flex-1 text-[15.5px] leading-relaxed text-muted">{{ config('sarvix.marketing.festival.teaser') }}</p>
-            </article>
-            <article class="lift-card flex h-full flex-col rounded-[1.2rem] border border-gold/40 bg-navy p-7 text-white sm:p-8">
-                <p class="inline-flex w-fit rounded-full bg-gold px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-navy-deep">Recommended</p>
-                <h3 class="mt-3 text-[1.45rem] font-extrabold text-white">Complete Growth</h3>
-                <p class="mt-3 flex-1 text-[15.5px] leading-relaxed text-white/72">{{ config('sarvix.marketing.growth.teaser') }}</p>
-            </article>
+        <div class="home-mkt-grid" data-stagger>
+            @foreach ($plans as $plan)
+                <a href="{{ $plan['href'] }}" class="home-mkt-card{{ ! empty($plan['featured']) ? ' is-featured' : '' }}">
+                    <span class="home-mkt-top">
+                        <span class="home-mkt-icon">
+                            <x-mark :name="$plan['icon']" class="h-4 w-4" />
+                        </span>
+                        @if (! empty($plan['featured']))
+                            <span class="home-mkt-flag">Recommended</span>
+                        @endif
+                    </span>
+                    <span class="home-mkt-cat">{{ $plan['cat'] }}</span>
+                    <h3 class="home-mkt-title">{{ $plan['config']['title'] }}</h3>
+                    <p class="home-mkt-note">{{ $plan['config']['teaser'] }}</p>
+                    <p class="home-mkt-price">From {{ cebinova_inr($plan['config']['plans']['monthly']['price']) }} / month</p>
+                    <span class="home-mkt-link">
+                        View plans
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></svg>
+                    </span>
+                </a>
+            @endforeach
         </div>
 
-        <div class="mt-8 flex flex-col gap-5 border-t border-line pt-7 sm:flex-row sm:items-center sm:justify-between">
+        <div class="home-mkt-foot">
             <div>
-                <p class="text-[12px] font-semibold uppercase tracking-[0.16em] text-navy/45">Available durations</p>
-                <p class="mt-2 text-[15.5px] font-semibold text-navy">{{ implode('  ·  ', config('sarvix.marketing.frequencies')) }}</p>
+                <p class="home-mkt-durations-label">Available durations</p>
+                <ul class="home-mkt-durations">
+                    @foreach (config('cebinova.marketing.frequencies') as $frequency)
+                        <li>{{ $frequency }}</li>
+                    @endforeach
+                </ul>
             </div>
-            <x-button href="{{ route('marketing-packages') }}#marketing-plans">Explore Marketing Plans</x-button>
+            <p class="home-mkt-cta">
+                <x-button href="{{ route('marketing-packages') }}#marketing-plans" variant="primary">
+                    Explore Marketing Plans
+                    <svg class="arrow-shift h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></svg>
+                </x-button>
+            </p>
         </div>
     </div>
 </section>

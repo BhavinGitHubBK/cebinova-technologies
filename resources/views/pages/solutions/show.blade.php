@@ -4,22 +4,22 @@
         'source' => $solution['source'],
         'business_type' => $solution['business_type'],
     ]);
-    $guide = config('sarvix.solution_guides.'.$solution['slug'], []);
+    $guide = config('cebinova.solution_guides.'.$solution['slug'], []);
     $nextHref = page_next_url($guide, $solution['title']);
     $nextLabel = $guide['next_label'] ?? 'Request this solution';
     $whatsapp = page_whatsapp_url($solution['title'].' solution');
-    $faqs = config('sarvix.page.faq', []);
+    $faqs = config('cebinova.page.faq', []);
 @endphp
 
 @extends('layouts.app')
 
-@section('title', 'SARVIX '.$solution['title'].' Solution | SARVIX Technologies')
+@section('title', 'CEBINOVA '.$solution['title'].' Solution | CEBINOVA Technologies')
 @section('description', $solution['summary'])
 
 @section('content')
     <x-page-hero
         :wrap="true"
-        eyebrow="SARVIX Solution"
+        eyebrow="CEBINOVA Solution"
         :title="$solution['heading']"
         :text="$solution['summary']"
     >
@@ -39,7 +39,7 @@
         <div class="container-wide grid gap-10 lg:grid-cols-12">
             <div class="lg:col-span-7">
                 @if ($solution['preview'])
-                    <img src="{{ asset('assets/'.$solution['preview']) }}" alt="" class="w-full rounded-[1.15rem] border border-line object-cover">
+                    <img src="{{ asset('assets/'.$solution['preview']) }}" alt="" class="w-full rounded-none border border-line object-cover">
                 @endif
                 @if (! empty($guide['best_for']))
                     <p class="{{ $solution['preview'] ? 'mt-8' : '' }} text-[12px] font-bold uppercase tracking-[0.16em] text-gold-dark">Who this is for</p>
@@ -58,7 +58,7 @@
             <aside class="lg:col-span-5">
                 <div class="card-surface p-7 sm:p-8">
                     <x-badge>Next step</x-badge>
-                    <h2 class="mt-4 text-xl font-bold text-navy">{{ $guide['outcome'] ?? 'Talk to SARVIX about this solution' }}</h2>
+                    <h2 class="mt-4 text-xl font-bold text-navy">{{ $guide['outcome'] ?? 'Talk to CEBINOVA about this solution' }}</h2>
                     <p class="mt-3 text-[15.5px] leading-relaxed text-muted">Tell us how the business operates today. We will map the right starting point - website, store, software or automation.</p>
                     <div class="mt-6 flex flex-col gap-3">
                         <x-button href="{{ $nextHref }}" class="w-full">{{ $nextLabel }}</x-button>

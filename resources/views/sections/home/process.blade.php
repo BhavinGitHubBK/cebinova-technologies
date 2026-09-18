@@ -1,31 +1,58 @@
-<section class="section-pad-lg section-soft">
+﻿@php
+    $icons = ['chat', 'layers', 'cpu', 'rocket', 'trend'];
+    $cats = ['Discover', 'Blueprint', 'Deliver', 'Go live', 'Partner'];
+@endphp
+
+<section class="home-proc section-pad-lg" id="process" aria-label="How we work">
     <div class="container-wide">
-        <div data-reveal>
-            <x-section-heading eyebrow="How we work" title="Simple Process. Powerful Results.">
+        <div class="home-proc-head" data-reveal>
+            <p class="home-proc-kicker">
+                <span class="home-proc-dot" aria-hidden="true"></span>
+                How we work
+            </p>
+            <h2 class="section-title">Simple Process. Powerful Results.</h2>
+            <p class="section-support">
                 A clear path from conversation to launch - without unnecessary complexity.
-            </x-section-heading>
+            </p>
         </div>
-        <div class="relative mt-14" id="process">
-            <div class="pointer-events-none absolute left-[4%] right-[4%] top-[22px] hidden h-[2px] bg-line xl:block">
-                <div id="process-progress" class="h-full origin-left scale-x-0 bg-gold"></div>
+
+        <div class="home-proc-wrap">
+            <div class="home-proc-line" aria-hidden="true">
+                <span id="process-progress"></span>
             </div>
-            <ol class="relative grid gap-0 sm:grid-cols-2 sm:gap-10 xl:grid-cols-5 xl:gap-6">
-                @foreach (config('sarvix.process') as $item)
-                    <li class="relative flex gap-4 sm:block {{ $loop->last ? '' : 'pb-8 sm:pb-0' }}">
-                        <div class="flex flex-col items-center sm:mb-6 sm:flex-row sm:justify-start">
-                            <span class="relative z-[1] flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 border-gold bg-white text-sm font-extrabold text-navy">{{ $item['step'] }}</span>
+            <ol class="home-proc-list" data-stagger>
+                @foreach (config('cebinova.process') as $index => $item)
+                    <li class="home-proc-cell{{ $loop->last ? ' is-last' : '' }}" data-process-node>
+                        <span class="home-proc-node" aria-hidden="true"></span>
+                        <article class="home-proc-card">
+                            <span class="home-proc-icon">
+                                <x-mark :name="$icons[$index] ?? 'layers'" class="h-4 w-4" />
+                            </span>
+                            <span class="home-proc-copy">
+                                <span class="home-proc-cat">{{ $cats[$index] ?? 'Step' }}</span>
+                                <h3 class="home-proc-title">{{ $item['title'] }}</h3>
+                                <p class="home-proc-text">{{ $item['text'] }}</p>
+                            </span>
                             @if (! $loop->last)
-                                <span class="mt-1 w-px flex-1 bg-gold/30 sm:hidden" aria-hidden="true"></span>
+                                <span class="home-proc-arrow" aria-hidden="true">
+                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></svg>
+                                </span>
                             @endif
-                        </div>
-                        <div class="min-w-0 pt-1 sm:pt-0">
-                            <p class="text-[2.4rem] font-extrabold leading-none text-gold/25">{{ $item['step'] }}</p>
-                            <h3 class="mt-2 text-xl font-extrabold text-navy">{{ $item['title'] }}</h3>
-                            <p class="mt-2 text-[15.5px] leading-relaxed text-muted">{{ $item['text'] }}</p>
-                        </div>
+                        </article>
                     </li>
                 @endforeach
             </ol>
         </div>
+
+        <p class="home-proc-cta">
+            <x-button :href="consultation_url()" size="sm">
+                Get Free Consultation
+                <svg class="arrow-shift h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </x-button>
+            <x-button :href="route('about')" variant="outline" size="sm">
+                Discover CEBINOVA
+                <svg class="arrow-shift h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </x-button>
+        </p>
     </div>
 </section>

@@ -1,47 +1,65 @@
-@php
-    $aiIcons = ['chat', 'trend', 'whatsapp', 'nodes', 'clock', 'spark', 'layers', 'cpu'];
-    $aiNotes = [
-        'Answer common questions after hours.',
-        'Route new enquiries to the right person.',
-        'Send updates where customers already chat.',
-        'Remove repeated internal steps.',
-        'Keep teams and customers informed.',
-        'Draft useful copy for offers and follow-ups.',
-        'See what needs attention next.',
-        'Connect the tools you already use.',
+﻿@php
+    $meta = [
+        ['icon' => 'chat', 'cat' => 'Conversations', 'note' => 'Answer common questions after hours.'],
+        ['icon' => 'trend', 'cat' => 'Capture', 'note' => 'Route new enquiries to the right person.'],
+        ['icon' => 'whatsapp', 'cat' => 'Messaging', 'note' => 'Send updates where customers already chat.'],
+        ['icon' => 'nodes', 'cat' => 'Operations', 'note' => 'Remove repeated internal steps.'],
+        ['icon' => 'clock', 'cat' => 'Alerts', 'note' => 'Keep teams and customers informed.'],
+        ['icon' => 'spark', 'cat' => 'Content', 'note' => 'Draft useful copy for offers and follow-ups.'],
+        ['icon' => 'layers', 'cat' => 'Intelligence', 'note' => 'See what needs attention next.'],
+        ['icon' => 'cpu', 'cat' => 'Connect', 'note' => 'Connect the tools you already use.'],
     ];
+    $features = config('cebinova.ai_features');
 @endphp
 
-<section class="relative overflow-hidden bg-navy section-pad-lg">
+<section class="home-ai section-pad-lg" aria-label="AI and automation">
     <div class="pointer-events-none absolute inset-0 bg-dots-light"></div>
-    <svg class="pointer-events-none absolute inset-0 h-full w-full opacity-35" viewBox="0 0 1200 620" aria-hidden="true">
-        <g fill="none" stroke="#C9A227" stroke-opacity="0.32" stroke-width="1.1">
+    <svg class="home-ai-lines" viewBox="0 0 1200 620" aria-hidden="true">
+        <g fill="none" stroke="#FBB50B" stroke-opacity="0.28" stroke-width="1.1">
             <path class="js-ai-line" d="M60 130C220 70 340 210 510 170C680 130 760 70 980 150"/>
             <path class="js-ai-line" d="M90 430C250 360 410 510 580 450C780 370 900 500 1140 410"/>
             <path class="js-ai-line" d="M40 300C200 260 360 320 540 280C720 240 880 310 1160 250"/>
         </g>
     </svg>
-    <div class="container-wide relative z-10 grid items-start gap-12 lg:grid-cols-12">
-        <div class="min-w-0 lg:col-span-5" data-reveal>
-            <x-section-heading light :wrap="true" eyebrow="AI & Automation" title="Make Technology Work for You.">
-                SARVIX helps businesses reduce manual work through intelligent automation and AI-powered solutions.
-            </x-section-heading>
-            <p class="mt-5 text-[15.5px] leading-relaxed text-white/60">Enquiry in. Follow-up out. Reporting in between - without adding another disconnected tool.</p>
-            <p class="mt-4 text-[13px] font-medium text-white/40">Hover or focus a capability to see how it fits the workflow.</p>
-            <div class="mt-8">
-                <x-button href="{{ route('services.show', 'ai-automation') }}" variant="primary">Explore AI Solutions</x-button>
-            </div>
+
+    <div class="container-wide relative z-10">
+        <div class="home-ai-head" data-reveal>
+            <p class="home-ai-kicker">
+                <span class="home-ai-dot" aria-hidden="true"></span>
+                AI &amp; Automation
+            </p>
+            <h2 class="section-title text-white">Make Technology Work for You.</h2>
+            <p class="home-ai-support section-support">
+                CEBINOVA helps businesses reduce manual work through intelligent automation and AI-powered solutions.
+            </p>
+            <p class="home-ai-lead">Enquiry in. Follow-up out. Reporting in between - without adding another disconnected tool.</p>
+            <ul class="home-ai-flow" aria-hidden="true">
+                <li>Enquiry in</li>
+                <li>Follow-up out</li>
+                <li>Reporting</li>
+            </ul>
+            <p class="home-ai-cta">
+                <x-button href="{{ route('services.show', 'ai-automation') }}" variant="primary">
+                    Explore AI Solutions
+                    <svg class="arrow-shift h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></svg>
+                </x-button>
+            </p>
         </div>
-        <ul class="relative z-10 grid gap-3 sm:grid-cols-2 lg:col-span-7" data-stagger>
-            @foreach (config('sarvix.ai_features') as $feature)
-                <li class="ai-block group rounded-xl border border-white/12 bg-white/[0.06] px-4 py-4 transition duration-300 hover:border-gold/40 focus-within:border-gold/40" tabindex="0" data-ai-block>
-                    <div class="flex items-center gap-3">
-                        <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-navy-mid text-gold">
-                            <x-icon :name="$aiIcons[$loop->index] ?? 'spark'" class="h-4 w-4" />
+
+        <ul class="home-ai-grid" data-stagger>
+            @foreach ($features as $index => $feature)
+                @php $item = $meta[$index] ?? ['icon' => 'spark', 'cat' => 'Capability', 'note' => '']; @endphp
+                <li>
+                    <article class="home-ai-card" tabindex="0" data-ai-block>
+                        <span class="home-ai-icon">
+                            <x-mark :name="$item['icon']" class="h-4 w-4" />
                         </span>
-                        <span class="text-[15.5px] font-semibold text-white">{{ $feature }}</span>
-                    </div>
-                    <p class="mt-2 max-h-0 overflow-hidden text-[13.5px] leading-relaxed text-white/55 transition-all duration-300 group-hover:max-h-16 group-focus-within:max-h-16">{{ $aiNotes[$loop->index] ?? '' }}</p>
+                        <span class="home-ai-body">
+                            <span class="home-ai-cat">{{ $item['cat'] }}</span>
+                            <h3 class="home-ai-title">{{ $feature }}</h3>
+                            <p class="home-ai-note">{{ $item['note'] }}</p>
+                        </span>
+                    </article>
                 </li>
             @endforeach
         </ul>

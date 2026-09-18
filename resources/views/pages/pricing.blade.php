@@ -1,25 +1,25 @@
 @extends('layouts.app')
 
 @php
-    $email = config('sarvix.contact.email');
-    $phone = sarvix_phone();
-    $phoneDigits = preg_replace('/\D+/', '', (string) ($phone ?: config('sarvix.contact.whatsapp')));
+    $email = config('cebinova.contact.email');
+    $phone = cebinova_phone();
+    $phoneDigits = preg_replace('/\D+/', '', (string) ($phone ?: config('cebinova.contact.whatsapp')));
     $phoneLabel = $phone ?: 'Ahmedabad, Gujarat';
-    $waHref = filled(config('sarvix.contact.whatsapp'))
+    $waHref = filled(config('cebinova.contact.whatsapp'))
         ? whatsapp_url()
-        : solution_enquiry_url(['solution' => 'Digital Store', 'source' => 'SARVIX Pricing', 'business_type' => 'Retail']);
+        : solution_enquiry_url(['solution' => 'Digital Store', 'source' => 'CEBINOVA Pricing', 'business_type' => 'Retail']);
     $telHref = $phone ? 'tel:'.preg_replace('/\s+/', '', $phone) : route('contact');
-    $scheduleHref = filled(config('sarvix.contact.whatsapp'))
-        ? whatsapp_url("Hi SARVIX,\nI want to schedule a free 30-minute consultation about a digital solution for my business.")
+    $scheduleHref = filled(config('cebinova.contact.whatsapp'))
+        ? whatsapp_url("Hi CEBINOVA,\nI want to schedule a free 30-minute consultation about a digital solution for my business.")
         : consultation_url('Business Solution');
     $enquiry = solution_enquiry_url([
         'solution' => 'Digital Store',
-        'source' => 'SARVIX Pricing',
+        'source' => 'CEBINOVA Pricing',
         'business_type' => 'Retail',
     ]);
 @endphp
 
-@section('title', 'Pricing | SARVIX Technologies')
+@section('title', 'Pricing | CEBINOVA Technologies')
 @section('description', 'Know your exact investment in under 2 minutes. Transparent website, app, domain and hosting pricing for practical digital business solutions.')
 
 @push('head')
@@ -37,38 +37,29 @@
   <link rel="stylesheet" href="{{ asset('assets/solutions/kirana-pricing/css/estimate-premium.css') }}">
   <link rel="stylesheet" href="{{ asset('assets/solutions/kirana-pricing/css/packages-pricing.css') }}">
   <link rel="stylesheet" href="{{ asset('assets/solutions/kirana-pricing/css/print-invoice.css') }}">
-  <link rel="stylesheet" href="{{ asset('assets/solutions/kirana-pricing/css/sarvix-brand.css') }}">
+  <link rel="stylesheet" href="{{ asset('assets/solutions/kirana-pricing/css/cebinova-brand.css') }}">
 @endpush
 
 @section('content')
+    @include('sections.pricing.hero')
+
 <div class="kirana-pricing" data-wa="{{ $phoneDigits }}" data-email="{{ $email }}" data-contact="{{ $enquiry }}">
   <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
   <div id="plans"></div>
     <section class="section calc-section" id="calculator">
       <div class="container">
-        <div class="calc-hero reveal">
-          <div class="hero-blobs" aria-hidden="true">
-            <span class="hero-blob hero-blob-a"></span>
-            <span class="hero-blob hero-blob-b"></span>
-          </div>
-          <p class="calc-eyebrow">SARVIX Pricing</p>
-          <h1>Build Your Digital Store</h1>
-          <p class="calc-hero-sub">3 website packages. Add apps only if you need them.<br><span class="gradient-text">See your exact total in 2 minutes</span></p>
-          <ol class="calc-path" aria-label="How to get your price">
-            <li><strong>1</strong> Choose website</li>
-            <li><strong>2</strong> Choose Mobile App</li>
-            <li><strong>3</strong> Choose Domain</li>
-            <li><strong>4</strong> Choose Hosting</li>
-            <li><strong>5</strong> Choose Support Plan</li>
-            <li><strong>6</strong> See Final Price</li>
-            <li><strong>7</strong> Book Free Consultation</li>
-          </ol>
-          <p class="calc-pick-hint">Recommended path is pre-selected: <strong>Business</strong> website, new domain, basic hosting. Change any step if you already have something.</p>
-          <ul class="calc-trust" aria-label="Why this calculator">
-            <li><i class="fa-solid fa-check" aria-hidden="true"></i> No Hidden Charges</li>
-            <li><i class="fa-solid fa-check" aria-hidden="true"></i> Live Calculator</li>
-            <li><i class="fa-solid fa-check" aria-hidden="true"></i> Transparent Pricing</li>
-            <li><i class="fa-solid fa-check" aria-hidden="true"></i> Expert Support</li>
+        <div class="price-page-calc-head" data-reveal>
+          <p class="price-page-kicker">
+            <span class="price-page-dot" aria-hidden="true"></span>
+            Live calculator
+          </p>
+          <h2 class="section-title">Know your exact investment.</h2>
+          <p class="section-support">Pick a website package, then add apps, domain, hosting and support only if you need them.</p>
+          <ul class="price-page-trust" aria-label="Why this calculator">
+            <li>No Hidden Charges</li>
+            <li>Live Calculator</li>
+            <li>Transparent Pricing</li>
+            <li>Expert Support</li>
           </ul>
         </div>
 
@@ -82,14 +73,43 @@
             <div class="calc-progress-track" aria-hidden="true">
               <span class="calc-progress-fill" id="calcProgressFill"></span>
             </div>
-            <ol class="calc-progress" id="calcProgress" aria-label="Calculator progress">
-              <li class="active" data-step="1"><span>1</span> Website</li>
-              <li data-step="2"><span>2</span> Apps</li>
-              <li data-step="3"><span>3</span> Domain</li>
-              <li data-step="4"><span>4</span> Hosting</li>
-              <li data-step="5"><span>5</span> Support</li>
+            <ol class="calc-progress" id="calcProgress" aria-label="Calculator progress" aria-live="polite">
+              <li class="active current" data-step="1">
+                <span class="calc-step-num">1</span>
+                <span class="calc-step-copy">
+                  <strong class="calc-step-label">Website wd</strong>
+                  <em class="calc-step-value" data-step-value>Choose</em>
+                </span>
+              </li>
+              <li data-step="2">
+                <span class="calc-step-num">2</span>
+                <span class="calc-step-copy">
+                  <strong class="calc-step-label">Apps</strong>
+                  <em class="calc-step-value" data-step-value>Optional</em>
+                </span>
+              </li>
+              <li data-step="3">
+                <span class="calc-step-num">3</span>
+                <span class="calc-step-copy">
+                  <strong class="calc-step-label">Domain</strong>
+                  <em class="calc-step-value" data-step-value>Choose</em>
+                </span>
+              </li>
+              <li data-step="4">
+                <span class="calc-step-num">4</span>
+                <span class="calc-step-copy">
+                  <strong class="calc-step-label">Hosting</strong>
+                  <em class="calc-step-value" data-step-value>Choose</em>
+                </span>
+              </li>
+              <li data-step="5">
+                <span class="calc-step-num">5</span>
+                <span class="calc-step-copy">
+                  <strong class="calc-step-label">Support</strong>
+                  <em class="calc-step-value" data-step-value>Included</em>
+                </span>
+              </li>
             </ol>
-            <ul class="live-progress-summary" id="liveProgressSummary" aria-live="polite"></ul>
           </div>
 
           <form class="calculator-form calculator-panel" id="costCalculator" novalidate>
@@ -1244,7 +1264,7 @@
                 <span class="cta-action-btn">Chat Now</span>
               </a>
 
-              <a class="cta-action call" href="{{ $telHref }}" aria-label="Call SARVIX">
+              <a class="cta-action call" href="{{ $telHref }}" aria-label="Call CEBINOVA">
                 <span class="cta-action-icon" aria-hidden="true"><i class="fa-solid fa-phone"></i></span>
                 <span class="cta-action-body">
                   <strong>Call Us</strong>
@@ -1549,13 +1569,15 @@
     </div>
   </div>
 </div>
+
+    @include('sections.home.cta')
 @endsection
 
 @push('scripts')
   <script>
-    window.SARVIX_WHATSAPP = @json($phoneDigits);
-    window.SARVIX_EMAIL = @json($email);
-    window.SARVIX_CONTACT = @json($enquiry);
+    window.CEBINOVA_WHATSAPP = @json($phoneDigits);
+    window.CEBINOVA_EMAIL = @json($email);
+    window.CEBINOVA_CONTACT = @json($enquiry);
   </script>
   <script src="{{ asset('assets/solutions/kirana-pricing/js/script.js') }}"></script>
 @endpush

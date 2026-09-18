@@ -6,19 +6,19 @@
 ])
 
 @php
-    $base = 'inline-flex items-center justify-center gap-2 rounded-lg font-semibold tracking-normal transition duration-300 hover:-translate-y-0.5 disabled:pointer-events-none disabled:opacity-60';
+    $base = 'cn-btn group inline-flex items-center justify-center gap-2 font-semibold disabled:pointer-events-none disabled:opacity-60';
     $sizes = [
-        'sm' => 'min-h-10 px-4 py-2 text-sm',
-        'md' => 'min-h-11 px-5 py-2.5 text-[15px]',
-        'lg' => 'min-h-12 px-6 py-3 text-[15px] sm:px-7 sm:text-base',
+        'sm' => 'cn-btn--sm',
+        'md' => 'cn-btn--md',
+        'lg' => 'cn-btn--lg',
     ];
     $variants = [
-        'primary' => 'bg-gold text-navy-deep shadow-[0_8px_18px_rgba(201,162,39,0.22)] hover:bg-gold-dark',
-        'secondary' => 'bg-navy text-white hover:bg-navy-mid',
-        'outline' => 'border border-navy/20 bg-transparent text-navy hover:border-navy hover:bg-navy hover:text-white',
-        'ghost' => 'text-navy hover:text-gold-dark',
-        'light' => 'border border-white/25 bg-transparent text-white hover:border-gold hover:text-gold',
-        'whatsapp' => 'border border-navy/15 bg-white text-navy hover:border-[#25D366]',
+        'primary' => 'cn-btn--primary',
+        'secondary' => 'cn-btn--secondary',
+        'outline' => 'cn-btn--outline',
+        'ghost' => 'cn-btn--ghost',
+        'light' => 'cn-btn--light',
+        'whatsapp' => 'cn-btn--whatsapp',
     ];
     $classes = $base.' '.($sizes[$size] ?? $sizes['md']).' '.($variants[$variant] ?? $variants['primary']);
 @endphp

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'SARVIX Technologies | Technology for Every Business')
-@section('description', 'SARVIX Technologies provides websites, eCommerce, custom software, AI automation and complete digital solutions for businesses.')
+@section('title', 'CEBINOVA Technologies | Technology for Every Business')
+@section('description', 'CEBINOVA Technologies provides websites, eCommerce, custom software, AI automation and complete digital solutions for businesses.')
 
 @section('content')
     @include('sections.home.hero')

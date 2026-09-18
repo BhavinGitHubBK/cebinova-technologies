@@ -10,10 +10,10 @@
     $selectedMessage = request('message');
     $viaWhatsapp = request('via') === 'whatsapp';
     $packageLocked = \App\Support\MarketingPackages::isValid((string) $selectedCategory, (string) $selectedDuration);
-    $packageServices = config('sarvix.form.package_services');
+    $packageServices = config('cebinova.form.package_services');
     $showPackageFields = $packageLocked || in_array($selectedService, $packageServices, true);
     $selectedPrice = $packageLocked ? \App\Support\MarketingPackages::formattedPrice($selectedCategory, $selectedDuration) : null;
-    $allowedSources = config('sarvix.leads.sources');
+    $allowedSources = config('cebinova.leads.sources');
     $requestedSource = request('source');
     $selectedSource = $packageLocked
         ? $selectedCategory
@@ -30,7 +30,7 @@
     <input type="hidden" name="source" class="js-lead-source" value="{{ $selectedSource }}">
 
     <div class="js-form-success hidden rounded-xl border border-gold/30 bg-mist p-6" hidden>
-        <p class="text-lg font-bold text-navy">Thank you for contacting SARVIX Technologies.</p>
+        <p class="text-lg font-bold text-navy">Thank you for contacting CEBINOVA Technologies.</p>
         <p class="js-form-success-text mt-2 text-sm leading-relaxed text-muted">Our team will review your requirement and get in touch with you shortly.</p>
     </div>
 
@@ -93,7 +93,7 @@
                 <span class="mb-1.5 block text-sm font-semibold text-navy">Business Type</span>
                 <select name="business_type">
                     <option value="">Select</option>
-                    @foreach (config('sarvix.form.business_types') as $type)
+                    @foreach (config('cebinova.form.business_types') as $type)
                         <option value="{{ $type }}" @selected($selectedBusinessType === $type)>{{ $type }}</option>
                     @endforeach
                 </select>
@@ -107,7 +107,7 @@
                 @else
                     <select name="service" required class="js-service-select">
                         <option value="">Select</option>
-                        @foreach (config('sarvix.form.services') as $service)
+                        @foreach (config('cebinova.form.services') as $service)
                             <option value="{{ $service }}" @selected($selectedService === $service)>{{ $service }}</option>
                         @endforeach
                     </select>
@@ -159,7 +159,7 @@
         <label class="block">
             <span class="mb-1.5 block text-sm font-semibold text-navy">Budget Range</span>
             <select name="budget">
-                @foreach (config('sarvix.form.budgets') as $budget)
+                @foreach (config('cebinova.form.budgets') as $budget)
                     <option value="{{ $budget }}">{{ $budget }}</option>
                 @endforeach
             </select>

@@ -1,4 +1,4 @@
-@props([
+﻿@props([
     'href',
     'icon',
     'title',
@@ -18,7 +18,7 @@
 <a href="{{ $href }}" class="group lift-card card-surface relative flex h-full flex-col overflow-hidden p-7 sm:p-8">
     <span class="absolute inset-x-0 top-0 h-0.5 bg-gold/0 transition duration-300 group-hover:bg-gold"></span>
     <span class="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-xl {{ $iconWrap }} transition duration-300">
-        <x-icon :name="$icon" class="h-5 w-5" />
+        <x-mark :name="$icon" class="h-5 w-5" />
     </span>
     <h3 class="text-xl font-bold tracking-tight text-navy">{{ $title }}</h3>
     <p class="mt-3 flex-1 text-[15.5px] leading-relaxed text-muted">{{ $text }}</p>
