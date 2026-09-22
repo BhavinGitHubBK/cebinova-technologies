@@ -9,6 +9,8 @@
     @include('sections.about.why')
     @include('sections.about.approach')
     @include('sections.about.journey')
+    @include('sections.about.team')
+    @include('sections.about.testimonials')
     @include('sections.about.vision')
     @include('sections.home.process')
     @include('sections.about.faq')

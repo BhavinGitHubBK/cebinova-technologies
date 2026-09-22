@@ -19,7 +19,7 @@
 
     <section class="section-pad section-soft">
         <div class="container-wide grid gap-5 md:grid-cols-2 xl:grid-cols-3" data-stagger>
-            @foreach (config('cebinova.portfolio') as $project)
+            @foreach (\App\Support\CmsContent::portfolio() as $project)
                 <article id="{{ $project['slug'] }}" class="demo-card lift-card card-surface flex h-full scroll-mt-28 flex-col overflow-hidden">
                     <div class="relative overflow-hidden">
                         <x-demo-preview :type="$project['preview']" />

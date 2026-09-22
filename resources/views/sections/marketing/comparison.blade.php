@@ -1,10 +1,6 @@
 @php
     $matrix = config('cebinova.marketing.matrix.rows', []);
-<<<<<<< Updated upstream
     $growth = \App\Support\MarketingPackages::packageArray('growth') ?? [];
-=======
-    $growth = config('cebinova.marketing.growth');
->>>>>>> Stashed changes
 @endphp
 <section class="mkt-page-compare section-pad-lg bg-white" id="choose-plan">
     <div class="container-wide">
@@ -15,7 +11,7 @@
             </p>
             <h2 class="section-title">Which plan is for you?</h2>
             <p class="section-support">
-                Regular is everyday posts. Festival is occasions only. Complete Growth is both - and only ₹1,000 more than Regular each month.
+                Regular is everyday posts. Festival is occasions only. Complete Growth is both - and only â‚¹1,000 more than Regular each month.
             </p>
         </div>
 
@@ -51,7 +47,7 @@
                 <a href="{{ $item['key'] === 'growth' ? '#complete-growth' : '#marketing-plans' }}" class="mkt-page-compare-card js-pack-jump {{ $recommended ? 'is-recommended' : '' }}" data-cat="{{ $item['key'] }}">
                     <p class="mkt-page-compare-card-kicker">{{ $item['title'] }}</p>
                     <p class="mkt-page-compare-card-title">{{ $item['if'] }}</p>
-                    <p class="mkt-page-compare-card-text">{{ $item['gets'] }} →</p>
+                    <p class="mkt-page-compare-card-text">{{ $item['gets'] }} â†’</p>
                 </a>
             @endforeach
         </div>
@@ -61,7 +57,7 @@
                 <span class="mkt-page-dot" aria-hidden="true"></span>
                 Why Complete Growth
             </p>
-            <h3 class="mkt-page-compare-foot-title">₹1,000 more than Regular. Festival creatives included.</h3>
+            <h3 class="mkt-page-compare-foot-title">â‚¹1,000 more than Regular. Festival creatives included.</h3>
             <p class="mkt-page-compare-foot-text">{{ $growth['why'] }}</p>
             <div class="mkt-page-compare-foot-actions">
                 <x-button href="#complete-growth" class="js-pack-jump" data-cat="growth">See Complete Growth</x-button>

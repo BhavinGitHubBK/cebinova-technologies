@@ -1,12 +1,14 @@
 @props([
     'variant' => 'header',
     'tone' => 'light',
+    'href' => null,
 ])
 
 @php
     $variant = in_array($variant, ['header', 'full', 'compact'], true) ? $variant : 'header';
     $tone = $tone === 'dark' ? 'dark' : 'light';
     $showTagline = $variant !== 'compact';
+    $href = $href ?? route('home');
     $logoVer = (int) @filemtime(public_path('assets/brand/cebinova-c-icon.png'));
     $logoPng = asset('assets/brand/cebinova-c-icon.png').($logoVer ? '?v='.$logoVer : '');
     $logoWebp = asset('assets/brand/cebinova-c-icon.webp').($logoVer ? '?v='.$logoVer : '');
@@ -14,9 +16,9 @@
 @endphp
 
 <a
-    href="{{ route('home') }}"
+    href="{{ $href }}"
     {{ $attributes->class(['cebinova-logo', 'cebinova-logo--'.$variant, 'cebinova-logo--'.$tone]) }}
-    aria-label="CEBINOVA Technologies home"
+    aria-label="CEBINOVA Technologies"
 >
     <picture>
         <source type="image/png" srcset="{{ $logoPng }}">

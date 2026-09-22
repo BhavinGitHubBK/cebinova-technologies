@@ -1,9 +1,4 @@
-<<<<<<< Updated upstream
-﻿@php
-=======
-@php
->>>>>>> Stashed changes
-    $cats = [
+ï»¿@php    $cats = [
         'starter' => 'Presence',
         'sell' => 'Commerce',
         'manage' => 'Operations',
@@ -37,12 +32,7 @@
                 <a href="{{ route('solutions') }}#{{ $path['key'] }}" class="home-sol-card{{ $highlight ? ' is-featured' : '' }}">
                     <span class="home-sol-top">
                         <span class="home-sol-icon">
-<<<<<<< Updated upstream
-                            <x-mark :name="$icons[$path['key']] ?? 'layers'" class="h-4 w-4" />
-=======
-                            <x-icon :name="$icons[$path['key']] ?? 'layers'" class="h-4 w-4" />
->>>>>>> Stashed changes
-                        </span>
+                            <x-mark :name="$icons[$path['key']] ?? 'layers'" class="h-4 w-4" />                        </span>
                         @if ($highlight)
                             <span class="home-sol-flag">Recommended</span>
                         @endif

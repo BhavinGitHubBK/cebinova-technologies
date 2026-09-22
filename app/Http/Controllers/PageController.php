@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Service;
+use App\Support\WebsitePackages;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
 
 class PageController extends Controller
@@ -19,13 +22,13 @@ class PageController extends Controller
     public function services(): View
     {
         return view('pages.services.index', [
-            'services' => config('cebinova.services'),
+            'services' => $this->publicServices(),
         ]);
     }
 
     public function service(string $slug): View
     {
-        $service = collect(config('cebinova.services'))->firstWhere('slug', $slug);
+        $service = collect($this->publicServices())->firstWhere('slug', $slug);
         abort_unless($service, 404);
 
         return view('pages.services.show', compact('service'));
@@ -56,7 +59,10 @@ class PageController extends Controller
 
     public function pricing(): View
     {
-        return view('pages.pricing');
+        return view('pages.pricing', [
+            'kiranaPlans' => WebsitePackages::plans(),
+            'kiranaAddons' => WebsitePackages::addons(),
+        ]);
     }
 
     public function marketingPackages(): View
@@ -82,5 +88,26 @@ class PageController extends Controller
     public function terms(): View
     {
         return view('pages.legal.terms');
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    private function publicServices(): array
+    {
+        try {
+            if (Schema::hasTable('services') && Service::query()->active()->exists()) {
+                return Service::query()
+                    ->active()
+                    ->orderBy('sort_order')
+                    ->get()
+                    ->map(fn (Service $service) => $service->toPublicArray())
+                    ->all();
+            }
+        } catch (\Throwable) {
+            // fall through to config
+        }
+
+        return config('cebinova.services', []);
     }
 }

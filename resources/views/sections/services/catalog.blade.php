@@ -1,9 +1,4 @@
-<<<<<<< Updated upstream
-﻿@php
-=======
-@php
->>>>>>> Stashed changes
-    $services = config('cebinova.services');
+ï»¿@php    $services = config('cebinova.services');
     $tones = [
         'web-development' => ['tone' => 'start', 'flag' => 'Start here'],
         'ai-automation' => ['tone' => 'ai', 'flag' => 'AI'],
@@ -46,12 +41,7 @@
                 >
                     <div class="svc-page-card-top">
                         <span class="svc-page-icon">
-<<<<<<< Updated upstream
-                            <x-mark :name="$service['icon']" class="h-5 w-5" />
-=======
-                            <x-icon :name="$service['icon']" class="h-5 w-5" />
->>>>>>> Stashed changes
-                        </span>
+                            <x-mark :name="$service['icon']" class="h-5 w-5" />                        </span>
                         @if ($flag)
                             <span class="svc-page-flag">{{ $flag }}</span>
                         @else

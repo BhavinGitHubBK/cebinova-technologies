@@ -1,4 +1,24 @@
-﻿<section class="hero-section relative overflow-hidden bg-paper">
+<section class="hero-section relative overflow-hidden bg-paper">
+    @php
+        $heroSection = \App\Support\CmsContent::section('home', 'hero');
+        $heroEyebrow = $heroSection?->subheading ?: config('cebinova.positioning');
+        $heroHeading = $heroSection?->heading ?: 'Technology That Helps Every Business Grow.';
+        $heroLead = $heroSection?->body ?: 'From your first website to eCommerce, custom software and AI-powered automation, CEBINOVA gives your business the technology it needs to start, operate and grow.';
+        $heroCtaLabel = $heroSection?->cta_label ?: 'Get Free Consultation';
+        $heroCtaUrl = $heroSection?->cta_url ?: consultation_url();
+        $heroSecondaryLabel = $heroSection?->secondary_cta_label ?: 'Explore Our Solutions';
+        $heroSecondaryUrl = $heroSection?->secondary_cta_url ?: route('solutions');
+        if ($heroCtaUrl === '/contact') {
+            $heroCtaUrl = consultation_url();
+        }
+        if ($heroSecondaryUrl === '/solutions') {
+            $heroSecondaryUrl = route('solutions');
+        }
+        // Split heading for existing visual style when using default/seeded copy
+        $headingParts = preg_split('/\s+Every\s+/i', $heroHeading, 2);
+        $headingPrimary = $headingParts[0] ?? $heroHeading;
+        $headingSecondary = isset($headingParts[1]) ? 'Every '.$headingParts[1] : null;
+    @endphp
     <div class="pointer-events-none absolute inset-0 bg-dots opacity-70"></div>
     <div class="hero-mesh pointer-events-none absolute inset-0"></div>
     <div class="hero-lines pointer-events-none absolute inset-0"></div>
@@ -7,24 +27,28 @@
         <div class="hero-copy">
             <p class="hero-eyebrow" data-hero-item>
                 <span class="hero-eyebrow-dot" aria-hidden="true"></span>
-                {{ config('cebinova.positioning') }}
+                {{ $heroEyebrow }}
             </p>
 
             <h1 class="hero-heading" data-hero-item>
-                <span class="hero-heading-navy">Technology That Helps</span> <span class="hero-heading-line">Every Business Grow.</span>
+                @if ($headingSecondary)
+                    <span class="hero-heading-navy">{{ $headingPrimary }}</span> <span class="hero-heading-line">{{ $headingSecondary }}</span>
+                @else
+                    <span class="hero-heading-navy">{{ $heroHeading }}</span>
+                @endif
             </h1>
 
             <p class="hero-lead" data-hero-item>
-                From your first website to eCommerce, custom software and AI-powered automation, <strong>CEBINOVA</strong> gives your business the technology it needs to start, operate and grow.
+                {!! \Illuminate\Support\Str::of(e($heroLead))->replace('CEBINOVA', '<strong>CEBINOVA</strong>') !!}
             </p>
 
             <div class="hero-actions" data-hero-item>
-                <x-button href="{{ consultation_url() }}" class="hero-btn hero-btn-primary group">
-                    Get Free Consultation
+                <x-button href="{{ $heroCtaUrl }}" class="hero-btn hero-btn-primary group">
+                    {{ $heroCtaLabel }}
                     <svg class="arrow-shift h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></svg>
                 </x-button>
-                <x-button href="{{ route('solutions') }}" variant="outline" class="hero-btn hero-btn-secondary group">
-                    Explore Our Solutions
+                <x-button href="{{ $heroSecondaryUrl }}" variant="outline" class="hero-btn hero-btn-secondary group">
+                    {{ $heroSecondaryLabel }}
                     <svg class="arrow-shift h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></svg>
                 </x-button>
             </div>
@@ -46,12 +70,7 @@
                     <li>
                         <a href="{{ $item['href'] }}" class="hero-cap{{ ! empty($item['accent']) ? ' is-accent' : '' }}" data-hero-cap>
                             <span class="hero-cap-icon-wrap">
-<<<<<<< Updated upstream
-                                <x-mark :name="$item['icon']" class="hero-cap-icon" />
-=======
-                                <x-icon :name="$item['icon']" class="hero-cap-icon" />
->>>>>>> Stashed changes
-                            </span>
+                                <x-mark :name="$item['icon']" class="hero-cap-icon" />                            </span>
                             <span>{{ $item['label'] }}</span>
                         </a>
                     </li>

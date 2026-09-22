@@ -2,25 +2,24 @@
 
 namespace Database\Seeders;
 
+use App\Enums\UserRole;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use RuntimeException;
+use Illuminate\Support\Str;
 
 class AdminUserSeeder extends Seeder
 {
     public function run(): void
     {
-        $email = (string) env('ADMIN_EMAIL', 'admin@cebinova.test');
-        $password = (string) env('ADMIN_PASSWORD', '');
-        $name = (string) env('ADMIN_NAME', 'Cebinova Admin');
+        $email = env('ADMIN_EMAIL', 'admin@cebinova.test');
+        $name = env('ADMIN_NAME', 'Cebinova Admin');
+        $password = env('ADMIN_PASSWORD');
+        $generated = false;
 
-        if ($password === '') {
-            if (app()->environment('production')) {
-                throw new RuntimeException('ADMIN_PASSWORD must be set to seed an admin in production.');
-            }
-
-            $password = 'password';
+        if (! filled($password)) {
+            $password = Str::password(16);
+            $generated = true;
         }
 
         User::query()->updateOrCreate(
@@ -28,7 +27,16 @@ class AdminUserSeeder extends Seeder
             [
                 'name' => $name,
                 'password' => Hash::make($password),
-            ],
+                'role' => UserRole::SuperAdmin,
+                'is_active' => true,
+            ]
         );
+
+        if ($generated) {
+            $this->command?->warn("ADMIN_PASSWORD was empty. Generated once: {$password}");
+            $this->command?->warn('Store this password securely. It will not be shown again.');
+        } else {
+            $this->command?->info("Admin user ready: {$email}");
+        }
     }
 }

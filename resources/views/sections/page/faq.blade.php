@@ -1,8 +1,14 @@
 @php
+    use App\Support\CmsContent;
+
     $topic = is_string($topic ?? null) ? $topic : null;
-    $items = (isset($faqItems) && is_array($faqItems) && isset($faqItems[0]['q']))
-        ? $faqItems
-        : config('cebinova.page.faq', []);
+    if (isset($faqItems) && is_array($faqItems) && isset($faqItems[0]['q'])) {
+        $items = $faqItems;
+    } elseif (isset($items) && is_array($items) && isset($items[0]['q'])) {
+        $items = $items;
+    } else {
+        $items = CmsContent::faqs($faqPage ?? 'general');
+    }
 @endphp
 
 @if (count($items))

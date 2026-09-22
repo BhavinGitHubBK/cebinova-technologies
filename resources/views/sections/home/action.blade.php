@@ -1,4 +1,4 @@
-﻿@php
+@php
     $steps = [
         ['label' => 'Customer', 'note' => 'Walk-in, call or message', 'cat' => 'Origin', 'icon' => 'users'],
         ['label' => 'Website / WhatsApp', 'note' => 'First digital touch', 'cat' => 'Presence', 'icon' => 'globe'],
@@ -37,12 +37,7 @@
                         <span class="home-action-node" aria-hidden="true"></span>
                         <div class="home-action-step">
                             <span class="home-action-icon">
-<<<<<<< Updated upstream
-                                <x-mark :name="$step['icon']" class="h-4 w-4" />
-=======
-                                <x-icon :name="$step['icon']" class="h-4 w-4" />
->>>>>>> Stashed changes
-                            </span>
+                                <x-mark :name="$step['icon']" class="h-4 w-4" />                            </span>
                             <span class="home-action-cat">{{ $step['cat'] }}</span>
                             <h3 class="home-action-title">{{ $step['label'] }}</h3>
                             <p class="home-action-note">{{ $step['note'] }}</p>
@@ -63,12 +58,7 @@
                 @foreach ($signals as $index => $signal)
                     <li class="js-signal-card home-action-signal" style="animation-delay: {{ $index * 0.55 }}s">
                         <span class="home-action-signal-icon" aria-hidden="true">
-<<<<<<< Updated upstream
-                            <x-mark :name="$signal['icon']" class="h-3.5 w-3.5" />
-=======
-                            <x-icon :name="$signal['icon']" class="h-3.5 w-3.5" />
->>>>>>> Stashed changes
-                        </span>
+                            <x-mark :name="$signal['icon']" class="h-3.5 w-3.5" />                        </span>
                         {{ $signal['label'] }}
                     </li>
                 @endforeach

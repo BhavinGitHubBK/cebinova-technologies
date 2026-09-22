@@ -1,13 +1,7 @@
 @php
-<<<<<<< Updated upstream
     $regular = \App\Support\MarketingPackages::packageArray('regular') ?? [];
     $festival = \App\Support\MarketingPackages::packageArray('festival') ?? [];
     $growth = \App\Support\MarketingPackages::packageArray('growth') ?? [];
-=======
-    $regular = config('cebinova.marketing.regular');
-    $festival = config('cebinova.marketing.festival');
-    $growth = config('cebinova.marketing.growth');
->>>>>>> Stashed changes
 @endphp
 
 <section id="marketing-plans" class="mkt-page-explorer scroll-mt-28 section-pad-lg" aria-label="Marketing plan prices">
@@ -46,9 +40,9 @@
                         {{ $growth['title'] }}
                         <span class="mkt-page-growth-banner-badge">Most Popular</span>
                     </span>
-                    <span class="mkt-page-growth-banner-text">{{ $growth['teaser'] }} From {{ cebinova_inr($growth['plans']['monthly']['price']) }} / month - only ₹1,000 more than Regular.</span>
+                    <span class="mkt-page-growth-banner-text">{{ $growth['teaser'] }} From {{ cebinova_inr($growth['plans']['monthly']['price']) }} / month - only â‚¹1,000 more than Regular.</span>
                 </span>
-                <span class="mkt-page-growth-banner-link">View →</span>
+                <span class="mkt-page-growth-banner-link">View â†’</span>
             </a>
 
             <div class="mkt-page-panels">
@@ -73,7 +67,7 @@
                                     class="pack-duration js-pack-duration {{ $durationKey === 'yearly' ? 'is-active' : '' }}"
                                     data-cat="{{ $category['key'] }}"
                                     data-duration="{{ $durationKey }}"
-                                    data-sticky-name="{{ $category['service'] }} · {{ $plan['label'] }}"
+                                    data-sticky-name="{{ $category['service'] }} Â· {{ $plan['label'] }}"
                                     data-sticky-price="{{ \App\Support\MarketingPackages::priceHeadline($category['service'], $plan['label']) }}"
                                     data-sticky-cta="{{ package_enquiry_url($category['service'], $plan['label']) }}"
                                     data-sticky-wa="{{ package_whatsapp_url($category['service'], $plan['label']) }}"
@@ -101,7 +95,7 @@
                                             <p class="mkt-page-plan-duration">Duration: {{ $plan['duration'] }}</p>
                                             @include('sections.marketing.price-stack', ['service' => $category['service'], 'plan' => $plan, 'tone' => 'light'])
                                             @if ($category['key'] === 'regular' && $durationKey === 'monthly')
-                                                <p class="mkt-page-plan-note">Need festivals too? Complete Growth is only ₹1,000 more and includes them.</p>
+                                                <p class="mkt-page-plan-note">Need festivals too? Complete Growth is only â‚¹1,000 more and includes them.</p>
                                             @endif
                                             <div class="mkt-page-plan-actions">
                                                 <x-button href="{{ package_enquiry_url($category['service'], $plan['label']) }}" size="lg" class="w-full">Get This Plan</x-button>

@@ -1,9 +1,4 @@
-<<<<<<< Updated upstream
-﻿@php
-=======
-@php
->>>>>>> Stashed changes
-    $points = [
+ï»¿@php    $points = [
         [
             'icon' => 'nodes',
             'cat' => 'Partner',
@@ -103,12 +98,7 @@
                     @php $point = $points[$index] ?? ['icon' => 'check', 'cat' => 'Reason', 'href' => route('about'), 'cta' => 'Learn more']; @endphp
                     <a href="{{ $point['href'] }}" class="home-why-card">
                         <span class="home-why-icon">
-<<<<<<< Updated upstream
-                            <x-mark :name="$point['icon']" class="h-4 w-4" />
-=======
-                            <x-icon :name="$point['icon']" class="h-4 w-4" />
->>>>>>> Stashed changes
-                        </span>
+                            <x-mark :name="$point['icon']" class="h-4 w-4" />                        </span>
                         <span class="home-why-cat">{{ $point['cat'] }}</span>
                         <h3 class="home-why-title">{{ $item['title'] }}</h3>
                         <p class="home-why-note">{{ $item['text'] }}</p>

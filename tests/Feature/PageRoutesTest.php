@@ -62,7 +62,8 @@ class PageRoutesTest extends TestCase
             ->assertSee('CEBINOVA Commerce', false)
             ->assertSee('CEBINOVA Cloud', false)
             ->assertSee('Ready to Take Your Business Forward?', false)
-            ->assertSee('Start with the solution you need today. CEBINOVA can grow with you tomorrow.', false)
+            ->assertSee('Start with the solution you need today.', false)
+            ->assertSee('<strong>CEBINOVA</strong> can grow with you tomorrow.', false)
             ->assertSee('Talk to CEBINOVA', false)
             ->assertSee('Start Conversation', false)
             ->assertSee('Working hours', false)
@@ -457,7 +458,7 @@ class PageRoutesTest extends TestCase
     {
         $nav = $this->get('/')->assertOk()->getContent();
 
-        $this->assertMatchesRegularExpression('/aria-label="Primary"[\s\S]*Home[\s\S]*Services[\s\S]*Solutions[\s\S]*Marketing Packages[\s\S]*nav-link-badge[\s\S]*Popular[\s\S]*Pricing[\s\S]*nav-link-badge[\s\S]*Hot[\s\S]*Demos[\s\S]*About[\s\S]*Contact/', $nav);
+        $this->assertMatchesRegularExpression('/aria-label="Primary"[\s\S]*Home[\s\S]*Services[\s\S]*Solutions[\s\S]*Marketing Packages[\s\S]*nav-link-badge[\s\S]*Popular[\s\S]*Pricing[\s\S]*nav-link-badge[\s\S]*Hot[\s\S]*Demos[\s\S]*Portfolio[\s\S]*Blog[\s\S]*About[\s\S]*Contact/', $nav);
         $this->assertStringContainsString('Business Solutions', $nav);
         $this->assertStringContainsString('View All Solutions', $nav);
         $this->assertStringContainsString('nav-mega-item', $nav);

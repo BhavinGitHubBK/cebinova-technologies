@@ -44,6 +44,8 @@
     @include('sections.pricing.hero')
 
 <div class="kirana-pricing" data-wa="{{ $phoneDigits }}" data-email="{{ $email }}" data-contact="{{ $enquiry }}">
+  <script type="application/json" id="cebinova-website-plans">@json($kiranaPlans ?? \App\Support\WebsitePackages::plans())</script>
+  <script type="application/json" id="cebinova-website-addons">@json($kiranaAddons ?? \App\Support\WebsitePackages::addons())</script>
   <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
   <div id="plans"></div>
     <section class="section calc-section" id="calculator">

@@ -1,9 +1,4 @@
-<<<<<<< Updated upstream
-﻿@php
-=======
-@php
->>>>>>> Stashed changes
-    $icons = [
+ï»¿@php    $icons = [
         'kirana' => 'bag', 'dairy' => 'home', 'food' => 'store', 'retail' => 'cart',
         'manufacturing' => 'factory', 'wholesale' => 'layers', 'export' => 'globe',
         'professional' => 'briefcase', 'healthcare' => 'heart', 'education' => 'book',
@@ -54,12 +49,7 @@
                 >
                     <div class="ind-page-card-top">
                         <span class="ind-page-icon">
-<<<<<<< Updated upstream
-                            <x-mark :name="$icons[$industry['slug']] ?? 'globe'" class="h-5 w-5" />
-=======
-                            <x-icon :name="$icons[$industry['slug']] ?? 'globe'" class="h-5 w-5" />
->>>>>>> Stashed changes
-                        </span>
+                            <x-mark :name="$icons[$industry['slug']] ?? 'globe'" class="h-5 w-5" />                        </span>
                         @if (in_array($industry['slug'], $featured, true))
                             <span class="ind-page-flag">Common start</span>
                         @endif

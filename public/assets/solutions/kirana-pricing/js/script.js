@@ -22,6 +22,72 @@
     bundle: 59998
   };
 
+  // Sync prices/labels from Laravel DB JSON when present
+  (function syncFromServer() {
+    function readJson(id) {
+      const el = document.getElementById(id);
+      if (!el) return null;
+      try {
+        return JSON.parse(el.textContent || "null");
+      } catch (e) {
+        return null;
+      }
+    }
+
+    const plans = readJson("cebinova-website-plans");
+    if (Array.isArray(plans)) {
+      plans.forEach(function (plan) {
+        if (!plan || !plan.key) return;
+        const key = String(plan.key);
+        const input = document.querySelector('input[name="website"][value="' + key + '"]');
+        if (!input) return;
+        if (plan.price != null) input.setAttribute("data-price", String(plan.price));
+        if (plan.title) {
+          input.setAttribute("data-label", plan.title);
+          const card = input.closest("label, .pkg-card, .option-card, .pkg-option");
+          const nameEl = card ? card.querySelector(".option-name") : null;
+          if (nameEl) nameEl.textContent = plan.title;
+        }
+        if (plan.delivery) input.setAttribute("data-delivery", plan.delivery);
+        if (plan.support) {
+          input.setAttribute("data-support", plan.support);
+          PLAN_META[key] = PLAN_META[key] || {};
+          PLAN_META[key].support = plan.support;
+        }
+        if (plan.training) {
+          input.setAttribute("data-training", plan.training);
+          PLAN_META[key] = PLAN_META[key] || {};
+          PLAN_META[key].training = plan.training;
+        }
+      });
+    }
+
+    const addons = readJson("cebinova-website-addons");
+    if (Array.isArray(addons)) {
+      addons.forEach(function (addon) {
+        if (!addon || !addon.title) return;
+        const title = String(addon.title).toLowerCase();
+        if (title.indexOf("android") !== -1 && addon.price != null) {
+          APP_PRICES.android = Number(addon.price);
+          const android = document.getElementById("optAndroid");
+          if (android) {
+            android.setAttribute("data-price", String(addon.price));
+            android.setAttribute("data-label", addon.title);
+          }
+        }
+        if (title.indexOf("ios") !== -1 && addon.price != null) {
+          APP_PRICES.ios = Number(addon.price);
+          const ios = document.getElementById("optIos");
+          if (ios) {
+            ios.setAttribute("data-price", String(addon.price));
+            ios.setAttribute("data-label", addon.title);
+          }
+        }
+      });
+      APP_PRICES.bundle = APP_PRICES.android + APP_PRICES.ios;
+    }
+  })();
+
   const navToggle = document.getElementById("navToggle");
   const primaryNav = document.getElementById("primaryNav");
   const scrollProgress = document.getElementById("scrollProgress");

@@ -1,4 +1,4 @@
-﻿@php
+@php
     $labels = ['Go Digital', 'Sell Online', 'Manage', 'Automate', 'Grow'];
     $icons = ['globe', 'cart', 'layers', 'spark', 'trend'];
     $hrefs = [

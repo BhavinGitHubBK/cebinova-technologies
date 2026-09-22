@@ -2,30 +2,28 @@
 
 namespace App\Models;
 
+use App\Enums\UserRole;
 use Database\Factories\UserFactory;
-use Filament\Models\Contracts\FilamentUser;
-use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable implements FilamentUser
+class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * @var list<string>
-     */
     protected $fillable = [
         'name',
         'email',
         'password',
+        'role',
+        'is_active',
+        'last_login_at',
+        'last_login_ip',
     ];
 
-    /**
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
@@ -36,12 +34,34 @@ class User extends Authenticatable implements FilamentUser
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'role' => UserRole::class,
+            'is_active' => 'boolean',
+            'last_login_at' => 'datetime',
         ];
     }
 
-    public function canAccessPanel(Panel $panel): bool
+    public function assignedLeads(): HasMany
     {
-        // Phase 1: any User row may access admin (no public registration).
-        return $panel->getId() === 'admin';
+        return $this->hasMany(Lead::class, 'assigned_to');
+    }
+
+    public function activityLogs(): HasMany
+    {
+        return $this->hasMany(ActivityLog::class);
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === UserRole::SuperAdmin;
+    }
+
+    public function canWriteContent(): bool
+    {
+        return $this->role?->canWrite() ?? false;
+    }
+
+    public function canManageUsers(): bool
+    {
+        return $this->role?->canManageUsers() ?? false;
     }
 }

@@ -1,9 +1,4 @@
-<<<<<<< Updated upstream
-﻿@php
-=======
-@php
->>>>>>> Stashed changes
-    $services = collect(config('cebinova.services'))->keyBy('slug');
+ï»¿@php    $services = collect(config('cebinova.services'))->keyBy('slug');
     $layout = [
         [
             'slug' => 'web-development',
@@ -65,12 +60,7 @@
                 @php $service = $services[$cell['slug']]; @endphp
                 <a href="{{ route('services.show', $service['slug']) }}" class="home-svc-card{{ $cell['tone'] ? ' is-'.$cell['tone'] : '' }}">
                     <span class="home-svc-icon">
-<<<<<<< Updated upstream
-                        <x-mark :name="$service['icon']" class="h-4 w-4" />
-=======
-                        <x-icon :name="$service['icon']" class="h-4 w-4" />
->>>>>>> Stashed changes
-                    </span>
+                        <x-mark :name="$service['icon']" class="h-4 w-4" />                    </span>
                     <span class="home-svc-copy">
                         <span class="home-svc-meta">
                             <span class="home-svc-cat">{{ $service['category'] }}</span>

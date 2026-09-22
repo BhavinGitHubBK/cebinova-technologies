@@ -1,9 +1,4 @@
-<<<<<<< Updated upstream
-﻿@php
-=======
-@php
->>>>>>> Stashed changes
-    $modules = [
+ï»¿@php    $modules = [
         ['icon' => 'cart', 'cat' => 'Selling', 'href' => route('services.show', 'ecommerce')],
         ['icon' => 'briefcase', 'cat' => 'Operations', 'href' => route('services.show', 'custom-software')],
         ['icon' => 'spark', 'cat' => 'Intelligence', 'href' => route('services.show', 'ai-automation')],
@@ -40,12 +35,7 @@
                 <a href="{{ $module['href'] }}" class="home-eco-card{{ $loop->last ? ' is-last' : '' }}">
                     <span class="home-eco-top">
                         <span class="home-eco-icon">
-<<<<<<< Updated upstream
-                            <x-mark :name="$module['icon']" class="h-4 w-4" />
-=======
-                            <x-icon :name="$module['icon']" class="h-4 w-4" />
->>>>>>> Stashed changes
-                        </span>
+                            <x-mark :name="$module['icon']" class="h-4 w-4" />                        </span>
                         <span class="home-eco-flag">In vision</span>
                     </span>
                     <span class="home-eco-cat">{{ $module['cat'] }}</span>

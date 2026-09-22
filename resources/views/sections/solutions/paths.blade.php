@@ -1,8 +1,4 @@
-<<<<<<< Updated upstream
-﻿@php
-=======
 @php
->>>>>>> Stashed changes
     $cats = [
         'starter' => 'Presence',
         'sell' => 'Commerce',
@@ -29,11 +25,7 @@
             <p class="section-support">
                 These paths stay available as a growth sequence. Business solutions above are how that work looks in practice.
             </p>
-<<<<<<< Updated upstream
-            <p class="sol-page-path-track">Starter â†’ Sell Online â†’ Manage â†’ Automate &amp; Scale</p>
-=======
             <p class="sol-page-path-track">Starter → Sell Online → Manage → Automate &amp; Scale</p>
->>>>>>> Stashed changes
         </div>
 
         <div class="sol-page-path-grid" data-stagger>
@@ -41,11 +33,7 @@
                 @php $highlight = $path['key'] === 'automate'; @endphp
                 <article id="{{ $path['key'] }}" class="sol-page-path-card scroll-mt-28{{ $highlight ? ' is-featured' : '' }}">
                     <span class="sol-page-path-icon">
-<<<<<<< Updated upstream
                         <x-mark :name="$icons[$path['key']] ?? 'layers'" class="h-4 w-4" />
-=======
-                        <x-icon :name="$icons[$path['key']] ?? 'layers'" class="h-4 w-4" />
->>>>>>> Stashed changes
                     </span>
                     <span class="sol-page-path-meta">
                         <span class="sol-page-path-cat">{{ $cats[$path['key']] ?? 'Path' }}</span>

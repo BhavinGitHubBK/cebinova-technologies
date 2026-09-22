@@ -1,9 +1,4 @@
-<<<<<<< Updated upstream
-﻿@php
-=======
-@php
->>>>>>> Stashed changes
-    $meta = [
+ï»¿@php    $meta = [
         ['icon' => 'chat', 'cat' => 'Conversations', 'note' => 'Answer common questions after hours.'],
         ['icon' => 'trend', 'cat' => 'Capture', 'note' => 'Route new enquiries to the right person.'],
         ['icon' => 'whatsapp', 'cat' => 'Messaging', 'note' => 'Send updates where customers already chat.'],
@@ -56,12 +51,7 @@
                 <li>
                     <article class="home-ai-card" tabindex="0" data-ai-block>
                         <span class="home-ai-icon">
-<<<<<<< Updated upstream
-                            <x-mark :name="$item['icon']" class="h-4 w-4" />
-=======
-                            <x-icon :name="$item['icon']" class="h-4 w-4" />
->>>>>>> Stashed changes
-                        </span>
+                            <x-mark :name="$item['icon']" class="h-4 w-4" />                        </span>
                         <span class="home-ai-body">
                             <span class="home-ai-cat">{{ $item['cat'] }}</span>
                             <h3 class="home-ai-title">{{ $feature }}</h3>

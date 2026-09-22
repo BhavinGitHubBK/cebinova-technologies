@@ -1,11 +1,6 @@
 @php
-<<<<<<< Updated upstream
     $growth = \App\Support\MarketingPackages::packageArray('growth') ?? ['plans' => [], 'badge' => null, 'heading' => '', 'title' => '', 'service' => 'Complete Growth'];
     $defaultPlan = $growth['plans']['yearly'] ?? reset($growth['plans']) ?: [];
-=======
-    $growth = config('cebinova.marketing.growth');
-    $defaultPlan = $growth['plans']['yearly'];
->>>>>>> Stashed changes
 @endphp
 
 <article class="mkt-page-growth-card">
@@ -41,7 +36,7 @@
                         data-period="{{ $plan['period'] }}"
                         data-duration="{{ $plan['label'] }}"
                         data-stack="{{ \App\Support\MarketingPackages::priceHeadline($growth['service'], $plan['label']) }}"
-                        data-sticky-name="Complete Growth · {{ $plan['label'] }}"
+                        data-sticky-name="Complete Growth Â· {{ $plan['label'] }}"
                         data-sticky-price="{{ \App\Support\MarketingPackages::priceHeadline($growth['service'], $plan['label']) }}"
                         data-sticky-cta="{{ package_enquiry_url($growth['service'], $plan['label']) }}"
                         data-sticky-wa="{{ package_whatsapp_url($growth['service'], $plan['label']) }}"
