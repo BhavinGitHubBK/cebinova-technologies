@@ -1,4 +1,4 @@
-ï»¿<footer class="site-footer" aria-label="Site footer">    <div class="site-footer-top">
+<footer class="site-footer" aria-label="Site footer">    <div class="site-footer-top">
         <div class="container-wide site-footer-grid">
             <div class="site-footer-brand">
                 <x-cebinova-logo variant="full" tone="dark" class="max-w-full" />

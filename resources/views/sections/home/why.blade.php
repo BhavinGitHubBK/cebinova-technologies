@@ -1,4 +1,4 @@
-ï»¿@php    $points = [
+@php    $points = [
         [
             'icon' => 'nodes',
             'cat' => 'Partner',

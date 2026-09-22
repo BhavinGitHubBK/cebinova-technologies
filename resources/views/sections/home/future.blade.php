@@ -1,4 +1,4 @@
-ï»¿@php    $modules = [
+@php    $modules = [
         ['icon' => 'cart', 'cat' => 'Selling', 'href' => route('services.show', 'ecommerce')],
         ['icon' => 'briefcase', 'cat' => 'Operations', 'href' => route('services.show', 'custom-software')],
         ['icon' => 'spark', 'cat' => 'Intelligence', 'href' => route('services.show', 'ai-automation')],

@@ -1,4 +1,4 @@
-ï»¿@php    $contactWhatsapp = \App\Support\MarketingPackages::isValid((string) request('package_category'), (string) request('plan_duration'))
+@php    $contactWhatsapp = \App\Support\MarketingPackages::isValid((string) request('package_category'), (string) request('plan_duration'))
         ? package_whatsapp_url((string) request('package_category'), (string) request('plan_duration'))
         : whatsapp_url();
     $emails = array_values(array_filter([

@@ -1,4 +1,4 @@
-ï»¿@php    $solutionGroups = config('cebinova.nav_solutions');
+@php    $solutionGroups = config('cebinova.nav_solutions');
     $businessIcons = [
         'kirana' => 'bag',
         'retail' => 'cart',

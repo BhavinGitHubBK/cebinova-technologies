@@ -1,4 +1,4 @@
-ï»¿@php    $services = collect(config('cebinova.services'))->keyBy('slug');
+@php    $services = collect(config('cebinova.services'))->keyBy('slug');
     $layout = [
         [
             'slug' => 'web-development',

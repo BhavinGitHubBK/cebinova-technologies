@@ -1,4 +1,4 @@
-ï»¿@php    $icons = [
+@php    $icons = [
         'kirana' => 'bag', 'dairy' => 'home', 'food' => 'store', 'retail' => 'cart',
         'manufacturing' => 'factory', 'wholesale' => 'layers', 'export' => 'globe',
         'professional' => 'briefcase', 'healthcare' => 'heart', 'education' => 'book',

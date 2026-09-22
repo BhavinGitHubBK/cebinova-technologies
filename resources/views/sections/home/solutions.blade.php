@@ -1,4 +1,4 @@
-ï»¿@php    $cats = [
+@php    $cats = [
         'starter' => 'Presence',
         'sell' => 'Commerce',
         'manage' => 'Operations',

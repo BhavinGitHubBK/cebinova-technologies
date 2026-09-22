@@ -1,4 +1,4 @@
-ï»¿@php    $icons = [
+@php    $icons = [
         'kirana' => 'bag',
         'retail' => 'cart',
         'professional-services' => 'briefcase',

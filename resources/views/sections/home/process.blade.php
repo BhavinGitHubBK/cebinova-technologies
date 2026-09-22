@@ -1,4 +1,4 @@
-ï»¿@php    $icons = ['chat', 'layers', 'cpu', 'rocket', 'trend'];
+@php    $icons = ['chat', 'layers', 'cpu', 'rocket', 'trend'];
     $cats = ['Discover', 'Blueprint', 'Deliver', 'Go live', 'Partner'];
 @endphp
 

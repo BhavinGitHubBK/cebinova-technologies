@@ -1,4 +1,4 @@
-ï»¿@php    $whyIcons = ['nodes', 'layers', 'briefcase', 'trend', 'check', 'shield'];
+@php    $whyIcons = ['nodes', 'layers', 'briefcase', 'trend', 'check', 'shield'];
 @endphp
 
 <section class="about-page-why section-pad-lg" aria-label="Why CEBINOVA">

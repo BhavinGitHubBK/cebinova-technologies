@@ -1,4 +1,4 @@
-ï»¿@php    $items = [
+@php    $items = [
         ['title' => 'Business first', 'text' => 'We start with how you sell, serve customers and run operations today.', 'icon' => 'briefcase'],
         ['title' => 'Right-sized technology', 'text' => 'No unnecessary features. Start with what you need now, then scale.', 'icon' => 'layers'],
         ['title' => 'One partner', 'text' => 'Web, commerce, software, AI and marketing stay connected as you grow.', 'icon' => 'nodes'],

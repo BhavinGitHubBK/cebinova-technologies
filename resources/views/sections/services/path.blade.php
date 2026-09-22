@@ -1,4 +1,4 @@
-ï»¿@php    $steps = [
+@php    $steps = [
         ['icon' => 'globe', 'step' => '01', 'title' => 'Presence', 'text' => 'Website, catalogue and a clear way for customers to enquire.'],
         ['icon' => 'store', 'step' => '02', 'title' => 'Sell & manage', 'text' => 'eCommerce, software and operations tools when the process needs them.'],
         ['icon' => 'spark', 'step' => '03', 'title' => 'Automate & grow', 'text' => 'AI, workflows and marketing once the foundation is in place.'],

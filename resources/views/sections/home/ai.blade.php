@@ -1,4 +1,4 @@
-ï»¿@php    $meta = [
+@php    $meta = [
         ['icon' => 'chat', 'cat' => 'Conversations', 'note' => 'Answer common questions after hours.'],
         ['icon' => 'trend', 'cat' => 'Capture', 'note' => 'Route new enquiries to the right person.'],
         ['icon' => 'whatsapp', 'cat' => 'Messaging', 'note' => 'Send updates where customers already chat.'],
