@@ -1,0 +1,549 @@
+/* CEBINOVA overlay for the scoped Kirana calculator */
+
+.kirana-pricing {
+  --estimate-sticky-top: 5.75rem;
+  padding-top: 1.5rem;
+  overflow-x: visible;
+}
+
+/* overflow-x: hidden on html/body/main creates a non-viewport sticky containing block */
+html:has(.kirana-pricing),
+html:has(.kirana-pricing) body,
+html:has(.kirana-pricing) main {
+  overflow-x: visible;
+}
+
+.kirana-pricing .included-strip,
+.kirana-pricing .included-list {
+  flex-wrap: wrap;
+  overflow: hidden;
+}
+
+.kirana-pricing .calc-progress {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.55rem;
+  max-width: none;
+}
+
+.kirana-pricing .calc-progress li {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0.7rem 0.75rem;
+  border: 1px solid rgba(1, 58, 157, 0.12);
+  border-radius: 0;
+  background: #fff;
+  box-shadow: 0 8px 18px rgba(1, 58, 157, 0.05);
+  color: #013a9d;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.25;
+  white-space: normal;
+  justify-content: flex-start;
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    background-color 0.25s ease;
+}
+
+.kirana-pricing .calc-progress li span {
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  background: transparent !important;
+  color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  box-shadow: none !important;
+  transform: none !important;
+  display: block;
+  place-items: unset;
+  animation: none !important;
+}
+
+.kirana-pricing .calc-progress li .calc-step-num,
+.kirana-pricing .calc-progress li span.calc-step-num {
+  flex-shrink: 0;
+  display: inline-grid;
+  place-items: center;
+  width: 1.55rem;
+  height: 1.55rem;
+  border-radius: 0;
+  background: #fbb50b !important;
+  color: #010b24 !important;
+  font-size: 0.72rem;
+  font-weight: 800;
+  box-shadow: none !important;
+  transform: none !important;
+  animation: none !important;
+}
+
+.kirana-pricing .calc-step-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.1rem;
+  background: transparent !important;
+}
+
+.kirana-pricing .calc-step-label,
+.kirana-pricing .calc-step-value,
+.kirana-pricing .calc-progress li strong,
+.kirana-pricing .calc-progress li em {
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #013a9d;
+}
+
+.kirana-pricing .calc-step-label {
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+}
+
+.kirana-pricing .calc-step-value {
+  overflow: hidden;
+  color: #64748b;
+  font-size: 0.72rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.kirana-pricing .calc-progress li.done,
+.kirana-pricing .calc-progress li.has-value {
+  border-color: rgba(251, 181, 11, 0.4);
+  background: #fffdf4;
+}
+
+.kirana-pricing .calc-progress li.done .calc-step-num,
+.kirana-pricing .calc-progress li.has-value .calc-step-num {
+  background: #fbb50b !important;
+  color: #010b24 !important;
+}
+
+.kirana-pricing .calc-progress li.current,
+.kirana-pricing .calc-progress li.active {
+  border-color: rgba(251, 181, 11, 0.45);
+  box-shadow: 0 10px 22px rgba(1, 58, 157, 0.08);
+  background: #fffdf4;
+}
+
+.kirana-pricing .calc-progress li.current .calc-step-num,
+.kirana-pricing .calc-progress li.active .calc-step-num {
+  background: #fbb50b !important;
+  color: #010b24 !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.kirana-pricing .calc-progress li.has-value .calc-step-value {
+  color: #013a9d;
+}
+
+.kirana-pricing .live-progress-summary {
+  display: none !important;
+}
+
+@media (max-width: 900px) {
+  .kirana-pricing .calc-progress {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .kirana-pricing .calc-progress {
+    grid-template-columns: 1fr;
+  }
+}
+
+.kirana-pricing .pkg-upgrade-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 10px;
+}
+
+.kirana-pricing .pkg-upgrade-top,
+.kirana-pricing .pkg-upgrade-badge strong {
+  white-space: normal;
+}
+
+.kirana-pricing .calc-path {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 18px;
+  margin: 22px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.kirana-pricing .calc-path li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #013a9d;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.kirana-pricing .calc-path strong {
+  display: inline-grid;
+  place-items: center;
+  width: 1.55rem;
+  height: 1.55rem;
+  border-radius: 999px;
+  background: #013a9d;
+  color: #ffd24d;
+  font-size: 0.78rem;
+}
+
+.kirana-pricing .calc-pick-hint {
+  margin: 14px 0 0;
+  color: #334155;
+  font-size: 0.95rem;
+}
+
+.kirana-pricing .calculator-layout {
+  align-items: stretch;
+}
+
+.kirana-pricing .estimate-slot {
+  align-self: stretch;
+  height: auto;
+  min-height: 100%;
+}
+
+@media (min-width: 981px) {
+  .kirana-pricing .summary-card.estimate-premium,
+  .kirana-pricing .summary-card.estimate-premium.invoice-card,
+  .kirana-pricing .summary-card.estimate-premium.is-pinned {
+    position: sticky;
+    top: var(--estimate-sticky-top);
+    max-height: calc(100dvh - var(--estimate-sticky-top) - 0.75rem);
+  }
+}
+
+.kirana-pricing .cebinova-kirana-logo {
+  height: 48px;
+  width: auto;
+  max-width: 220px;
+  display: block;
+  object-fit: contain;
+}
+
+@media (max-width: 720px) {
+  .kirana-pricing .cebinova-kirana-logo {
+    height: 40px;
+  }
+}
+
+.kirana-pricing .pkg-simple {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0.85rem 0 0.35rem;
+}
+
+.kirana-pricing .pkg-fact {
+  display: grid;
+  gap: 0.1rem;
+  color: #013a9d;
+  font-size: 0.92rem;
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+.kirana-pricing .pkg-fact em {
+  color: #64748b;
+  font-size: 0.72rem;
+  font-style: normal;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.kirana-pricing .pkg-more {
+  margin-top: 0.75rem;
+  scroll-margin-bottom: 7rem;
+}
+
+.kirana-pricing .option-card {
+  scroll-margin-bottom: 7rem;
+}
+
+.kirana-pricing .pkg-more summary {
+  cursor: pointer;
+  color: #013a9d;
+  font-size: 0.88rem;
+  font-weight: 800;
+  list-style: none;
+}
+
+.kirana-pricing .pkg-more summary::-webkit-details-marker {
+  display: none;
+}
+
+.kirana-pricing .pkg-skip-note {
+  margin: 0 0 1rem;
+  color: #334155;
+  font-size: 0.95rem;
+}
+
+.kirana-pricing .est-clarity {
+  margin: 0.85rem 0 0;
+  padding: 0;
+  list-style: none;
+  color: #475569;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.kirana-pricing .est-clarity li + li {
+  margin-top: 0.35rem;
+}
+
+.kirana-pricing .pricing-faq-section {
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
+}
+
+.kirana-pricing .pricing-faq-section h2 {
+  max-width: none;
+  color: #013a9d;
+  font-size: clamp(1.7rem, 3vw, 2.2rem);
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.kirana-pricing .pricing-faq-lead {
+  margin: 0.65rem 0 0;
+  color: #64748b;
+  font-size: 1.05rem;
+}
+
+.kirana-pricing .pricing-faq-list {
+  max-width: none;
+  margin-top: 1.5rem;
+  overflow: hidden;
+  border: 1px solid #d7e0ea;
+  border-radius: 0;
+  background: #fff;
+}
+
+.kirana-pricing .pricing-faq-list details {
+  padding: 0;
+  border-bottom: 1px solid #e5edf5;
+  scroll-margin-bottom: 7rem;
+}
+
+.kirana-pricing .pricing-faq-list details:last-child {
+  border-bottom: 0;
+}
+
+.kirana-pricing .pricing-faq-list summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  padding: 1.15rem 1.4rem;
+  cursor: pointer;
+  list-style: none;
+  color: #013a9d;
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1.35;
+  outline: none;
+}
+
+.kirana-pricing .pricing-faq-list summary::-webkit-details-marker,
+.kirana-pricing .pricing-faq-list summary::marker {
+  display: none;
+  content: none;
+}
+
+.kirana-pricing .pricing-faq-list summary span {
+  flex-shrink: 0;
+  color: rgba(1, 58, 157, 0.35);
+  font-size: 1.2rem;
+  font-weight: 500;
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+
+.kirana-pricing .pricing-faq-list details[open] summary span {
+  transform: rotate(45deg);
+}
+
+.kirana-pricing .pricing-faq-list summary:hover {
+  background: #f8fafc;
+}
+
+.kirana-pricing .pricing-faq-list summary:focus,
+.kirana-pricing .pricing-faq-list summary:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.kirana-pricing .pricing-faq-list p {
+  margin: 0;
+  padding: 0 1.4rem 1.15rem;
+  color: #64748b;
+  line-height: 1.65;
+}
+
+.kirana-pricing .pricing-faq-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.kirana-pricing .pricing-faq-cta .btn {
+  border-radius: 0;
+}
+
+.kirana-pricing .cta-premium-v2 .cta-container {
+  max-width: var(--max-w);
+}
+
+.kirana-pricing .price-sticky {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 35;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1.15rem calc(0.85rem + env(safe-area-inset-bottom));
+  background: #013a9d;
+  color: #fff;
+  box-shadow: 0 -12px 30px rgba(1, 58, 157, 0.22);
+}
+
+.kirana-pricing .price-sticky-name {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.kirana-pricing .price-sticky-price {
+  margin-top: 0.15rem;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #ffd24d;
+}
+
+.kirana-pricing .price-sticky-actions {
+  display: flex;
+  flex-shrink: 0;
+  gap: 0.55rem;
+}
+
+.kirana-pricing .price-sticky-cta,
+.kirana-pricing .price-sticky-wa {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.5rem;
+  padding: 0.45rem 0.95rem;
+  border-radius: 0.7rem;
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.kirana-pricing .price-sticky-cta {
+  background: #fbb50b;
+  color: #010b24;
+}
+
+.kirana-pricing .price-sticky-wa {
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: #fff;
+}
+
+@media (max-width: 720px) {
+  .kirana-pricing .price-sticky {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+@media print {
+  #site-nav,
+  #mobile-menu,
+  #mobile-overlay,
+  footer.bg-navy-deep,
+  a[aria-label="Talk to CEBINOVA"] {
+    display: none !important;
+  }
+
+  .kirana-pricing {
+    padding-top: 0 !important;
+  }
+}
+
+/* Site-pattern polish for calculator chrome */
+.kirana-pricing .calc-section {
+  background:
+    radial-gradient(ellipse 40% 68% at 94% 0%, rgba(1, 58, 157, 0.05), transparent 58%),
+    #eef4fb;
+}
+
+.kirana-pricing .option-card,
+.kirana-pricing .calculator-panel,
+.kirana-pricing .calc-progress-wrap,
+.kirana-pricing .summary-card {
+  border-radius: 0 !important;
+}
+
+.kirana-pricing .option-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  transition:
+    transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.32s ease,
+    box-shadow 0.32s ease;
+}
+
+.kirana-pricing .option-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: #013a9d;
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: 2;
+}
+
+.kirana-pricing .option-card:hover,
+.kirana-pricing .option-card:has(input:checked) {
+  transform: translateY(-3px);
+  border-color: rgba(1, 58, 157, 0.28) !important;
+}
+
+.kirana-pricing .option-card:hover::before,
+.kirana-pricing .option-card:has(input:checked)::before {
+  transform: scaleY(1);
+}
+
+.kirana-pricing .option-card:has(input:checked)::before {
+  background: #fbb50b;
+}

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 410" role="img" aria-label="Zivara Beauty and Jewellery stacked logo">
+  <defs><linearGradient id="r" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#E0AD99"/><stop offset=".5" stop-color="#B76E5B"/><stop offset="1" stop-color="#D8A48F"/></linearGradient><linearGradient id="w" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#4A0B20"/><stop offset="1" stop-color="#2D0613"/></linearGradient></defs>
+  <g transform="translate(174 8) scale(1.35)"><path d="M64 5 117 35v58l-53 30L11 93V35Z" fill="none" stroke="url(#r)" stroke-width="3"/><path d="M37 36h54L37 91c13-1 29 15 57-5-14 20-39 22-63 6l48-50H37Z" fill="url(#w)"/><path d="M83 66c0 7 3 10 10 10-7 0-10 3-10 10 0-7-3-10-10-10 7 0 10-3 10-10Z" fill="url(#r)"/></g>
+  <text x="260" y="278" text-anchor="middle" fill="url(#w)" font-family="'Bodoni Moda','Didot','Times New Roman',serif" font-size="78" font-weight="500" letter-spacing="10">ZIVARA</text><path d="M261 191c0 7 4 11 11 11-7 0-11 4-11 11 0-7-4-11-11-11 7 0 11-4 11-11Z" fill="url(#r)"/>
+  <g transform="translate(55 340)" fill="#B76E5B"><rect y="-1" width="52" height="2"/><text x="76" y="5" font-family="'Manrope',Arial,sans-serif" font-size="14" font-weight="600" letter-spacing="6">BEAUTY &amp; JEWELLERY</text><rect x="360" y="-1" width="52" height="2"/></g>
+</svg>

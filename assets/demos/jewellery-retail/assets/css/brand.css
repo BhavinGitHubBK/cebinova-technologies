@@ -1,0 +1,416 @@
+.brand,
+.store-logo {
+  --brand-ink: #3a0717;
+  --brand-rose: #9c5b64;
+  --brand-gold: #c99545;
+  position: relative;
+  display: inline-flex;
+  width: auto;
+  max-width: 230px;
+  min-height: 60px;
+  align-items: center;
+  gap: 15px;
+  color: var(--brand-ink);
+  text-decoration: none;
+  transform: translateY(0);
+  transition: transform 250ms ease;
+}
+
+.counted i[hidden] {
+  display: none !important;
+}
+
+.brand > svg,
+.store-logo-mark {
+  width: 54px;
+  height: 54px;
+  flex: 0 0 54px;
+  padding: 10px;
+  overflow: visible;
+  border: 1px solid rgba(113, 25, 46, 0.18);
+  border-radius: 15px;
+  background: #fff9f7;
+  fill: none;
+  stroke: #71192e;
+  stroke-width: 1.05;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 5px 9px rgba(74, 16, 36, 0.08));
+  transition: border-color 250ms ease, filter 250ms ease;
+}
+
+.brand:hover,
+.store-logo:hover {
+  transform: translateY(-1px);
+}
+
+.brand:hover > svg,
+.store-logo:hover .store-logo-mark {
+  border-color: rgba(201, 149, 69, 0.72);
+  filter:
+    drop-shadow(0 5px 10px rgba(74, 16, 36, 0.1))
+    drop-shadow(0 0 7px rgba(201, 149, 69, 0.12));
+}
+
+.brand span,
+.store-logo span {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* One restrained diamond accent beside the capital Z. */
+.brand span::before,
+.store-logo span::before {
+  content: "";
+  position: absolute;
+  top: 1px;
+  left: -5px;
+  width: 4px;
+  height: 4px;
+  border: 1px solid var(--brand-gold);
+  transform: rotate(45deg);
+  opacity: 0.78;
+}
+
+.brand b,
+.store-logo {
+  color: var(--brand-ink);
+  font-family: "Cormorant Garamond", "Playfair Display", Georgia, serif;
+  font-size: 38px;
+  font-weight: 600;
+  line-height: 0.86;
+  letter-spacing: 0.8px;
+}
+
+.brand small,
+.store-logo small {
+  display: block;
+  margin-top: 8px;
+  color: var(--brand-rose);
+  font-family: "Manrope", "Inter", Arial, sans-serif;
+  font-size: 8px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 3.1px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.brand:focus-visible,
+.store-logo:focus-visible {
+  border-radius: 4px;
+  outline: 3px solid rgba(201, 149, 69, 0.6);
+  outline-offset: 4px;
+}
+
+@media (max-width: 1100px) {
+  .brand,
+  .store-logo {
+    min-height: 54px;
+    gap: 13px;
+  }
+
+  .brand > svg,
+  .store-logo-mark {
+    width: 48px;
+    height: 48px;
+    flex-basis: 48px;
+    padding: 8px;
+    border-radius: 14px;
+  }
+
+  .brand b,
+  .store-logo {
+    font-size: 33px;
+  }
+
+  .brand small,
+  .store-logo small {
+    font-size: 7px;
+    letter-spacing: 2.6px;
+  }
+}
+
+@media (max-width: 800px) {
+  .brand,
+  .store-logo {
+    min-height: 46px;
+    gap: 10px;
+  }
+
+  .brand > svg,
+  .store-logo-mark {
+    width: 42px;
+    height: 42px;
+    flex-basis: 42px;
+    padding: 7px;
+    border-radius: 12px;
+  }
+
+  .brand b,
+  .store-logo {
+    font-size: 29px;
+    letter-spacing: 0.6px;
+  }
+
+  .brand small,
+  .store-logo small {
+    margin-top: 6px;
+    font-size: 7px;
+    letter-spacing: 2px;
+  }
+}
+
+@media (max-width: 389px) {
+  .brand,
+  .store-logo {
+    gap: 8px;
+  }
+
+  .brand > svg,
+  .store-logo-mark {
+    width: 40px;
+    height: 40px;
+    flex-basis: 40px;
+  }
+
+  .brand b,
+  .store-logo {
+    font-size: 27px;
+  }
+
+  .brand small,
+  .store-logo small {
+    display: none;
+  }
+}
+
+@media (max-width: 1100px) and (min-width: 801px) {
+  .wa-head {
+    width: 46px;
+    padding: 0 !important;
+    display: grid;
+    place-items: center;
+  }
+
+  .wa-head span {
+    display: none;
+  }
+}
+
+/* Wide fashion-house lockup inspired by the supplied reference. */
+.brand,
+.store-logo {
+  max-width: none;
+  min-width: 286px;
+  gap: 16px;
+}
+
+.brand > svg,
+.store-logo-mark {
+  width: 58px;
+  height: 58px;
+  flex-basis: 58px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  stroke: #a96355;
+  stroke-width: 1.55;
+  filter: drop-shadow(0 4px 7px rgba(74, 16, 36, 0.08));
+}
+
+.brand > svg path:nth-child(2),
+.store-logo-mark path:nth-child(2) {
+  stroke: #3a0717;
+  stroke-width: 2;
+}
+
+.brand-spark {
+  fill: #bd7463;
+  stroke: none;
+}
+
+.brand b,
+.store-logo {
+  font-family: "Bodoni Moda", "Cormorant Garamond", "Playfair Display", Georgia, serif;
+  font-size: 36px;
+  font-weight: 500;
+  line-height: 0.82;
+  letter-spacing: 4.5px;
+  text-transform: uppercase;
+}
+
+.brand span,
+.store-logo span {
+  align-items: stretch;
+}
+
+.brand span::before,
+.store-logo span::before {
+  top: -4px;
+  left: 49%;
+  width: 6px;
+  height: 6px;
+  border: 0;
+  background: #bd7463;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.brand small,
+.store-logo small {
+  display: flex;
+  margin-top: 10px;
+  align-items: center;
+  gap: 9px;
+  color: #a96355;
+  font-size: 7px;
+  font-weight: 600;
+  letter-spacing: 2.7px;
+}
+
+.brand small::before,
+.brand small::after,
+.store-logo small::before,
+.store-logo small::after {
+  content: "";
+  width: 20px;
+  height: 1px;
+  flex: 0 0 20px;
+  background: rgba(169, 99, 85, 0.72);
+}
+
+.brand:hover > svg,
+.store-logo:hover .store-logo-mark {
+  transform: none;
+}
+
+@media (max-width: 1180px) {
+  .brand,
+  .store-logo {
+    min-width: 235px;
+    gap: 12px;
+  }
+
+  .brand > svg,
+  .store-logo-mark {
+    width: 50px;
+    height: 50px;
+    flex-basis: 50px;
+  }
+
+  .brand b,
+  .store-logo {
+    font-size: 30px;
+    letter-spacing: 3.5px;
+  }
+
+  .brand small,
+  .store-logo small {
+    gap: 6px;
+    font-size: 6px;
+    letter-spacing: 1.9px;
+  }
+
+  .brand small::before,
+  .brand small::after,
+  .store-logo small::before,
+  .store-logo small::after {
+    width: 13px;
+    flex-basis: 13px;
+  }
+}
+
+@media (max-width: 800px) {
+  .brand,
+  .store-logo {
+    min-width: 0;
+  }
+
+  .brand > svg,
+  .store-logo-mark {
+    width: 43px;
+    height: 43px;
+    flex-basis: 43px;
+  }
+
+  .brand b,
+  .store-logo {
+    font-size: 27px;
+    letter-spacing: 2.6px;
+  }
+
+  .brand small,
+  .store-logo small {
+    margin-top: 7px;
+  }
+}
+
+@media (max-width: 430px) {
+  .brand b,
+  .store-logo {
+    font-size: 24px;
+    letter-spacing: 2px;
+  }
+
+  .brand small,
+  .store-logo small {
+    display: none;
+  }
+}
+
+/* Production logo asset: exact typography, spacing and proportions stay intact. */
+.brand > img,
+.store-logo > img {
+  display: block;
+  width: 286px;
+  height: auto;
+  max-height: 66px;
+  object-fit: contain;
+  object-position: left center;
+}
+
+.brand:has(> img),
+.store-logo:has(> img) {
+  min-width: 286px;
+  min-height: 60px;
+  gap: 0;
+}
+
+@media (max-width: 1180px) {
+  .brand > img,
+  .store-logo > img {
+    width: 236px;
+    max-height: 56px;
+  }
+
+  .brand:has(> img),
+  .store-logo:has(> img) {
+    min-width: 236px;
+  }
+}
+
+@media (max-width: 800px) {
+  .brand > img,
+  .store-logo > img {
+    width: 208px;
+    max-height: 50px;
+  }
+
+  .brand:has(> img),
+  .store-logo:has(> img) {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 430px) {
+  .brand > img,
+  .store-logo > img {
+    width: 166px;
+    max-height: 42px;
+  }
+}

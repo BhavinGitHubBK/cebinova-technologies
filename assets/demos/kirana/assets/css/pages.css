@@ -1,0 +1,16 @@
+@import url("./internal-pages-premium.css");
+/* Page-level primitives. Add page-specific rules here, not in components.css. */
+.page-shell { min-height: 45vh; }
+.page-header {
+  padding: clamp(2rem, 5vw, 4.5rem) 0;
+  background: var(--color-page);
+  border-bottom: 1px solid var(--color-border);
+}
+.page-header h1 { margin: .35rem 0 0; }
+.page-content { padding-block: clamp(2rem, 4vw, 4rem); }
+.page-grid { display: grid; gap: var(--space-5); }
+.page-grid-sidebar { grid-template-columns: minmax(220px, 280px) minmax(0, 1fr); }
+
+@media (max-width: 768px) {
+  .page-grid-sidebar { grid-template-columns: 1fr; }
+}

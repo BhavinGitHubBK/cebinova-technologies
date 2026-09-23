@@ -1,0 +1,286 @@
+@scope (.kirana-pricing) {
+/* =========================================================
+   Soft-3D Layer - Apple / Linear / Stripe inspired depth
+   Elegant elevation only. No neumorphism / plastic gloss.
+   ========================================================= */
+
+:scope {
+  --soft3d-shadow:
+    0 2px 0 rgba(255, 255, 255, 0.75) inset,
+    0 4px 12px rgba(15, 23, 42, 0.05),
+    0 18px 50px rgba(37, 99, 235, 0.08);
+  --soft3d-shadow-hover:
+    0 2px 0 rgba(255, 255, 255, 0.85) inset,
+    0 10px 24px rgba(15, 23, 42, 0.07),
+    0 28px 60px rgba(37, 99, 235, 0.12);
+  --soft3d-shadow-selected:
+    0 2px 0 rgba(255, 255, 255, 0.9) inset,
+    0 0 0 1px rgba(37, 99, 235, 0.28),
+    0 12px 28px rgba(37, 99, 235, 0.12),
+    0 30px 70px rgba(37, 99, 235, 0.14);
+}
+
+/* ---------- Ambient stage ---------- */
+:scope {
+  background:
+    radial-gradient(ellipse 48% 38% at 92% 0%, rgba(37, 99, 235, 0.14), transparent 60%),
+    radial-gradient(ellipse 42% 36% at 4% 92%, rgba(255, 193, 7, 0.12), transparent 58%),
+    radial-gradient(ellipse 60% 40% at 50% 40%, rgba(255, 255, 255, 0.55), transparent 70%),
+    var(--brand-grey-light);
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.35;
+  background-image:
+    linear-gradient(rgba(15, 23, 42, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 23, 42, 0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 20%, #000 20%, transparent 75%);
+}
+
+main,
+.site-header,
+.site-footer {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-blob {
+  filter: blur(120px);
+  opacity: 0.18;
+}
+
+/* ---------- Elevated surfaces ---------- */
+.calculator-panel,
+.calc-progress-wrap,
+.support-plan-card,
+.support-cta-card,
+.contact-card,
+.app-pick .option-body,
+.option-card .choice-body {
+  box-shadow: var(--soft3d-shadow);
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(14px);
+}
+
+.package-select .option-body {
+  box-shadow: var(--soft3d-shadow);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.82));
+  transform-style: preserve-3d;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease, border-color 0.4s ease;
+}
+
+.package-select:hover .option-body {
+  transform: translateY(-8px) rotateX(2deg) rotateY(-2deg);
+  box-shadow: var(--soft3d-shadow-hover);
+}
+
+.package-select input:checked + .option-body {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: var(--soft3d-shadow-selected);
+  border-color: rgba(37, 99, 235, 0.35);
+}
+
+.package-select.complete input:checked + .option-body {
+  border-color: rgba(255, 193, 7, 0.55);
+  box-shadow:
+    0 2px 0 rgba(255, 255, 255, 0.9) inset,
+    0 0 0 1px rgba(255, 193, 7, 0.35),
+    0 18px 50px rgba(255, 193, 7, 0.14);
+}
+
+.package-select.is-tilting .option-body {
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+/* ---------- Badges ---------- */
+.best-pill {
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--brand-blue);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(12px);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 8px 20px rgba(37, 99, 235, 0.14);
+}
+
+.package-select.recommended .best-pill:not(.soft) {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.95), rgba(59, 130, 246, 0.92));
+  color: #fff;
+}
+
+.package-select.complete .best-pill.soft {
+  background: rgba(255, 255, 255, 0.78);
+  color: #92400e;
+  border-color: rgba(255, 193, 7, 0.45);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 8px 20px rgba(255, 193, 7, 0.2);
+}
+
+.price-cadence {
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 4px 12px rgba(37, 99, 235, 0.1);
+}
+
+/* ---------- Buttons tactile ---------- */
+.btn {
+  border-radius: 16px;
+  min-height: 56px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.35) inset,
+    0 8px 18px rgba(15, 23, 42, 0.08);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
+}
+
+.btn-primary {
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.28) inset,
+    0 10px 24px rgba(37, 99, 235, 0.28);
+}
+
+.btn:hover {
+  transform: translateY(-3px) scale(1.015);
+}
+
+.btn:active {
+  transform: translateY(1px) scale(0.985);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.2) inset,
+    0 4px 10px rgba(15, 23, 42, 0.1);
+}
+
+.btn-sm {
+  min-height: 44px;
+  border-radius: 14px;
+}
+
+/* ---------- Included pills ---------- */
+.included-list li {
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.85) inset,
+    0 6px 16px rgba(37, 99, 235, 0.08);
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.included-list li i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(37, 99, 235, 0.1);
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.12);
+  font-size: 0.65rem;
+}
+
+.included-list li:hover {
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 10px 22px rgba(37, 99, 235, 0.14);
+}
+
+/* ---------- Progress steps ---------- */
+.calc-progress-wrap {
+  box-shadow: var(--soft3d-shadow);
+}
+
+.calc-progress li span {
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.75) inset,
+    0 6px 14px rgba(15, 23, 42, 0.08);
+}
+
+.calc-progress li.done span,
+.calc-progress li.current span {
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.35) inset,
+    0 0 0 4px rgba(37, 99, 235, 0.14),
+    0 10px 22px rgba(37, 99, 235, 0.22);
+}
+
+.calc-progress li.current span {
+  animation: stepPulse 2s ease-in-out infinite;
+}
+
+@keyframes stepPulse {
+  0%, 100% { box-shadow: 0 1px 0 rgba(255, 255, 255, 0.35) inset, 0 0 0 4px rgba(37, 99, 235, 0.14), 0 10px 22px rgba(37, 99, 235, 0.22); }
+  50% { box-shadow: 0 1px 0 rgba(255, 255, 255, 0.35) inset, 0 0 0 7px rgba(37, 99, 235, 0.1), 0 12px 26px rgba(37, 99, 235, 0.28); }
+}
+
+/* ---------- Estimate floating invoice ---------- */
+.invoice-card {
+  box-shadow:
+    0 2px 0 rgba(255, 255, 255, 0.85) inset,
+    0 8px 24px rgba(15, 23, 42, 0.06),
+    0 28px 70px rgba(37, 99, 235, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(18px);
+}
+
+.summary-total {
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.25) inset,
+    0 14px 34px rgba(37, 99, 235, 0.28);
+}
+
+/* ---------- Support timeline icons ---------- */
+.support-journey-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow: var(--soft3d-shadow);
+  backdrop-filter: blur(10px);
+}
+
+.support-journey-step:hover .support-journey-icon {
+  transform: translateY(-4px);
+  box-shadow: var(--soft3d-shadow-hover);
+}
+
+.support-plan-card,
+.support-cta-card,
+.contact-card {
+  box-shadow: var(--soft3d-shadow);
+}
+
+.support-plan-card:hover {
+  box-shadow: var(--soft3d-shadow-hover);
+}
+
+/* ---------- App / domain cards ---------- */
+.app-pick .app-icon {
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.35) inset,
+    0 10px 22px rgba(15, 23, 42, 0.16);
+}
+
+.app-pick:hover .option-body,
+.option-card:hover .choice-body {
+  transform: translateY(-6px);
+  box-shadow: var(--soft3d-shadow-hover);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .calc-progress li.current span,
+  .package-select:hover .option-body {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
+}

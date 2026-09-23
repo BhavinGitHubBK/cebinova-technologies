@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 330 76" role="img" aria-labelledby="title desc">
+  <title id="title">FreshBasket</title><desc id="desc">Freshness Delivered Daily</desc>
+  <image href="freshbasket-mark.svg" x="0" y="6" width="64" height="64"/>
+  <text x="78" y="41" fill="#123022" font-family="Manrope,Arial,sans-serif" font-size="29" letter-spacing="-1.2"><tspan font-weight="650">Fresh</tspan><tspan font-weight="900">Basket</tspan></text>
+  <text x="79" y="59" fill="#66766D" font-family="Manrope,Arial,sans-serif" font-size="9.5" font-weight="600" letter-spacing=".65">FRESHNESS DELIVERED DAILY</text>
+</svg>

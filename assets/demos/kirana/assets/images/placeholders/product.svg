@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="520" viewBox="0 0 600 520">
+  <rect width="600" height="520" rx="32" fill="#f1f6ef"/>
+  <path d="M205 92h190l24 62-18 236H199l-18-236z" fill="#fff" stroke="#14532d" stroke-width="9"/>
+  <path d="M181 154h238v72H181z" fill="#14532d"/>
+  <circle cx="300" cy="306" r="61" fill="#a3e635"/>
+  <path d="M300 270c20-35 53-28 64-8-25 8-44 15-64 8z" fill="#22c55e"/>
+  <text x="300" y="197" text-anchor="middle" font-family="Arial" font-size="25" font-weight="700" fill="#fff">FreshBasket</text>
+  <text x="300" y="464" text-anchor="middle" font-family="Arial" font-size="25" font-weight="700" fill="#14532d">Quality grocery product</text>
+</svg>
