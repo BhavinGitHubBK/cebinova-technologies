@@ -128,7 +128,6 @@ Owner should be the cPanel user (or `nobody`/`apache` depending on host). If upl
 - [ ] Contact / package enquiry creates a lead
 - [ ] `/admin` login works
 - [ ] Media upload + public image URL via `/storage/...`
-- [ ] Blog index `/blog` loads
 - [ ] WhatsApp float / consultation links use live numbers
 
 ## 9. Ongoing updates

@@ -4,8 +4,6 @@ use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Admin\Auth\NewPasswordController;
 use App\Http\Controllers\Admin\Auth\PasswordResetLinkController;
-use App\Http\Controllers\Admin\BlogCategoryController;
-use App\Http\Controllers\Admin\BlogPostController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\LeadController;
@@ -13,7 +11,6 @@ use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\PackageController;
 use App\Http\Controllers\Admin\PageSectionController;
 use App\Http\Controllers\Admin\ProfileController;
-use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\TeamMemberController;
@@ -81,24 +78,6 @@ Route::middleware('web')->prefix('admin')->name('admin.')->group(function () {
         });
 
         Route::middleware('can:admin.content.manage')->group(function () {
-            Route::get('projects/create', [ProjectController::class, 'create'])->name('projects.create');
-            Route::post('projects', [ProjectController::class, 'store'])->name('projects.store');
-            Route::get('projects/{project}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
-            Route::put('projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
-            Route::delete('projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
-
-            Route::get('blog-categories/create', [BlogCategoryController::class, 'create'])->name('blog-categories.create');
-            Route::post('blog-categories', [BlogCategoryController::class, 'store'])->name('blog-categories.store');
-            Route::get('blog-categories/{blog_category}/edit', [BlogCategoryController::class, 'edit'])->name('blog-categories.edit');
-            Route::put('blog-categories/{blog_category}', [BlogCategoryController::class, 'update'])->name('blog-categories.update');
-            Route::delete('blog-categories/{blog_category}', [BlogCategoryController::class, 'destroy'])->name('blog-categories.destroy');
-
-            Route::get('blog-posts/create', [BlogPostController::class, 'create'])->name('blog-posts.create');
-            Route::post('blog-posts', [BlogPostController::class, 'store'])->name('blog-posts.store');
-            Route::get('blog-posts/{blog_post}/edit', [BlogPostController::class, 'edit'])->name('blog-posts.edit');
-            Route::put('blog-posts/{blog_post}', [BlogPostController::class, 'update'])->name('blog-posts.update');
-            Route::delete('blog-posts/{blog_post}', [BlogPostController::class, 'destroy'])->name('blog-posts.destroy');
-
             Route::get('testimonials/create', [TestimonialController::class, 'create'])->name('testimonials.create');
             Route::post('testimonials', [TestimonialController::class, 'store'])->name('testimonials.store');
             Route::get('testimonials/{testimonial}/edit', [TestimonialController::class, 'edit'])->name('testimonials.edit');
@@ -125,15 +104,6 @@ Route::middleware('web')->prefix('admin')->name('admin.')->group(function () {
         });
 
         Route::middleware('can:admin.content.view')->group(function () {
-            Route::get('projects', [ProjectController::class, 'index'])->name('projects.index');
-            Route::get('projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
-
-            Route::get('blog-categories', [BlogCategoryController::class, 'index'])->name('blog-categories.index');
-            Route::get('blog-categories/{blog_category}', [BlogCategoryController::class, 'show'])->name('blog-categories.show');
-
-            Route::get('blog-posts', [BlogPostController::class, 'index'])->name('blog-posts.index');
-            Route::get('blog-posts/{blog_post}', [BlogPostController::class, 'show'])->name('blog-posts.show');
-
             Route::get('testimonials', [TestimonialController::class, 'index'])->name('testimonials.index');
             Route::get('testimonials/{testimonial}', [TestimonialController::class, 'show'])->name('testimonials.show');
 

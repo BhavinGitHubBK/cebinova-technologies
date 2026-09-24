@@ -70,11 +70,6 @@ class PageController extends Controller
         return view('pages.marketing-packages');
     }
 
-    public function portfolio(): View
-    {
-        return view('pages.portfolio');
-    }
-
     public function contact(): View
     {
         return view('pages.contact');

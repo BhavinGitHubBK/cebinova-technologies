@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\BlogController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\PageController;
 use Illuminate\Support\Facades\Route;
@@ -36,9 +35,6 @@ Route::get('/marketing-packages', [PageController::class, 'marketingPackages'])-
 Route::permanentRedirect('/marketing', '/marketing-packages');
 Route::permanentRedirect('/packages', '/marketing-packages');
 Route::get('/pricing', [PageController::class, 'pricing'])->name('pricing');
-Route::get('/portfolio', [PageController::class, 'portfolio'])->name('portfolio');
-Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
-Route::get('/blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
 Route::get('/demos', [PageController::class, 'demos'])->name('demos');
 Route::get('/demos/{demo}/{path?}', [\App\Http\Controllers\DemoSiteController::class, 'show'])
     ->whereIn('demo', ['kirana', 'professional-services', 'jewellery-retail'])

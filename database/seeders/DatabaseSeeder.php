@@ -19,7 +19,6 @@ class DatabaseSeeder extends Seeder
             ProjectSeeder::class,
             FaqSeeder::class,
             PageSectionSeeder::class,
-            BlogCategorySeeder::class,
         ]);
     }
 }

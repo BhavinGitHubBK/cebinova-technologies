@@ -22,8 +22,6 @@
                     <li><a href="{{ route('marketing-packages') }}">Marketing Packages</a></li>
                     <li><a href="{{ route('pricing') }}">Pricing</a></li>
                     <li><a href="{{ route('demos') }}">Demos</a></li>
-                    <li><a href="{{ route('portfolio') }}">Portfolio</a></li>
-                    <li><a href="{{ route('blog.index') }}">Blog</a></li>
                     <li><a href="{{ route('about') }}">About</a></li>
                     <li><a href="{{ route('contact') }}">Contact</a></li>
                 </ul>

@@ -35,8 +35,6 @@ return [
         ['label' => 'Marketing Packages', 'route' => 'marketing-packages', 'badge' => 'Popular'],
         ['label' => 'Pricing', 'route' => 'pricing', 'badge' => 'Hot'],
         ['label' => 'Demos', 'route' => 'demos'],
-        ['label' => 'Portfolio', 'route' => 'portfolio'],
-        ['label' => 'Blog', 'route' => 'blog.index'],
         ['label' => 'About', 'route' => 'about'],
         ['label' => 'Contact', 'route' => 'contact'],
     ],

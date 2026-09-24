@@ -3,7 +3,6 @@
 namespace Tests\Feature\Admin;
 
 use App\Enums\UserRole;
-use App\Models\BlogPost;
 use App\Models\Project;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -79,33 +78,10 @@ class CmsContentTest extends TestCase
             ->assertDontSee('Draft Hidden Item');
     }
 
-    public function test_blog_show_published_only(): void
+    public function test_public_blog_routes_are_removed(): void
     {
-        BlogPost::query()->create([
-            'title' => 'Live Post',
-            'slug' => 'live-post',
-            'content' => 'Published body copy.',
-            'status' => 'published',
-            'published_at' => now()->subHour(),
-            'is_featured' => false,
-        ]);
-
-        BlogPost::query()->create([
-            'title' => 'Secret Draft',
-            'slug' => 'secret-draft',
-            'content' => 'Draft body.',
-            'status' => 'draft',
-            'published_at' => null,
-            'is_featured' => false,
-        ]);
-
-        $this->get(route('blog.show', 'live-post'))
-            ->assertOk()
-            ->assertSee('Live Post')
-            ->assertSee('Published body copy.');
-
-        $this->get(route('blog.show', 'secret-draft'))
-            ->assertNotFound();
+        $this->get('/blog')->assertNotFound();
+        $this->get('/blog/live-post')->assertNotFound();
     }
 
     public function test_viewer_forbidden_from_create(): void

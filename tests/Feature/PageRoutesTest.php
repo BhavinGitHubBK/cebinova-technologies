@@ -458,7 +458,8 @@ class PageRoutesTest extends TestCase
     {
         $nav = $this->get('/')->assertOk()->getContent();
 
-        $this->assertMatchesRegularExpression('/aria-label="Primary"[\s\S]*Home[\s\S]*Services[\s\S]*Solutions[\s\S]*Marketing Packages[\s\S]*nav-link-badge[\s\S]*Popular[\s\S]*Pricing[\s\S]*nav-link-badge[\s\S]*Hot[\s\S]*Demos[\s\S]*Portfolio[\s\S]*Blog[\s\S]*About[\s\S]*Contact/', $nav);
+        $this->assertMatchesRegularExpression('/aria-label="Primary"[\s\S]*Home[\s\S]*Services[\s\S]*Solutions[\s\S]*Marketing Packages[\s\S]*nav-link-badge[\s\S]*Popular[\s\S]*Pricing[\s\S]*nav-link-badge[\s\S]*Hot[\s\S]*Demos[\s\S]*Portfolio[\s\S]*About[\s\S]*Contact/', $nav);
+        $this->assertDoesNotMatchRegularExpression('/aria-label="Primary"[\s\S]*class="nav-link[^"]*">[\s\S]*Blog[\s\S]*</', $nav);
         $this->assertStringContainsString('Business Solutions', $nav);
         $this->assertStringContainsString('View All Solutions', $nav);
         $this->assertStringContainsString('nav-mega-item', $nav);

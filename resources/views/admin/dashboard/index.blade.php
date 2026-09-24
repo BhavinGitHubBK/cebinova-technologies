@@ -74,7 +74,6 @@
     <a class="admin-btn admin-btn-primary" href="{{ route('admin.leads.index') }}">Manage leads</a>
     <a class="admin-btn admin-btn-accent" href="{{ route('admin.services.create') }}">Add service</a>
     <a class="admin-btn admin-btn-ghost" href="{{ route('admin.packages.create') }}">Add package</a>
-    <a class="admin-btn admin-btn-ghost" href="{{ route('admin.blog-posts.create') }}">New blog post</a>
     <a class="admin-btn admin-btn-ghost" href="{{ route('admin.page-sections.index') }}">Page sections</a>
     <a class="admin-btn admin-btn-ghost" href="{{ route('admin.settings.edit') }}">Settings</a>
 </section>
@@ -156,8 +155,7 @@
             <span>Content</span>
         </div>
         <div class="dash-cms">
-            <a href="{{ route('admin.projects.index') }}"><strong>{{ $projectsCount }}</strong><span>Projects</span></a>
-            <a href="{{ route('admin.blog-posts.index') }}"><strong>{{ $blogPostsCount }}</strong><span>Blog posts</span></a>
+            <a href="{{ route('admin.testimonials.index') }}"><strong>{{ $testimonialsCount }}</strong><span>Testimonials</span></a>
             <a href="{{ route('admin.faqs.index') }}"><strong>{{ $faqsCount }}</strong><span>FAQs</span></a>
             <a href="{{ route('admin.media.index') }}"><strong>{{ $mediaCount }}</strong><span>Media</span></a>
         </div>

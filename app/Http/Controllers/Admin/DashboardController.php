@@ -4,13 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ActivityLog;
-use App\Models\BlogPost;
 use App\Models\Faq;
 use App\Models\Lead;
 use App\Models\Media;
 use App\Models\Package;
-use App\Models\Project;
 use App\Models\Service;
+use App\Models\Testimonial;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
@@ -90,8 +89,7 @@ class DashboardController extends Controller
             'followUpsDue' => $followUpsDue,
             'followUpsOverdue' => $followUpsOverdue,
             'leadsToday' => $leadsToday,
-            'projectsCount' => $this->safeCount(Project::class),
-            'blogPostsCount' => $this->safeCount(BlogPost::class),
+            'testimonialsCount' => $this->safeCount(Testimonial::class),
             'faqsCount' => $this->safeCount(Faq::class),
             'mediaCount' => $this->safeCount(Media::class),
         ]);

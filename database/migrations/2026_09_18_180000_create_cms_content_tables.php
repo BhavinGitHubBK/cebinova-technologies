@@ -33,36 +33,6 @@ return new class extends Migration
             $table->index(['status', 'sort_order']);
         });
 
-        Schema::create('blog_categories', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('slug')->unique();
-            $table->unsignedInteger('sort_order')->default(0);
-            $table->boolean('is_active')->default(true);
-            $table->timestamps();
-        });
-
-        Schema::create('blog_posts', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('blog_category_id')->nullable()->constrained('blog_categories')->nullOnDelete();
-            $table->foreignId('author_id')->nullable()->constrained('users')->nullOnDelete();
-            $table->string('title');
-            $table->string('slug')->unique();
-            $table->string('excerpt')->nullable();
-            $table->longText('content')->nullable();
-            $table->string('featured_image')->nullable();
-            $table->string('status')->default('draft'); // draft|published|scheduled
-            $table->timestamp('published_at')->nullable();
-            $table->boolean('is_featured')->default(false);
-            $table->string('seo_title')->nullable();
-            $table->text('seo_description')->nullable();
-            $table->string('canonical_url')->nullable();
-            $table->string('og_image')->nullable();
-            $table->softDeletes();
-            $table->timestamps();
-            $table->index(['status', 'published_at']);
-        });
-
         Schema::create('testimonials', function (Blueprint $table) {
             $table->id();
             $table->string('customer_name');
@@ -128,8 +98,6 @@ return new class extends Migration
         Schema::dropIfExists('faqs');
         Schema::dropIfExists('team_members');
         Schema::dropIfExists('testimonials');
-        Schema::dropIfExists('blog_posts');
-        Schema::dropIfExists('blog_categories');
         Schema::dropIfExists('projects');
     }
 };
