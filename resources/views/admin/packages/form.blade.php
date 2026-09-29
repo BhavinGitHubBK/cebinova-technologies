@@ -24,9 +24,10 @@
 <div class="admin-field"><label class="admin-label">Secondary CTA</label><input class="admin-input" name="secondary_cta" value="{{ old('secondary_cta', $package->secondary_cta) }}"></div>
 <div class="admin-field"><label class="admin-label">Why</label><textarea class="admin-textarea" name="why" rows="2">{{ old('why', $package->why) }}</textarea></div>
 <div class="admin-field"><label class="admin-label">Includes (one per line)</label><textarea class="admin-textarea" name="includes_text" rows="4">{{ old('includes_text', implode("\n", $package->includes ?? [])) }}</textarea></div>
+<div class="admin-field"><label class="admin-label">Public package features</label><textarea class="admin-textarea" name="package_features_text" rows="7" placeholder="Feature name | Optional value">{{ old('package_features_text', collect($features ?? [])->map(fn($feature) => $feature->name.($feature->display_value ? ' | '.$feature->display_value : ''))->implode("\n")) }}</textarea><small>One feature per line. Add an optional display value after a vertical bar.</small></div>
 <div class="admin-field"><label class="admin-label">Sort order</label><input class="admin-input" type="number" name="sort_order" value="{{ old('sort_order', $package->sort_order ?? 0) }}"></div>
-<label style="display:flex;gap:.4rem;margin-bottom:.5rem;"><input type="checkbox" name="is_highlighted" value="1" @checked(old('is_highlighted', $package->is_highlighted))> Highlighted</label>
-<label style="display:flex;gap:.4rem;margin-bottom:.5rem;"><input type="checkbox" name="is_active" value="1" @checked(old('is_active', $package->is_active ?? true))> Active</label>
+<input type="hidden" name="is_highlighted" value="0"><label style="display:flex;gap:.4rem;margin-bottom:.5rem;"><input type="checkbox" name="is_highlighted" value="1" @checked(old('is_highlighted', $package->is_highlighted))> Highlighted</label>
+<input type="hidden" name="is_active" value="0"><label style="display:flex;gap:.4rem;margin-bottom:.5rem;"><input type="checkbox" name="is_active" value="1" @checked(old('is_active', $package->is_active ?? true))> Active</label>
 
 <h3 style="margin:1.2rem 0 .6rem;">Plans</h3>
 @php $planRows = old('plans', $plans instanceof \Illuminate\Support\Collection ? $plans->values()->all() : ($plans ?: [['label'=>'','price'=>'']])); @endphp
@@ -46,6 +47,8 @@
 <div class="admin-field"><label class="admin-label">Period</label><input class="admin-input" name="plans[{{ $i }}][period]" value="{{ $plan['period'] ?? '' }}"></div>
 <div class="admin-field"><label class="admin-label">Badge</label><input class="admin-input" name="plans[{{ $i }}][badge]" value="{{ $plan['badge'] ?? '' }}"></div>
 <div class="admin-field"><label class="admin-label">Features (one per line)</label><textarea class="admin-textarea" name="plans[{{ $i }}][features_text]" rows="3">{{ is_array($plan['features'] ?? null) ? implode("\n", $plan['features']) : ($plan['features_text'] ?? '') }}</textarea></div>
+<div class="admin-field"><label class="admin-label">Monthly pace (one per line)</label><textarea class="admin-textarea" name="plans[{{ $i }}][monthly_pace_text]" rows="3">{{ is_array($plan['monthly_pace'] ?? null) ? implode("\n", $plan['monthly_pace']) : ($plan['monthly_pace_text'] ?? '') }}</textarea></div>
+<input type="hidden" name="plans[{{ $i }}][is_active]" value="0"><label style="display:flex;gap:.4rem"><input type="checkbox" name="plans[{{ $i }}][is_active]" value="1" @checked($plan['is_active'] ?? true)> Active</label>
 </div>
 @endforeach
 </div>
@@ -70,6 +73,8 @@
 <div class="admin-field"><label class="admin-label">Period</label><input class="admin-input" name="plans[__INDEX__][period]" value=""></div>
 <div class="admin-field"><label class="admin-label">Badge</label><input class="admin-input" name="plans[__INDEX__][badge]" value=""></div>
 <div class="admin-field"><label class="admin-label">Features (one per line)</label><textarea class="admin-textarea" name="plans[__INDEX__][features_text]" rows="3"></textarea></div>
+<div class="admin-field"><label class="admin-label">Monthly pace (one per line)</label><textarea class="admin-textarea" name="plans[__INDEX__][monthly_pace_text]" rows="3"></textarea></div>
+<input type="hidden" name="plans[__INDEX__][is_active]" value="0"><label style="display:flex;gap:.4rem"><input type="checkbox" name="plans[__INDEX__][is_active]" value="1" checked> Active</label>
 </div>
 </template>
 @endsection

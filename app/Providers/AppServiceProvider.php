@@ -38,6 +38,10 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('admin.leads.manage', [$policy, 'manageLeads']);
         Gate::define('admin.services.view', [$policy, 'viewServices']);
         Gate::define('admin.services.manage', [$policy, 'manageServices']);
+        Gate::define('admin.solutions.view', [$policy, 'viewSolutions']);
+        Gate::define('admin.solutions.manage', [$policy, 'manageSolutions']);
+        Gate::define('admin.industries.view', [$policy, 'viewIndustries']);
+        Gate::define('admin.industries.manage', [$policy, 'manageIndustries']);
         Gate::define('admin.packages.view', [$policy, 'viewPackages']);
         Gate::define('admin.packages.manage', [$policy, 'managePackages']);
         Gate::define('admin.media.view', [$policy, 'viewMedia']);

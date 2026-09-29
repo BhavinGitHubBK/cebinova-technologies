@@ -1,4 +1,4 @@
-@php    $services = config('cebinova.services');
+@php
     $tones = [
         'web-development' => ['tone' => 'start', 'flag' => 'Start here'],
         'ai-automation' => ['tone' => 'ai', 'flag' => 'AI'],

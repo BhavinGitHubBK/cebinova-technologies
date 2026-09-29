@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class PackagePlan extends Model
 {
@@ -43,6 +44,11 @@ class PackagePlan extends Model
     public function package(): BelongsTo
     {
         return $this->belongsTo(Package::class);
+    }
+
+    public function deliverables(): HasMany
+    {
+        return $this->hasMany(MarketingPlanDeliverable::class)->orderBy('sort_order')->orderBy('id');
     }
 
     public function scopeActive(Builder $query): Builder

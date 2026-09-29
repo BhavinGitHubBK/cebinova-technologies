@@ -78,10 +78,55 @@ class AdminAuthTest extends TestCase
             ->assertRedirect();
 
         $this->assertSame('Contacted', $lead->fresh()->status);
+        $this->assertNotNull($lead->fresh()->contacted_at);
 
         $this->actingAs($editor)
             ->get(route('admin.users.index'))
             ->assertForbidden();
+    }
+
+    public function test_authorized_admin_can_list_filter_and_view_leads(): void
+    {
+        $admin = $this->admin(['role' => UserRole::Viewer]);
+        $qualified = Lead::factory()->create(['name' => 'Qualified Lead', 'status' => 'Qualified']);
+        Lead::factory()->create(['name' => 'New Lead', 'status' => 'New']);
+
+        $this->actingAs($admin)
+            ->get(route('admin.leads.index', ['status' => 'Qualified']))
+            ->assertOk()
+            ->assertSee('Qualified Lead')
+            ->assertDontSee('New Lead');
+
+        $this->actingAs($admin)
+            ->get(route('admin.leads.show', $qualified))
+            ->assertOk()
+            ->assertSee('Qualified Lead');
+    }
+
+    public function test_viewer_cannot_update_a_lead(): void
+    {
+        $viewer = $this->admin(['role' => UserRole::Viewer]);
+        $lead = Lead::factory()->create();
+
+        $this->actingAs($viewer)
+            ->put(route('admin.leads.update', $lead), [
+                'status' => 'Won',
+            ])
+            ->assertForbidden();
+    }
+
+    public function test_status_updates_set_lifecycle_timestamps(): void
+    {
+        $admin = $this->admin(['role' => UserRole::Editor]);
+        $lead = Lead::factory()->create();
+
+        $this->actingAs($admin)
+            ->put(route('admin.leads.update', $lead), ['status' => 'Proposal Sent'])
+            ->assertRedirect();
+
+        $lead->refresh();
+        $this->assertSame('Proposal Sent', $lead->status);
+        $this->assertNotNull($lead->proposal_sent_at);
     }
 
     public function test_cannot_delete_own_account(): void

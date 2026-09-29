@@ -1919,6 +1919,11 @@ h1, h2, h3, h4,
     overflow-wrap: anywhere;
 }
 
+.site-footer-contacts a[href^="mailto:"] span:last-child {
+    overflow-wrap: normal;
+    white-space: nowrap;
+}
+
 .site-footer-icon {
     display: inline-flex;
     width: 1.85rem;

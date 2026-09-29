@@ -9,14 +9,7 @@ Route::get('/about', [PageController::class, 'about'])->name('about');
 
 Route::get('/services', [PageController::class, 'services'])->name('services.index');
 Route::get('/services/{slug}', [PageController::class, 'service'])
-    ->whereIn('slug', [
-        'web-development',
-        'ecommerce',
-        'custom-software',
-        'ai-automation',
-        'digital-business',
-        'digital-growth',
-    ])
+    ->where('slug', '[a-z0-9-]+')
     ->name('services.show');
 
 Route::get('/solutions', [PageController::class, 'solutions'])->name('solutions');

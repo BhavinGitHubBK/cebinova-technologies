@@ -24,8 +24,8 @@ class DashboardController extends Controller
             ->pluck('total', 'status');
 
         $totalLeads = (int) $statusCounts->sum();
-        $converted = (int) ($statusCounts['Converted'] ?? 0);
-        $conversionRate = $totalLeads > 0 ? round(($converted / $totalLeads) * 100, 1) : 0;
+        $won = (int) ($statusCounts['Won'] ?? 0);
+        $conversionRate = $totalLeads > 0 ? round(($won / $totalLeads) * 100, 1) : 0;
 
         $monthlyMap = [];
         for ($i = 11; $i >= 0; $i--) {
@@ -54,7 +54,7 @@ class DashboardController extends Controller
         $followUpsDue = Lead::query()
             ->whereNotNull('follow_up_at')
             ->where('follow_up_at', '<=', now()->endOfDay())
-            ->whereNotIn('status', ['Converted', 'Lost'])
+            ->whereNotIn('status', ['Won', 'Lost'])
             ->orderBy('follow_up_at')
             ->limit(8)
             ->get();
@@ -62,7 +62,7 @@ class DashboardController extends Controller
         $followUpsOverdue = (int) Lead::query()
             ->whereNotNull('follow_up_at')
             ->where('follow_up_at', '<', now()->startOfDay())
-            ->whereNotIn('status', ['Converted', 'Lost'])
+            ->whereNotIn('status', ['Won', 'Lost'])
             ->count();
 
         $leadsToday = (int) Lead::query()
@@ -79,9 +79,10 @@ class DashboardController extends Controller
             'recentActivities' => ActivityLog::query()->with('user')->latest()->limit(10)->get(),
             'newLeadsCount' => (int) ($statusCounts['New'] ?? 0),
             'contactedCount' => (int) ($statusCounts['Contacted'] ?? 0),
-            'followUpCount' => (int) ($statusCounts['Follow-up'] ?? 0),
+            'qualifiedCount' => (int) ($statusCounts['Qualified'] ?? 0),
+            'proposalSentCount' => (int) ($statusCounts['Proposal Sent'] ?? 0),
             'lostCount' => (int) ($statusCounts['Lost'] ?? 0),
-            'convertedCount' => $converted,
+            'wonCount' => $won,
             'monthlyLabels' => array_keys($monthlyMap),
             'monthlyValues' => array_values($monthlyMap),
             'serviceLabels' => $byService->keys()->values(),

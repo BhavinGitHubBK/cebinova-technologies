@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Lead;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
@@ -54,7 +55,7 @@ class ContactFormTest extends TestCase
 
         $response->assertOk()->assertJson([
             'ok' => true,
-            'message' => 'Thank you for contacting CEBINOVA Technologies.',
+            'message' => 'Thank you! Your enquiry has been received.',
         ]);
         $this->assertDatabaseHas('leads', [
             'email' => 'asha@example.com',
@@ -66,6 +67,35 @@ class ContactFormTest extends TestCase
             'source' => 'Website Contact',
             'free_consultation' => 1,
         ]);
+    }
+
+    public function test_submission_page_is_recorded(): void
+    {
+        $this->withHeader('Referer', 'https://cebinova.test/contact?source=hero')
+            ->postJson(route('contact.store'), $this->validPayload())
+            ->assertOk();
+
+        $this->assertDatabaseHas('leads', [
+            'page_url' => 'https://cebinova.test/contact?source=hero',
+        ]);
+    }
+
+    public function test_rapid_duplicate_submission_is_not_stored_twice(): void
+    {
+        $this->postJson(route('contact.store'), $this->validPayload())->assertOk();
+        $this->postJson(route('contact.store'), $this->validPayload())->assertOk();
+
+        $this->assertSame(1, Lead::query()->count());
+    }
+
+    public function test_mail_failure_does_not_lose_the_lead(): void
+    {
+        config(['cebinova.leads.notification_email' => 'team@example.com']);
+        Mail::shouldReceive('raw')->once()->andThrow(new \RuntimeException('Mail unavailable'));
+
+        $this->postJson(route('contact.store'), $this->validPayload())->assertOk();
+
+        $this->assertDatabaseHas('leads', ['email' => 'asha@example.com']);
     }
 
     public function test_name_phone_and_service_are_required(): void
@@ -153,7 +183,7 @@ class ContactFormTest extends TestCase
     public function test_request_cannot_set_lead_status_or_notes(): void
     {
         $this->postJson(route('contact.store'), $this->validPayload([
-            'status' => 'Converted',
+            'status' => 'Won',
             'notes' => 'ignore me',
         ]))->assertOk();
 

@@ -3,7 +3,7 @@
         ['label' => 'Website', 'icon' => 'globe', 'copy' => 'Digital presence, done properly', 'href' => route('services.show', 'web-development')],
         ['label' => 'eCommerce', 'icon' => 'store', 'copy' => 'A storefront that sells 24/7', 'href' => route('services.show', 'ecommerce')],
         ['label' => 'Software', 'icon' => 'layers', 'copy' => 'Systems built around your process', 'href' => route('services.show', 'custom-software')],
-        ['label' => 'Mobile App', 'icon' => 'device', 'copy' => 'Android and iOS, one journey', 'lines' => ['Mobile App', 'Android Â· iOS'], 'href' => route('pricing')],        ['label' => 'AI', 'icon' => 'spark', 'copy' => 'Practical intelligence in the workflow', 'href' => route('services.show', 'ai-automation')],
+        ['label' => 'Mobile App', 'icon' => 'device', 'copy' => 'Android and iOS, one journey', 'lines' => ['Mobile App', 'Android · iOS'], 'href' => route('pricing')],        ['label' => 'AI', 'icon' => 'spark', 'copy' => 'Practical intelligence in the workflow', 'href' => route('services.show', 'ai-automation')],
         ['label' => 'Automation', 'icon' => 'nodes', 'copy' => 'Repetitive work, handled', 'href' => route('services.show', 'ai-automation')],
         ['label' => 'Marketing', 'icon' => 'megaphone', 'copy' => 'Reach the people who convert', 'href' => route('marketing-packages')],
         ['label' => 'Growth', 'icon' => 'trend', 'copy' => 'A plan that keeps compounding', 'href' => route('services.show', 'digital-growth')],

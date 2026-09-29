@@ -45,6 +45,17 @@ if (! function_exists('consultation_url')) {
     }
 }
 
+if (! function_exists('service_enquiry_url')) {
+    function service_enquiry_url(array $service): string
+    {
+        return route('contact', array_filter([
+            'service' => $service['title'],
+            'service_id' => $service['id'] ?? null,
+            'source' => 'Free Consultation',
+        ]));
+    }
+}
+
 if (! function_exists('page_next_url')) {
     function page_next_url(?array $guide, ?string $fallbackService = null): string
     {

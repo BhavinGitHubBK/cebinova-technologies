@@ -20,7 +20,7 @@
                     <h2 class="section-title">Send your requirement.</h2>
                     <p class="section-support">Fill the form and our team will get back with the right next step.</p>
                 </div>
-                <x-lead-form />
+                <x-lead-form :selected-service-record="$selectedServiceRecord ?? null" />
             </div>
 
             <aside class="contact-page-aside" aria-label="Contact details">
@@ -79,7 +79,7 @@
 
                 <article class="contact-page-card">
                     <p class="contact-page-meta-label">Working hours</p>
-                    <p class="contact-page-meta-strong">MonÃ¢â‚¬â€œSat Ã‚Â· 10 AM Ã¢â‚¬â€œ 7 PM</p>                    <p class="contact-page-card-text">Free consultation. No payment required to start.</p>
+                    <p class="contact-page-meta-strong">Mon–Sat · 10 AM – 7 PM</p>                    <p class="contact-page-card-text">Free consultation. No payment required to start.</p>
                 </article>
             </aside>
         </div>

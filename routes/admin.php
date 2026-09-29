@@ -11,7 +11,10 @@ use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\PackageController;
 use App\Http\Controllers\Admin\PageSectionController;
 use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Admin\PricingOptionController;
 use App\Http\Controllers\Admin\ServiceController;
+use App\Http\Controllers\Admin\SolutionController;
+use App\Http\Controllers\Admin\IndustryController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\TeamMemberController;
 use App\Http\Controllers\Admin\TestimonialController;
@@ -65,16 +68,45 @@ Route::middleware('web')->prefix('admin')->name('admin.')->group(function () {
             Route::get('services/{service}', [ServiceController::class, 'show'])->name('services.show');
         });
 
+        Route::middleware('can:admin.solutions.manage')->group(function () {
+            Route::get('solutions/create', [SolutionController::class, 'create'])->name('solutions.create');
+            Route::post('solutions', [SolutionController::class, 'store'])->name('solutions.store');
+            Route::get('solutions/{solution}/edit', [SolutionController::class, 'edit'])->name('solutions.edit');
+            Route::put('solutions/{solution}', [SolutionController::class, 'update'])->name('solutions.update');
+            Route::delete('solutions/{solution}', [SolutionController::class, 'destroy'])->name('solutions.destroy');
+        });
+        Route::middleware('can:admin.solutions.view')->group(function () {
+            Route::get('solutions', [SolutionController::class, 'index'])->name('solutions.index');
+            Route::get('solutions/{solution}', [SolutionController::class, 'show'])->name('solutions.show');
+        });
+        Route::middleware('can:admin.industries.manage')->group(function () {
+            Route::get('industries/create', [IndustryController::class, 'create'])->name('industries.create');
+            Route::post('industries', [IndustryController::class, 'store'])->name('industries.store');
+            Route::get('industries/{industry}/edit', [IndustryController::class, 'edit'])->name('industries.edit');
+            Route::put('industries/{industry}', [IndustryController::class, 'update'])->name('industries.update');
+            Route::delete('industries/{industry}', [IndustryController::class, 'destroy'])->name('industries.destroy');
+        });
+        Route::middleware('can:admin.industries.view')->group(function () {
+            Route::get('industries', [IndustryController::class, 'index'])->name('industries.index');
+            Route::get('industries/{industry}', [IndustryController::class, 'show'])->name('industries.show');
+        });
+
         Route::middleware('can:admin.packages.manage')->group(function () {
             Route::get('packages/create', [PackageController::class, 'create'])->name('packages.create');
             Route::post('packages', [PackageController::class, 'store'])->name('packages.store');
             Route::get('packages/{package}/edit', [PackageController::class, 'edit'])->name('packages.edit');
             Route::put('packages/{package}', [PackageController::class, 'update'])->name('packages.update');
             Route::delete('packages/{package}', [PackageController::class, 'destroy'])->name('packages.destroy');
+            Route::get('pricing-options/create', [PricingOptionController::class, 'create'])->name('pricing-options.create');
+            Route::post('pricing-options', [PricingOptionController::class, 'store'])->name('pricing-options.store');
+            Route::get('pricing-options/{pricingOption}/edit', [PricingOptionController::class, 'edit'])->name('pricing-options.edit');
+            Route::put('pricing-options/{pricingOption}', [PricingOptionController::class, 'update'])->name('pricing-options.update');
+            Route::delete('pricing-options/{pricingOption}', [PricingOptionController::class, 'destroy'])->name('pricing-options.destroy');
         });
         Route::middleware('can:admin.packages.view')->group(function () {
             Route::get('packages', [PackageController::class, 'index'])->name('packages.index');
             Route::get('packages/{package}', [PackageController::class, 'show'])->name('packages.show');
+            Route::get('pricing-options', [PricingOptionController::class, 'index'])->name('pricing-options.index');
         });
 
         Route::middleware('can:admin.content.manage')->group(function () {

@@ -1,5 +1,5 @@
 <?php
-
+  
 return [
     'name' => 'CEBINOVA Technologies',
     'short_name' => 'CEBINOVA',
@@ -8,10 +8,10 @@ return [
     'story' => 'Small Business → Digital Business → Growing Business',
 
     'contact' => [
-        'phone' => env('CEBINOVA_PHONE', '+91 96246 8831'),
+        'phone' => env('CEBINOVA_PHONE', '+91 90543 15515'),
         'email' => env('CEBINOVA_EMAIL', 'cebinovatechnologies@gmail.com'),
         'email_alt' => env('CEBINOVA_EMAIL_ALT', ''),
-        'whatsapp' => env('CEBINOVA_WHATSAPP', '91962468831'),
+        'whatsapp' => env('CEBINOVA_WHATSAPP', '9054315515'),
         'whatsapp_message' => "Hi CEBINOVA,\nI'd like to know more about your technology solutions.",
         'whatsapp_package_message' => "Hi CEBINOVA,\nI'm interested in the {package} – {duration} Plan.\nPlease share more details.",
         'address' => env('CEBINOVA_ADDRESS', '301, Satyam64, opp. Gujarat High Court, Sarkhej - Gandhinagar Hwy, Sola, Ahmedabad, Gujarat 380060'),
@@ -945,65 +945,6 @@ return [
         ['step' => '05', 'title' => 'Support & Grow', 'text' => 'We continuously support your business as your needs evolve.'],
     ],
 
-    'portfolio' => [
-        [
-            'slug' => 'kirana-store',
-            'preview' => 'store',
-            'title' => 'Retail / Kirana Digital Store',
-            'type' => 'Demo Solution',
-            'summary' => 'A digital storefront for neighbourhood retail - catalogue, enquiry and WhatsApp-led ordering.',
-            'tags' => ['Retail', 'Catalogue', 'WhatsApp'],
-        ],
-        [
-            'slug' => 'restaurant',
-            'preview' => 'restaurant',
-            'title' => 'Restaurant Ordering Solution',
-            'type' => 'Demo Solution',
-            'summary' => 'Menu, offers and order capture designed for food businesses that live on mobile.',
-            'tags' => ['Food', 'Ordering', 'Mobile'],
-        ],
-        [
-            'slug' => 'business-website',
-            'preview' => 'website',
-            'title' => 'Business Website',
-            'type' => 'Concept Project',
-            'summary' => 'A conversion-focused company website with clear services, proof points and enquiry flow.',
-            'tags' => ['Web', 'Corporate', 'Leads'],
-        ],
-        [
-            'slug' => 'ecommerce',
-            'preview' => 'ecommerce',
-            'title' => 'eCommerce Platform',
-            'type' => 'Demo Solution',
-            'summary' => 'Product, cart, payment and order management for businesses ready to sell online.',
-            'tags' => ['eCommerce', 'Payments', 'Orders'],
-        ],
-        [
-            'slug' => 'crm',
-            'preview' => 'crm',
-            'title' => 'Custom CRM',
-            'type' => 'Concept Project',
-            'summary' => 'A client and follow-up system shaped around a sales process instead of a generic CRM.',
-            'tags' => ['CRM', 'Sales', 'Follow-up'],
-        ],
-        [
-            'slug' => 'inventory',
-            'preview' => 'inventory',
-            'title' => 'Inventory Management System',
-            'type' => 'Concept Project',
-            'summary' => 'Stock, billing and movement tracking for businesses that have outgrown spreadsheets.',
-            'tags' => ['Inventory', 'Billing', 'Operations'],
-        ],
-        [
-            'slug' => 'ai-automation',
-            'preview' => 'ai',
-            'title' => 'AI Automation Demo',
-            'type' => 'Demo Solution',
-            'summary' => 'Lead capture, routing and WhatsApp follow-up with light AI assistance.',
-            'tags' => ['AI', 'Automation', 'WhatsApp'],
-        ],
-    ],
-
     'ecosystem' => [
         ['name' => 'CEBINOVA Commerce', 'text' => 'Selling, catalogues and order workflows.'],
         ['name' => 'CEBINOVA Business', 'text' => 'Operations, CRM and internal systems.'],
@@ -1064,7 +1005,9 @@ return [
 
     'leads' => [
         'default_status' => 'New',
-        'statuses' => ['New', 'Contacted', 'Follow-up', 'Converted', 'Lost'],
+        'statuses' => ['New', 'Contacted', 'Qualified', 'Proposal Sent', 'Won', 'Lost'],
+        'notification_email' => env('CONTACT_NOTIFICATION_EMAIL'),
+        'send_acknowledgement' => env('CONTACT_SEND_ACKNOWLEDGEMENT', false),
         'sources' => [
             'Website Contact',
             'Free Consultation',
@@ -1074,6 +1017,7 @@ return [
             'WhatsApp',
             'Technology Solution',
             'CEBINOVA Kirana Solution',
+            'CEBINOVA Pricing',
             'CEBINOVA Demos',
             'CEBINOVA Solutions',
         ],

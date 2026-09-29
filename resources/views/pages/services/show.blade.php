@@ -1,30 +1,26 @@
 @php
-    $guide = config('cebinova.service_guides.'.$service['slug'], []);
+    $guide = $service;
     $nextHref = page_next_url($guide, $service['title']);
-    $nextLabel = $guide['next_label'] ?? 'Get Free Consultation';
+    $nextLabel = $service['next_label'] ?? 'Get Free Consultation';
     $whatsapp = page_whatsapp_url($service['title']);
-    $serviceFaqs = $guide['faq'] ?? [];
-    $seen = collect($serviceFaqs)->pluck('q')->all();
-    $faqs = array_values(array_merge(
-        $serviceFaqs,
-        collect(config('cebinova.page.faq', []))->reject(fn ($item) => in_array($item['q'], $seen, true))->all()
-    ));
+    $faqs = $service['faq'] ?? [];
+    $process = collect($service['sections'] ?? [])->firstWhere('type', 'process');
 @endphp
 
 @extends('layouts.app')
 
-@section('title', $service['title'].' | CEBINOVA Technologies')
-@section('description', $service['short'])
+@section('title', $service['seo_title'] ?: $service['title'].' | CEBINOVA Technologies')
+@section('description', $service['seo_description'] ?: $service['short'])
 
 @section('content')
     <x-page-hero
         :wrap="true"
         :eyebrow="$service['category']"
-        :title="$service['title']"
-        :text="$service['summary']"
+        :title="$service['hero_title']"
+        :text="$service['hero_subtitle']"
     >
         @include('sections.page.hero-ctas', [
-            'consultHref' => consultation_url($service['title']),
+            'consultHref' => service_enquiry_url($service),
             'whatsappHref' => $whatsapp,
             'extraHref' => ($guide['next_route'] ?? null) ? $nextHref : null,
             'extraLabel' => ($guide['next_route'] ?? null) ? $nextLabel : null,
@@ -34,9 +30,9 @@
     <section class="section-pad section-soft">
         <div class="container-wide grid gap-10 lg:grid-cols-12">
             <div class="lg:col-span-7">
-                @if (! empty($guide['best_for']))
+                @if (! empty($service['audience']))
                     <p class="text-[12px] font-bold uppercase tracking-[0.16em] text-gold-dark">Who this is for</p>
-                    <p class="mt-3 text-[17px] leading-relaxed text-navy">{{ $guide['best_for'] }}</p>
+                    <p class="mt-3 text-[17px] leading-relaxed text-navy">{{ $service['audience'] }}</p>
                 @endif
 
                 <h2 class="mt-10 text-2xl font-extrabold text-navy">What this includes</h2>
@@ -52,10 +48,10 @@
             <aside class="lg:col-span-5">
                 <div class="card-surface p-7 sm:p-8">
                     <x-badge>Next step</x-badge>
-                    <h2 class="mt-4 text-xl font-bold text-navy">{{ $guide['outcome'] ?? 'We map this to your current stage.' }}</h2>
+                    <h2 class="mt-4 text-xl font-bold text-navy">{{ $service['outcome'] ?? 'We map this to your current stage.' }}</h2>
                     <p class="mt-3 text-[15.5px] leading-relaxed text-muted">Tell us how the business operates today. We will recommend the right starting point - not a larger stack than you need.</p>
                     <div class="mt-6 flex flex-col gap-3">
-                        <x-button href="{{ $nextHref }}" class="w-full">{{ $nextLabel }}</x-button>
+                        <x-button href="{{ $guide['next_route'] ? $nextHref : service_enquiry_url($service) }}" class="w-full">{{ $nextLabel }}</x-button>
                         <x-button href="{{ $whatsapp }}" variant="outline" class="w-full">Ask on WhatsApp</x-button>
                     </div>
                     <p class="mt-5 text-[13px] leading-relaxed text-muted">GST extra, if applicable. No payment required to start.</p>
@@ -64,11 +60,18 @@
         </div>
     </section>
 
-    @include('sections.page.how-it-works', ['topic' => $service['title']])
+    @foreach (collect($service['sections'] ?? [])->whereIn('type', ['benefits', 'use_cases', 'technologies', 'custom']) as $section)
+        @include('sections.services.dynamic-section', ['section' => $section])
+    @endforeach
+
+    @if ($process)
+        @include('sections.services.dynamic-process', ['section' => $process, 'topic' => $service['title']])
+    @endif
 
     @include('sections.page.faq', [
         'faqItems' => $faqs,
         'topic' => $service['title'],
+        'consultHref' => service_enquiry_url($service),
     ])
 
     <section class="section-pad bg-white">
@@ -77,7 +80,7 @@
                 Start with this page. Add the next service when the business is ready.
             </x-section-heading>
             <div class="mt-8 grid gap-5 md:grid-cols-3">
-                @foreach (collect(config('cebinova.services'))->reject(fn ($item) => $item['slug'] === $service['slug'])->take(3) as $related)
+                @foreach ($relatedServices as $related)
                     <x-service-card
                         :href="route('services.show', $related['slug'])"
                         :icon="$related['icon']"

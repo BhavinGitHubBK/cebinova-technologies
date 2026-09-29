@@ -16,12 +16,24 @@
         <p><strong>WhatsApp:</strong> @if($wa)<a href="https://wa.me/{{ $wa }}" target="_blank" rel="noopener">Chat</a>@else — @endif</p>
         <p><strong>Email:</strong> @if($lead->email)<a href="mailto:{{ $lead->email }}">{{ $lead->email }}</a>@else — @endif</p>
         <p><strong>Service:</strong> {{ $lead->service }}</p>
+        @if($lead->service_snapshot)
+            <p><strong>Lead source:</strong> Service</p>
+            <p><strong>Interested service:</strong> {{ data_get($lead->service_snapshot, 'name') }}</p>
+        @endif
         <p><strong>Package:</strong> {{ $lead->package_category }} {{ $lead->plan_duration }} {{ $lead->selected_price }}</p>
+        @if($lead->marketing_snapshot)
+            <div class="admin-alert"><strong>Marketing price snapshot</strong><br>{{ data_get($lead->marketing_snapshot, 'package_name') }} · {{ data_get($lead->marketing_snapshot, 'plan_label') }} · {{ cebinova_inr((int) data_get($lead->marketing_snapshot, 'price')) }}</div>
+        @endif
         <p><strong>City:</strong> {{ $lead->city ?: '—' }}</p>
         <p><strong>Budget:</strong> {{ $lead->budget ?: '—' }}</p>
         <p><strong>Source:</strong> {{ $lead->source }}</p>
+        <p><strong>Submitted page:</strong> @if($lead->page_url)<a href="{{ $lead->page_url }}" target="_blank" rel="noopener noreferrer">{{ $lead->page_url }}</a>@else — @endif</p>
         <p><strong>Message:</strong><br>{{ $lead->message ?: '—' }}</p>
         <p><strong>Created:</strong> {{ $lead->created_at }}</p>
+        <p><strong>Last updated:</strong> {{ $lead->updated_at }}</p>
+        @foreach (['contacted_at' => 'Contacted', 'qualified_at' => 'Qualified', 'proposal_sent_at' => 'Proposal sent', 'won_at' => 'Won', 'lost_at' => 'Lost'] as $column => $label)
+            @if ($lead->{$column})<p><strong>{{ $label }}:</strong> {{ $lead->{$column}->format('d M Y, H:i') }}</p>@endif
+        @endforeach
         @if($lead->trashed())
             <p class="admin-alert admin-alert-error">This lead is in trash.</p>
             @can('admin.leads.manage')

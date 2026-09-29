@@ -25,15 +25,27 @@ class StoreLeadRequest extends FormRequest
             'whatsapp' => ['nullable', 'string', 'max:20', 'regex:/^[0-9+\s\-()]{8,20}$/'],
             'email' => ['nullable', 'email:rfc', 'max:160'],
             'business_type' => ['nullable', 'string', Rule::in(config('cebinova.form.business_types'))],
-            'service' => ['required', 'string', Rule::in(config('cebinova.form.services'))],
-            'package_category' => ['nullable', 'string', Rule::requiredIf($packageEnquiry), Rule::in(MarketingPackages::categories())],
-            'plan_duration' => ['nullable', 'string', Rule::requiredIf($packageEnquiry), Rule::in(MarketingPackages::durations())],
+            'service' => $this->filled('service_id')
+                ? ['required', 'string', 'max:190']
+                : ['required', 'string', Rule::in(config('cebinova.form.services'))],
+            'package_category' => $this->filled('marketing_package_id')
+                ? ['nullable', 'string', 'max:120']
+                : ['nullable', 'string', Rule::requiredIf($packageEnquiry), Rule::in(MarketingPackages::categories())],
+            'plan_duration' => $this->filled('marketing_plan_id')
+                ? ['nullable', 'string', 'max:80']
+                : ['nullable', 'string', Rule::requiredIf($packageEnquiry), Rule::in(MarketingPackages::durations())],
             'plan_price' => ['nullable', 'string', 'max:40'],
             'city' => ['nullable', 'string', 'max:80'],
             'budget' => ['nullable', 'string', Rule::in(config('cebinova.form.budgets'))],
             'message' => ['nullable', 'string', 'max:2000'],
             'consultation' => ['sometimes', 'boolean'],
             'source' => ['nullable', 'string', Rule::in(config('cebinova.leads.sources'))],
+            'pricing_package_id' => ['nullable', 'integer'],
+            'pricing_option_ids' => ['nullable', 'array'],
+            'pricing_option_ids.*' => ['integer'],
+            'marketing_package_id' => ['nullable', 'integer', 'required_with:marketing_plan_id'],
+            'marketing_plan_id' => ['nullable', 'integer', 'required_with:marketing_package_id'],
+            'service_id' => ['nullable', 'integer'],
         ];
     }
 
@@ -47,7 +59,7 @@ class StoreLeadRequest extends FormRequest
             $category = $this->input('package_category');
             $duration = $this->input('plan_duration');
 
-            if (! $this->isPackageEnquiry()) {
+            if (! $this->isPackageEnquiry() || $this->filled('marketing_package_id')) {
                 return;
             }
 

@@ -4,23 +4,12 @@ namespace App\Support;
 
 use App\Models\Faq;
 use App\Models\PageSection;
-use App\Models\Project;
 use App\Models\TeamMember;
 use App\Models\Testimonial;
 use Illuminate\Support\Facades\Schema;
 
 class CmsContent
 {
-    public static function portfolio(): array
-    {
-        if (self::has('projects') && Project::query()->published()->exists()) {
-            return Project::query()->published()->orderBy('sort_order')->get()
-                ->map(fn (Project $p) => $p->toPublicArray())->all();
-        }
-
-        return config('cebinova.portfolio', []);
-    }
-
     public static function faqs(string $page = 'general'): array
     {
         if (self::has('faqs') && Faq::query()->active()->forPage($page)->exists()) {

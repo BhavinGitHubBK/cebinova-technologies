@@ -29,8 +29,8 @@ class PackageEnquiryTest extends TestCase
             ->assertSee('Yearly', false)
             ->assertSee('₹49,999', false)
             ->assertSee('Selected plan', false)
-            ->assertSee('Thank you for contacting CEBINOVA Technologies.', false)
-            ->assertSee('Our team will review your requirement and get in touch with you shortly.', false);
+            ->assertSee('Thank you! Your enquiry has been received.', false)
+            ->assertSee('Our team will contact you shortly.', false);
     }
 
     public function test_contact_page_shows_regular_quarterly_price_from_config(): void

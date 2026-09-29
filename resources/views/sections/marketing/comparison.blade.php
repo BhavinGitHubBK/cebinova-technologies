@@ -1,6 +1,7 @@
 @php
     $matrix = config('cebinova.marketing.matrix.rows', []);
-    $growth = \App\Support\MarketingPackages::packageArray('growth') ?? [];
+    $catalog = $marketingCatalog ?? \App\Support\MarketingPackages::catalog();
+    $growth = $catalog['growth'] ?? null;
 @endphp
 <section class="mkt-page-compare section-pad-lg bg-white" id="choose-plan">
     <div class="container-wide">
@@ -11,7 +12,7 @@
             </p>
             <h2 class="section-title">Which plan is for you?</h2>
             <p class="section-support">
-                Regular is everyday posts. Festival is occasions only. Complete Growth is both - and only â‚¹1,000 more than Regular each month.
+                Regular is everyday posts. Festival is occasions only. Complete Growth is both - and only ₹1,000 more than Regular each month.
             </p>
         </div>
 
@@ -42,27 +43,29 @@
         </div>
 
         <div class="mkt-page-compare-cards" data-stagger>
-            @foreach (config('cebinova.marketing.comparison') as $item)
+            @foreach (collect(config('cebinova.marketing.comparison'))->filter(fn ($item) => isset($catalog[$item['key']])) as $item)
                 @php $recommended = ! empty($item['recommended']); @endphp
                 <a href="{{ $item['key'] === 'growth' ? '#complete-growth' : '#marketing-plans' }}" class="mkt-page-compare-card js-pack-jump {{ $recommended ? 'is-recommended' : '' }}" data-cat="{{ $item['key'] }}">
                     <p class="mkt-page-compare-card-kicker">{{ $item['title'] }}</p>
                     <p class="mkt-page-compare-card-title">{{ $item['if'] }}</p>
-                    <p class="mkt-page-compare-card-text">{{ $item['gets'] }} â†’</p>
+                    <p class="mkt-page-compare-card-text">{{ $item['gets'] }} →</p>
                 </a>
             @endforeach
         </div>
 
+        @if ($growth)
         <article class="mkt-page-compare-foot">
             <p class="mkt-page-kicker">
                 <span class="mkt-page-dot" aria-hidden="true"></span>
                 Why Complete Growth
             </p>
-            <h3 class="mkt-page-compare-foot-title">â‚¹1,000 more than Regular. Festival creatives included.</h3>
+            <h3 class="mkt-page-compare-foot-title">₹1,000 more than Regular. Festival creatives included.</h3>
             <p class="mkt-page-compare-foot-text">{{ $growth['why'] }}</p>
             <div class="mkt-page-compare-foot-actions">
                 <x-button href="#complete-growth" class="js-pack-jump" data-cat="growth">See Complete Growth</x-button>
                 <x-button href="{{ package_whatsapp_url('Complete Growth', 'Yearly') }}" variant="outline">Ask on WhatsApp</x-button>
             </div>
         </article>
+        @endif
     </div>
 </section>

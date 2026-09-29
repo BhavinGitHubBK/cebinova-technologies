@@ -46,6 +46,7 @@
 <div class="kirana-pricing" data-wa="{{ $phoneDigits }}" data-email="{{ $email }}" data-contact="{{ $enquiry }}">
   <script type="application/json" id="cebinova-website-plans">@json($kiranaPlans ?? \App\Support\WebsitePackages::plans())</script>
   <script type="application/json" id="cebinova-website-addons">@json($kiranaAddons ?? \App\Support\WebsitePackages::addons())</script>
+  <script type="application/json" id="cebinova-pricing-options">@json($pricingOptions ?? [])</script>
   <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
   <div id="plans"></div>
     <section class="section calc-section" id="calculator">
@@ -138,6 +139,7 @@
 
               <div class="package-options" role="radiogroup" aria-label="Website package">
 
+                @if (collect($kiranaPlans)->contains('key', 'starter'))
                 <label class="option-card package-select pkg-starter">
                   <input type="radio" name="website" value="starter" data-price="14999" data-label="Starter" data-delivery="5–7 Days" data-support="7 Days" data-training="Free">
                   <span class="option-body">
@@ -197,6 +199,8 @@
                   </span>
                 </label>
 
+                @endif
+                @if (collect($kiranaPlans)->contains('key', 'business'))
                 <label class="option-card package-select recommended pkg-business">
                   <input type="radio" name="website" value="business" data-price="24999" data-label="Business" data-delivery="7–10 Days" data-support="15 Days" data-training="Free" checked>
                   <span class="option-body">
@@ -256,6 +260,8 @@
                   </span>
                 </label>
 
+                @endif
+                @if (collect($kiranaPlans)->contains('key', 'professional'))
                 <label class="option-card package-select complete pkg-pro">
                   <input type="radio" name="website" value="professional" data-price="29999" data-label="Professional" data-delivery="10–15 Days" data-support="30 Days" data-training="Free">
                   <span class="option-body">
@@ -317,6 +323,11 @@
                     </span>
                   </span>
                 </label>
+                @endif
+              </div>
+              <div id="pricingEmpty" class="contact-page-card" @if(collect($kiranaPlans)->isNotEmpty()) hidden @endif>
+                <p>Custom pricing is available based on your requirements.</p>
+                <a class="btn btn-primary" href="{{ route('contact') }}">Contact our team for a quote</a>
               </div>
 
               <div class="compare-cta">
@@ -494,7 +505,7 @@
 
               <div class="domain-select-grid" role="radiogroup" aria-label="Website address option">
                 <label class="option-card domain-pick" data-domain="existing">
-                  <input type="radio" name="domainOption" value="0" data-label="Already have">
+                  <input type="radio" name="domainOption" value="0" data-label="Already have" data-option-key="existing-domain">
                   <span class="option-body">
                     <span class="domain-card-top">
                       <span class="domain-identity">
@@ -530,7 +541,7 @@
                 </label>
 
                 <label class="option-card domain-pick is-new" data-domain="new">
-                  <input type="radio" name="domainOption" id="domainOptionNew" value="799" data-label="New Domain" data-provider="Hostinger" checked>
+                  <input type="radio" name="domainOption" id="domainOptionNew" value="799" data-label="New Domain" data-provider="Hostinger" data-option-key="hostinger-domain" checked>
                   <span class="option-body">
                     <span class="domain-card-top">
                       <span class="domain-identity">
@@ -564,15 +575,15 @@
                     <span class="domain-providers" role="group" aria-label="Domain provider prices">
                       <span class="domain-best-label">Choose provider</span>
                       <span class="domain-provider-list">
-                        <button type="button" class="domain-provider is-active" data-provider="Hostinger" data-price="799">
+                        <button type="button" class="domain-provider is-active" data-provider="Hostinger" data-price="799" data-option-key="hostinger-domain">
                           <strong>Hostinger</strong>
                           <span>₹799</span>
                         </button>
-                        <button type="button" class="domain-provider" data-provider="GoDaddy" data-price="999">
+                        <button type="button" class="domain-provider" data-provider="GoDaddy" data-price="999" data-option-key="godaddy-domain">
                           <strong>GoDaddy</strong>
                           <span>₹999</span>
                         </button>
-                        <button type="button" class="domain-provider" data-provider="BigRock" data-price="899">
+                        <button type="button" class="domain-provider" data-provider="BigRock" data-price="899" data-option-key="bigrock-domain">
                           <strong>BigRock</strong>
                           <span>₹899</span>
                         </button>
@@ -640,7 +651,7 @@
 
               <div class="hosting-select-grid" role="radiogroup" aria-label="Hosting option">
                 <label class="option-card hosting-pick" data-hosting="existing">
-                  <input type="radio" name="hostingOption" value="0" data-label="Use Existing">
+                  <input type="radio" name="hostingOption" value="0" data-label="Use Existing" data-option-key="existing-hosting">
                   <span class="option-body">
                     <span class="hosting-card-top">
                       <span class="hosting-identity">
@@ -676,7 +687,7 @@
                 </label>
 
                 <label class="option-card hosting-pick" data-hosting="basic">
-                  <input type="radio" name="hostingOption" value="3000" data-label="Basic Hosting" checked>
+                  <input type="radio" name="hostingOption" value="3000" data-label="Basic Hosting" data-option-key="basic-hosting" checked>
                   <span class="option-body">
                     <span class="hosting-card-top">
                       <span class="hosting-identity">
@@ -726,7 +737,7 @@
                 </label>
 
                 <label class="option-card hosting-pick is-premium" data-hosting="premium">
-                  <input type="radio" name="hostingOption" value="6000" data-label="Premium Hosting">
+                  <input type="radio" name="hostingOption" value="6000" data-label="Premium Hosting" data-option-key="premium-hosting">
                   <span class="option-body">
                     <span class="hosting-card-top">
                       <span class="hosting-identity">
@@ -886,7 +897,7 @@
             </p>
 
             <div class="summary-actions est-actions">
-              <a href="#contact" class="btn btn-primary est-btn-primary">
+              <a href="#contact" id="pricingEnquiry" class="btn btn-primary est-btn-primary">
                 Book Free Consultation
                 <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
               </a>

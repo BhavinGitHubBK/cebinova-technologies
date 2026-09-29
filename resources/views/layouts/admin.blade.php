@@ -34,11 +34,19 @@
                     Leads @if($newLeads)<span class="admin-badge admin-badge-new">{{ $newLeads }}</span>@endif
                 </a>
             @endcan
+            @can('admin.solutions.view')
+                <a href="{{ route('admin.solutions.index') }}" class="{{ request()->routeIs('admin.solutions.*') ? 'is-active' : '' }}">Solutions</a>
+            @endcan
+            @can('admin.industries.view')
+                <a href="{{ route('admin.industries.index') }}" class="{{ request()->routeIs('admin.industries.*') ? 'is-active' : '' }}">Industries</a>
+            @endcan
             @can('admin.services.view')
                 <a href="{{ route('admin.services.index') }}" class="{{ request()->routeIs('admin.services.*') ? 'is-active' : '' }}">Services</a>
             @endcan
             @can('admin.packages.view')
-                <a href="{{ route('admin.packages.index') }}" class="{{ request()->routeIs('admin.packages.*') ? 'is-active' : '' }}">Packages</a>
+                <a href="{{ route('admin.packages.index') }}" class="{{ request()->routeIs('admin.packages.*') ? 'is-active' : '' }}">Pricing Packages</a>
+                <a href="{{ route('admin.packages.index', ['group' => 'marketing']) }}">Marketing Packages</a>
+                <a href="{{ route('admin.pricing-options.index') }}" class="{{ request()->routeIs('admin.pricing-options.*') ? 'is-active' : '' }}">Pricing Options</a>
             @endcan
             @can('admin.content.view')
                 <a href="{{ route('admin.testimonials.index') }}" class="{{ request()->routeIs('admin.testimonials.*') ? 'is-active' : '' }}">Testimonials</a>

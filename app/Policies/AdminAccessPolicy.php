@@ -31,6 +31,11 @@ class AdminAccessPolicy
         return $user->canWriteContent();
     }
 
+    public function viewSolutions(User $user): bool { return true; }
+    public function manageSolutions(User $user): bool { return $user->canWriteContent(); }
+    public function viewIndustries(User $user): bool { return true; }
+    public function manageIndustries(User $user): bool { return $user->canWriteContent(); }
+
     public function viewPackages(User $user): bool
     {
         return true;

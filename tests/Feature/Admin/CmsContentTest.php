@@ -3,7 +3,6 @@
 namespace Tests\Feature\Admin;
 
 use App\Enums\UserRole;
-use App\Models\Project;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
@@ -22,60 +21,32 @@ class CmsContentTest extends TestCase
         ], $overrides));
     }
 
-    public function test_editor_can_create_project(): void
+    public function test_editor_can_create_testimonial(): void
     {
         $editor = $this->admin(['role' => UserRole::Editor]);
 
         $this->actingAs($editor)
-            ->post(route('admin.projects.store'), [
-                'title' => 'Demo Retail Store',
-                'slug' => 'demo-retail-store',
-                'preview' => 'store',
-                'type' => 'Demo Solution',
-                'short_description' => 'A published portfolio project.',
-                'technologies_text' => "Retail\nWhatsApp",
-                'status' => 'published',
+            ->post(route('admin.testimonials.store'), [
+                'customer_name' => 'Priya Shah',
+                'company' => 'Retail Demo',
+                'position' => 'Owner',
+                'review' => 'CEBINOVA delivered a clean storefront our team can actually use.',
+                'rating' => 5,
                 'sort_order' => 1,
+                'is_active' => 1,
             ])
-            ->assertRedirect(route('admin.projects.index'));
+            ->assertRedirect(route('admin.testimonials.index'));
 
-        $this->assertDatabaseHas('projects', [
-            'slug' => 'demo-retail-store',
-            'status' => 'published',
-            'title' => 'Demo Retail Store',
+        $this->assertDatabaseHas('testimonials', [
+            'customer_name' => 'Priya Shah',
+            'company' => 'Retail Demo',
         ]);
     }
 
-    public function test_public_portfolio_shows_published_project(): void
+    public function test_public_portfolio_routes_are_removed(): void
     {
-        Project::query()->create([
-            'title' => 'Published Gallery Item',
-            'slug' => 'published-gallery-item',
-            'preview' => 'website',
-            'type' => 'Concept Project',
-            'technologies' => ['Web'],
-            'short_description' => 'Visible on the public portfolio.',
-            'status' => 'published',
-            'sort_order' => 1,
-            'is_featured' => false,
-        ]);
-
-        Project::query()->create([
-            'title' => 'Draft Hidden Item',
-            'slug' => 'draft-hidden-item',
-            'preview' => 'website',
-            'type' => 'Concept Project',
-            'technologies' => ['Web'],
-            'short_description' => 'Should not appear.',
-            'status' => 'draft',
-            'sort_order' => 2,
-            'is_featured' => false,
-        ]);
-
-        $this->get(route('portfolio'))
-            ->assertOk()
-            ->assertSee('Published Gallery Item')
-            ->assertDontSee('Draft Hidden Item');
+        $this->get('/portfolio')->assertNotFound();
+        $this->get('/portfolio/kirana-store')->assertNotFound();
     }
 
     public function test_public_blog_routes_are_removed(): void
@@ -89,13 +60,13 @@ class CmsContentTest extends TestCase
         $viewer = $this->admin(['role' => UserRole::Viewer]);
 
         $this->actingAs($viewer)
-            ->get(route('admin.projects.create'))
+            ->get(route('admin.testimonials.create'))
             ->assertForbidden();
 
         $this->actingAs($viewer)
-            ->post(route('admin.projects.store'), [
-                'title' => 'Should Fail',
-                'status' => 'draft',
+            ->post(route('admin.testimonials.store'), [
+                'customer_name' => 'Should Fail',
+                'review' => 'Should fail.',
             ])
             ->assertForbidden();
     }

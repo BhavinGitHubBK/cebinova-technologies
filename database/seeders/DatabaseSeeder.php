@@ -15,8 +15,8 @@ class DatabaseSeeder extends Seeder
             AdminUserSeeder::class,
             SiteSettingSeeder::class,
             ServiceSeeder::class,
+            SolutionIndustrySeeder::class,
             PackageSeeder::class,
-            ProjectSeeder::class,
             FaqSeeder::class,
             PageSectionSeeder::class,
         ]);

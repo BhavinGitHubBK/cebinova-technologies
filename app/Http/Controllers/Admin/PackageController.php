@@ -17,7 +17,9 @@ class PackageController extends Controller
     public function index(Request $request): View
     {
         $packages = Package::query()
-            ->withCount('plans')
+            ->with(['plans' => fn ($query) => $query->orderBy('sort_order')])
+            ->withCount(['plans', 'features'])
+            ->when($request->input('group') === 'marketing', fn ($q) => $q->marketing())
             ->when($request->filled('category'), fn ($q) => $q->where('category', $request->category))
             ->when($request->filled('q'), fn ($q) => $q->where('name', 'like', '%'.$request->q.'%'))
             ->orderBy('sort_order')
@@ -36,6 +38,7 @@ class PackageController extends Controller
             'package' => new Package,
             'categories' => Package::CATEGORIES,
             'plans' => [],
+            'features' => [],
         ]);
     }
 
@@ -43,11 +46,15 @@ class PackageController extends Controller
     {
         $data = $this->validatedPackage($request);
         $plans = $this->validatedPlans($request);
+        $features = $this->validatedFeatures($request);
 
-        $package = DB::transaction(function () use ($data, $plans) {
+        $package = DB::transaction(function () use ($data, $plans, $features) {
             $package = Package::query()->create($data);
             foreach ($plans as $i => $plan) {
-                $package->plans()->create(array_merge($plan, ['sort_order' => $i]));
+                $this->createPlan($package, $plan, $i);
+            }
+            foreach ($features as $i => $feature) {
+                $package->features()->create(array_merge($feature, ['sort_order' => $i]));
             }
 
             return $package;
@@ -60,19 +67,20 @@ class PackageController extends Controller
 
     public function show(Package $package): View
     {
-        $package->load('plans');
+        $package->load('plans', 'features');
 
         return view('admin.packages.show', compact('package'));
     }
 
     public function edit(Package $package): View
     {
-        $package->load('plans');
+        $package->load('plans', 'features');
 
         return view('admin.packages.form', [
             'package' => $package,
             'categories' => Package::CATEGORIES,
             'plans' => $package->plans,
+            'features' => $package->features,
         ]);
     }
 
@@ -80,12 +88,17 @@ class PackageController extends Controller
     {
         $data = $this->validatedPackage($request, $package);
         $plans = $this->validatedPlans($request);
+        $features = $this->validatedFeatures($request);
 
-        DB::transaction(function () use ($package, $data, $plans) {
+        DB::transaction(function () use ($package, $data, $plans, $features) {
             $package->update($data);
             $package->plans()->delete();
             foreach ($plans as $i => $plan) {
-                $package->plans()->create(array_merge($plan, ['sort_order' => $i]));
+                $this->createPlan($package, $plan, $i);
+            }
+            $package->features()->delete();
+            foreach ($features as $i => $feature) {
+                $package->features()->create(array_merge($feature, ['sort_order' => $i]));
             }
         });
 
@@ -129,7 +142,7 @@ class PackageController extends Controller
             'seo_description' => ['nullable', 'string', 'max:500'],
         ]);
 
-        $data['slug'] = $data['slug'] ?: Str::slug($data['name']);
+        $data['slug'] = ($data['slug'] ?? null) ?: Str::slug($data['name']);
         $data['includes'] = collect(preg_split('/\r\n|\r|\n/', (string) ($data['includes_text'] ?? '')))
             ->map(fn ($l) => trim($l))->filter()->values()->all();
         unset($data['includes_text']);
@@ -158,6 +171,7 @@ class PackageController extends Controller
             'plans.*.cta' => ['nullable', 'string', 'max:120'],
             'plans.*.note' => ['nullable', 'string', 'max:500'],
             'plans.*.features_text' => ['nullable', 'string'],
+            'plans.*.monthly_pace_text' => ['nullable', 'string'],
             'plans.*.is_active' => ['sometimes', 'boolean'],
         ]);
 
@@ -173,7 +187,15 @@ class PackageController extends Controller
                 ]);
             }
 
+            if (filled($plan['original_price'] ?? null) && (float) $plan['original_price'] < (float) $plan['price']) {
+                throw \Illuminate\Validation\ValidationException::withMessages([
+                    "plans.{$index}.original_price" => 'Original price must be greater than or equal to the current price.',
+                ]);
+            }
+
             $features = collect(preg_split('/\r\n|\r|\n/', (string) ($plan['features_text'] ?? '')))
+                ->map(fn ($l) => trim($l))->filter()->values()->all();
+            $monthlyPace = collect(preg_split('/\r\n|\r|\n/', (string) ($plan['monthly_pace_text'] ?? '')))
                 ->map(fn ($l) => trim($l))->filter()->values()->all();
             $plans[] = [
                 'key' => $plan['key'] ?? Str::slug($plan['label']),
@@ -188,10 +210,42 @@ class PackageController extends Controller
                 'cta' => $plan['cta'] ?? null,
                 'note' => $plan['note'] ?? null,
                 'features' => $features,
+                'monthly_pace' => $monthlyPace,
                 'is_active' => (bool) ($plan['is_active'] ?? true),
             ];
         }
 
         return $plans;
+    }
+
+    private function createPlan(Package $package, array $data, int $sortOrder): PackagePlan
+    {
+        $plan = $package->plans()->create(array_merge($data, ['sort_order' => $sortOrder]));
+
+        foreach (['included' => $data['features'] ?? [], 'monthly_pace' => $data['monthly_pace'] ?? []] as $group => $items) {
+            foreach ($items as $index => $name) {
+                $plan->deliverables()->create([
+                    'group' => $group,
+                    'name' => $name,
+                    'is_active' => true,
+                    'sort_order' => $index,
+                ]);
+            }
+        }
+
+        return $plan;
+    }
+
+    private function validatedFeatures(Request $request): array
+    {
+        $request->validate(['package_features_text' => ['nullable', 'string', 'max:10000']]);
+
+        return collect(preg_split('/\r\n|\r|\n/', (string) $request->input('package_features_text')))
+            ->map(fn ($line) => trim($line))
+            ->filter()
+            ->map(function ($line) {
+                [$name, $value] = array_pad(array_map('trim', explode('|', $line, 2)), 2, null);
+                return ['name' => $name, 'display_value' => $value, 'is_included' => true, 'is_active' => true];
+            })->values()->all();
     }
 }

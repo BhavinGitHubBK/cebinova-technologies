@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\LeadStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Lead;
 use App\Models\User;
 use App\Services\Admin\ActivityLogger;
+use App\Services\LeadService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -73,7 +75,7 @@ class LeadController extends Controller
         ]);
     }
 
-    public function update(Request $request, Lead $lead): RedirectResponse
+    public function update(Request $request, Lead $lead, LeadService $leads): RedirectResponse
     {
         $data = $request->validate([
             'status' => ['required', 'in:'.implode(',', Lead::STATUSES)],
@@ -83,7 +85,10 @@ class LeadController extends Controller
         ]);
 
         $before = $lead->only(['status', 'notes', 'follow_up_at', 'assigned_to']);
+        $status = LeadStatus::from($data['status']);
+        unset($data['status']);
         $lead->update($data);
+        $leads->updateStatus($lead, $status);
 
         ActivityLogger::log('update', 'leads', $lead, 'Lead updated', [
             'before' => $before,
@@ -93,7 +98,7 @@ class LeadController extends Controller
         return back()->with('success', 'Lead updated.');
     }
 
-    public function bulkStatus(Request $request): RedirectResponse
+    public function bulkStatus(Request $request, LeadService $leads): RedirectResponse
     {
         $data = $request->validate([
             'ids' => ['required', 'array'],
@@ -101,7 +106,8 @@ class LeadController extends Controller
             'status' => ['required', 'in:'.implode(',', Lead::STATUSES)],
         ]);
 
-        Lead::query()->whereIn('id', $data['ids'])->update(['status' => $data['status']]);
+        $status = LeadStatus::from($data['status']);
+        Lead::query()->whereIn('id', $data['ids'])->each(fn (Lead $lead) => $leads->updateStatus($lead, $status));
         ActivityLogger::log('bulk_status', 'leads', null, 'Bulk status update', $data);
 
         return back()->with('success', 'Selected leads updated.');

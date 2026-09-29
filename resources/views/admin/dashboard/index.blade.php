@@ -45,8 +45,8 @@
         <p class="dash-kpi-value">{{ $newLeadsCount }}</p>
     </article>
     <article class="dash-kpi dash-kpi-converted">
-        <p class="dash-kpi-label">Converted</p>
-        <p class="dash-kpi-value">{{ $convertedCount }}</p>
+        <p class="dash-kpi-label">Won</p>
+        <p class="dash-kpi-value">{{ $wonCount }}</p>
     </article>
     <article class="dash-kpi dash-kpi-rate">
         <p class="dash-kpi-label">Conversion</p>
@@ -65,8 +65,9 @@
 <section class="dash-pipeline" aria-label="Lead pipeline">
     <div class="dash-pipe"><span class="admin-badge admin-badge-new">New</span><strong>{{ $newLeadsCount }}</strong></div>
     <div class="dash-pipe"><span class="admin-badge">Contacted</span><strong>{{ $contactedCount }}</strong></div>
-    <div class="dash-pipe"><span class="admin-badge">Follow-up</span><strong>{{ $followUpCount }}</strong></div>
-    <div class="dash-pipe"><span class="admin-badge admin-badge-converted">Converted</span><strong>{{ $convertedCount }}</strong></div>
+    <div class="dash-pipe"><span class="admin-badge">Qualified</span><strong>{{ $qualifiedCount }}</strong></div>
+    <div class="dash-pipe"><span class="admin-badge">Proposal Sent</span><strong>{{ $proposalSentCount }}</strong></div>
+    <div class="dash-pipe"><span class="admin-badge admin-badge-converted">Won</span><strong>{{ $wonCount }}</strong></div>
     <div class="dash-pipe"><span class="admin-badge admin-badge-lost">Lost</span><strong>{{ $lostCount }}</strong></div>
 </section>
 
@@ -105,7 +106,7 @@
             @php
                 $badge = match ($lead->status) {
                     'New' => 'admin-badge-new',
-                    'Converted' => 'admin-badge-converted',
+                    'Won' => 'admin-badge-converted',
                     'Lost' => 'admin-badge-lost',
                     default => '',
                 };

@@ -62,6 +62,11 @@ class Package extends Model
         return $this->hasMany(PackagePlan::class)->orderBy('sort_order');
     }
 
+    public function features(): HasMany
+    {
+        return $this->hasMany(PackageFeature::class)->orderBy('sort_order')->orderBy('id');
+    }
+
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('is_active', true)

@@ -29,7 +29,7 @@
                 @endforeach
             </div>
             <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-                <x-button href="{{ consultation_url($topic) }}">Get Free Consultation</x-button>
+                <x-button href="{{ $consultHref ?? consultation_url($topic) }}">Get Free Consultation</x-button>
                 <x-button href="{{ page_whatsapp_url($topic) }}" variant="outline">Ask on WhatsApp</x-button>
             </div>
         </div>

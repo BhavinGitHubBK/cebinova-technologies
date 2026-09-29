@@ -25,7 +25,6 @@ class PageRoutesTest extends TestCase
             ['/solutions/business-management'],
             ['/industries'],
             ['/marketing-packages'],
-            ['/portfolio'],
             ['/demos'],
             ['/pricing'],
             ['/solutions/retail'],
@@ -312,8 +311,8 @@ class PageRoutesTest extends TestCase
     {
         $this->get('/contact')
             ->assertOk()
-            ->assertSee('+91 96246 8831', false)
-            ->assertSee('tel:+91962468831', false)
+            ->assertSee('+91 90543 15515', false)
+            ->assertSee('tel:+919054315515', false)
             ->assertDontSee('Phone - available on request', false);
     }
 
@@ -458,8 +457,9 @@ class PageRoutesTest extends TestCase
     {
         $nav = $this->get('/')->assertOk()->getContent();
 
-        $this->assertMatchesRegularExpression('/aria-label="Primary"[\s\S]*Home[\s\S]*Services[\s\S]*Solutions[\s\S]*Marketing Packages[\s\S]*nav-link-badge[\s\S]*Popular[\s\S]*Pricing[\s\S]*nav-link-badge[\s\S]*Hot[\s\S]*Demos[\s\S]*Portfolio[\s\S]*About[\s\S]*Contact/', $nav);
+        $this->assertMatchesRegularExpression('/aria-label="Primary"[\s\S]*Home[\s\S]*Services[\s\S]*Solutions[\s\S]*Marketing Packages[\s\S]*nav-link-badge[\s\S]*Popular[\s\S]*Pricing[\s\S]*nav-link-badge[\s\S]*Hot[\s\S]*Demos[\s\S]*About[\s\S]*Contact/', $nav);
         $this->assertDoesNotMatchRegularExpression('/aria-label="Primary"[\s\S]*class="nav-link[^"]*">[\s\S]*Blog[\s\S]*</', $nav);
+        $this->assertDoesNotMatchRegularExpression('/aria-label="Primary"[\s\S]*class="nav-link[^"]*">[\s\S]*Portfolio[\s\S]*</', $nav);
         $this->assertStringContainsString('Business Solutions', $nav);
         $this->assertStringContainsString('View All Solutions', $nav);
         $this->assertStringContainsString('nav-mega-item', $nav);

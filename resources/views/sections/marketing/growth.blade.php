@@ -1,5 +1,5 @@
 @php
-    $growth = \App\Support\MarketingPackages::packageArray('growth') ?? ['plans' => [], 'badge' => null, 'heading' => '', 'title' => '', 'service' => 'Complete Growth'];
+    $growth = $marketingCatalog['growth'] ?? \App\Support\MarketingPackages::packageArray('growth');
     $defaultPlan = $growth['plans']['yearly'] ?? reset($growth['plans']) ?: [];
 @endphp
 
@@ -30,15 +30,15 @@
                     <button
                         type="button"
                         class="growth-duration js-growth-duration {{ $plan['label'] === 'Yearly' ? 'is-active' : '' }}"
-                        data-url="{{ package_enquiry_url($growth['service'], $plan['label']) }}"
+                        data-url="{{ $plan['enquiry_url'] ?? package_enquiry_url($growth['service'], $plan['label']) }}"
                         data-whatsapp="{{ package_whatsapp_url($growth['service'], $plan['label']) }}"
                         data-price="{{ cebinova_inr($plan['price']) }}"
                         data-period="{{ $plan['period'] }}"
                         data-duration="{{ $plan['label'] }}"
                         data-stack="{{ \App\Support\MarketingPackages::priceHeadline($growth['service'], $plan['label']) }}"
-                        data-sticky-name="Complete Growth Â· {{ $plan['label'] }}"
+                        data-sticky-name="Complete Growth · {{ $plan['label'] }}"
                         data-sticky-price="{{ \App\Support\MarketingPackages::priceHeadline($growth['service'], $plan['label']) }}"
-                        data-sticky-cta="{{ package_enquiry_url($growth['service'], $plan['label']) }}"
+                        data-sticky-cta="{{ $plan['enquiry_url'] ?? package_enquiry_url($growth['service'], $plan['label']) }}"
                         data-sticky-wa="{{ package_whatsapp_url($growth['service'], $plan['label']) }}"
                     >
                         <span class="growth-duration-label">{{ $plan['label'] }}</span>
@@ -52,11 +52,11 @@
 
             <p class="js-growth-price mkt-page-growth-price">{{ cebinova_inr($defaultPlan['price']) }}</p>
             <p class="js-growth-period mkt-page-growth-period">{{ $defaultPlan['period'] }}</p>
-            <p class="js-growth-stack mkt-page-growth-stack">{{ \App\Support\MarketingPackages::priceHeadline($growth['service'], 'Yearly') }}</p>
-            <p class="js-growth-benefit mkt-page-growth-benefit">{{ $growth['plans']['yearly']['note'] }}</p>
+            <p class="js-growth-stack mkt-page-growth-stack">{{ \App\Support\MarketingPackages::priceHeadline($growth['service'], $defaultPlan['label']) }}</p>
+            <p class="js-growth-benefit mkt-page-growth-benefit">{{ $defaultPlan['note'] }}</p>
 
             <div class="mkt-page-growth-actions">
-                <x-button href="{{ package_enquiry_url($growth['service'], 'Yearly') }}" size="lg" class="js-growth-cta w-full sm:w-auto">Get This Plan</x-button>
+                <x-button href="{{ $defaultPlan['enquiry_url'] ?? package_enquiry_url($growth['service'], $defaultPlan['label']) }}" size="lg" class="js-growth-cta w-full sm:w-auto">Get This Plan</x-button>
                 <x-button href="{{ package_whatsapp_url($growth['service'], 'Yearly') }}" variant="light" size="lg" class="js-growth-whatsapp w-full sm:w-auto">Ask on WhatsApp</x-button>
             </div>
         </div>
@@ -64,7 +64,7 @@
         <div class="mkt-page-growth-details">
             <p class="mkt-page-plan-section-label mkt-page-plan-section-label--light">What you get every month on Yearly</p>
             <ul class="mkt-page-plan-list mkt-page-plan-list--light">
-                @foreach ($growth['plans']['yearly']['monthly_pace'] as $item)
+                @foreach ($defaultPlan['monthly_pace'] as $item)
                     <li>{{ $item }}</li>
                 @endforeach
             </ul>

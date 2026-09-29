@@ -37,7 +37,11 @@ class MarketingPackages
             ->mapWithKeys(fn (Package $p) => [$p->name => $p->key ?: strtolower(str_replace(' ', '-', $p->name))])
             ->all();
 
-        return $keys !== [] ? $keys : self::KEY_MAP;
+        if ($keys !== [] || Package::query()->marketing()->exists()) {
+            return $keys;
+        }
+
+        return self::KEY_MAP;
     }
 
     public static function categories(): array
@@ -72,9 +76,11 @@ class MarketingPackages
             }
         }
 
-        return $ordered !== []
-            ? $ordered
-            : config('cebinova.marketing.frequencies', ['Monthly', 'Quarterly', 'Half-Yearly', 'Yearly']);
+        if ($ordered !== [] || Package::query()->marketing()->exists()) {
+            return $ordered;
+        }
+
+        return config('cebinova.marketing.frequencies', ['Monthly', 'Quarterly', 'Half-Yearly', 'Yearly']);
     }
 
     public static function isValid(string $category, string $duration): bool
@@ -102,7 +108,15 @@ class MarketingPackages
             })
             ->first();
 
-        return $plan?->price ?? self::configPriceAmount($category, $duration);
+        if ($plan) {
+            return $plan->price;
+        }
+
+        $databasePackageExists = Package::query()->marketing()->where(function ($query) use ($category) {
+            $query->where('name', $category)->orWhere('service_label', $category);
+        })->exists();
+
+        return $databasePackageExists ? null : self::configPriceAmount($category, $duration);
     }
 
     public static function formattedPrice(?string $category, ?string $duration): ?string
@@ -217,8 +231,12 @@ class MarketingPackages
             ->where(function ($q) use ($key) {
                 $q->where('key', $key)->orWhere('slug', $key);
             })
-            ->with(['plans' => fn ($q) => $q->active()->orderBy('sort_order')])
+            ->with(['plans' => fn ($q) => $q->active()->with(['deliverables' => fn ($deliverables) => $deliverables->active()])->orderBy('sort_order')])
             ->first();
+
+        if (! $package && Package::query()->when($category, fn ($q) => $q->where('category', $category))->where(fn ($q) => $q->where('key', $key)->orWhere('slug', $key))->exists()) {
+            return null;
+        }
 
         if (! $package) {
             $config = config('cebinova.marketing.'.$key);
@@ -228,7 +246,11 @@ class MarketingPackages
 
         $plans = [];
         foreach ($package->plans as $plan) {
+            $included = $plan->deliverables->where('group', 'included')->pluck('name')->values()->all();
+            $monthlyPace = $plan->deliverables->where('group', 'monthly_pace')->pluck('name')->values()->all();
             $plans[$plan->key ?: Str::slug($plan->label)] = [
+                'id' => $plan->id,
+                'package_id' => $package->id,
                 'label' => $plan->label,
                 'duration' => $plan->duration,
                 'price' => $plan->price,
@@ -236,13 +258,22 @@ class MarketingPackages
                 'badge' => $plan->badge,
                 'cta' => $plan->cta,
                 'note' => $plan->note,
-                'includes' => $plan->features ?? [],
-                'monthly_pace' => $plan->monthly_pace,
+                'includes' => $included !== [] ? $included : ($plan->features ?? []),
+                'monthly_pace' => $monthlyPace !== [] ? $monthlyPace : $plan->monthly_pace,
+                'enquiry_url' => route('contact', [
+                    'service' => self::SERVICE,
+                    'package_category' => $package->service_label ?: $package->name,
+                    'plan_duration' => $plan->label,
+                    'source' => $package->service_label ?: $package->name,
+                    'marketing_package_id' => $package->id,
+                    'marketing_plan_id' => $plan->id,
+                ]),
             ];
         }
 
         return [
             'key' => $package->key ?: $key,
+            'id' => $package->id,
             'title' => $package->name,
             'heading' => $package->heading,
             'subheading' => $package->subheading,

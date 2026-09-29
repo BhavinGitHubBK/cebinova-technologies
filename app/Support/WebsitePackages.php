@@ -3,6 +3,7 @@
 namespace App\Support;
 
 use App\Models\Package;
+use App\Models\PricingOption;
 use Illuminate\Support\Facades\Schema;
 
 class WebsitePackages
@@ -21,11 +22,14 @@ class WebsitePackages
         $packages = Package::query()
             ->website()
             ->active()
-            ->with(['plans' => fn ($q) => $q->active()->orderBy('sort_order')])
+            ->with([
+                'plans' => fn ($q) => $q->active()->orderBy('sort_order'),
+                'features' => fn ($q) => $q->active(),
+            ])
             ->orderBy('sort_order')
             ->get();
 
-        if ($packages->isEmpty()) {
+        if ($packages->isEmpty() && ! Package::query()->website()->exists()) {
             return $configPlans->values()->all();
         }
 
@@ -35,13 +39,16 @@ class WebsitePackages
 
             return [
                 'key' => $package->key,
+                'id' => $package->id,
                 'title' => $package->name,
                 'price' => $plan?->price ?? ($config['price'] ?? 0),
                 'period' => $plan?->period ?? ($config['period'] ?? 'One Time'),
                 'badge' => $package->badge ?? $plan?->badge ?? ($config['badge'] ?? null),
                 'for' => $package->short_description ?? ($config['for'] ?? null),
                 'insight' => $package->teaser ?? ($config['insight'] ?? null),
-                'features' => $plan?->features ?: ($package->includes ?? ($config['features'] ?? [])),
+                'features' => $package->features->isNotEmpty()
+                    ? $package->features->map(fn ($feature) => ['name' => $feature->name, 'value' => $feature->display_value, 'included' => $feature->is_included])->all()
+                    : ($plan?->features ?: ($package->includes ?? ($config['features'] ?? []))),
                 'support' => $config['support'] ?? null,
                 'training' => $config['training'] ?? null,
                 'delivery' => $config['delivery'] ?? null,
@@ -66,7 +73,7 @@ class WebsitePackages
             ->orderBy('sort_order')
             ->get();
 
-        if ($packages->isEmpty()) {
+        if ($packages->isEmpty() && ! Package::query()->whereIn('category', ['app', 'other'])->exists()) {
             return config('cebinova.kirana_addons', []);
         }
 
@@ -79,6 +86,24 @@ class WebsitePackages
                 'note' => $package->teaser ?? $plan?->period,
             ];
         })->all();
+    }
+
+    public static function options(): array
+    {
+        if (! Schema::hasTable('pricing_options')) {
+            return [];
+        }
+
+        return PricingOption::query()->active()->ordered()->get()->map(fn (PricingOption $option) => [
+            'id' => $option->id,
+            'type' => $option->type,
+            'key' => $option->slug,
+            'name' => $option->name,
+            'description' => $option->description,
+            'price' => (float) $option->price,
+            'billing_period' => $option->billing_period,
+            'recommended' => $option->is_recommended,
+        ])->all();
     }
 
     private static function tablesReady(): bool

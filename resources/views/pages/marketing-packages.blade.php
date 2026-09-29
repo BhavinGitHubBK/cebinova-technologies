@@ -7,11 +7,13 @@
     @include('sections.marketing.hero')
     @include('sections.marketing.explorer')
 
+    @if (isset($marketingCatalog['growth']) && ! empty($marketingCatalog['growth']['plans']))
     <section id="complete-growth" class="mkt-page-growth-wrap scroll-mt-28 section-pad-lg">
         <div class="container-wide">
             @include('sections.marketing.growth')
         </div>
     </section>
+    @endif
 
     @include('sections.marketing.comparison')
     @include('sections.marketing.samples')

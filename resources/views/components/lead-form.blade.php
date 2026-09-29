@@ -1,9 +1,11 @@
 @props([
     'id' => 'enquiry-form',
+    'selectedServiceRecord' => null,
 ])
 
 @php
-    $selectedService = request('service');
+    $selectedService = $selectedServiceRecord?->name ?? request('service');
+    $serviceLocked = (bool) $selectedServiceRecord;
     $selectedCategory = request('package_category');
     $selectedDuration = request('plan_duration');
     $selectedBusinessType = request('business_type');
@@ -28,10 +30,23 @@
     @csrf
     <input type="text" name="website" tabindex="-1" autocomplete="off" class="absolute left-[-9999px] h-0 w-0 overflow-hidden" aria-hidden="true">
     <input type="hidden" name="source" class="js-lead-source" value="{{ $selectedSource }}">
+    @if (request()->filled('pricing_package_id'))
+        <input type="hidden" name="pricing_package_id" value="{{ request('pricing_package_id') }}">
+        @foreach ((array) request('pricing_option_ids', []) as $optionId)
+            <input type="hidden" name="pricing_option_ids[]" value="{{ $optionId }}">
+        @endforeach
+    @endif
+    @if (request()->filled('marketing_package_id') && request()->filled('marketing_plan_id'))
+        <input type="hidden" name="marketing_package_id" value="{{ request('marketing_package_id') }}">
+        <input type="hidden" name="marketing_plan_id" value="{{ request('marketing_plan_id') }}">
+    @endif
+    @if ($serviceLocked)
+        <input type="hidden" name="service_id" value="{{ $selectedServiceRecord->id }}">
+    @endif
 
     <div class="js-form-success hidden rounded-xl border border-gold/30 bg-mist p-6" hidden>
-        <p class="text-lg font-bold text-navy">Thank you for contacting CEBINOVA Technologies.</p>
-        <p class="js-form-success-text mt-2 text-sm leading-relaxed text-muted">Our team will review your requirement and get in touch with you shortly.</p>
+        <p class="text-lg font-bold text-navy">Thank you! Your enquiry has been received.</p>
+        <p class="js-form-success-text mt-2 text-sm leading-relaxed text-muted">Our team will contact you shortly.</p>
     </div>
 
     <div class="js-form-fields space-y-5">
@@ -101,9 +116,9 @@
             </label>
             <label class="block">
                 <span class="mb-1.5 block text-sm font-semibold text-navy">Service Interested In *</span>
-                @if ($packageLocked)
-                    <input type="hidden" name="service" class="js-service-select" value="{{ \App\Support\MarketingPackages::SERVICE }}">
-                    <p class="rounded-lg border border-line bg-mist px-3 py-2.5 text-sm font-semibold text-navy">{{ \App\Support\MarketingPackages::SERVICE }}</p>
+                @if ($packageLocked || $serviceLocked)
+                    <input type="hidden" name="service" class="js-service-select" value="{{ $packageLocked ? \App\Support\MarketingPackages::SERVICE : $selectedService }}">
+                    <p class="rounded-lg border border-line bg-mist px-3 py-2.5 text-sm font-semibold text-navy">{{ $packageLocked ? \App\Support\MarketingPackages::SERVICE : $selectedService }}</p>
                 @else
                     <select name="service" required class="js-service-select">
                         <option value="">Select</option>

@@ -49,7 +49,7 @@ class PackageSeeder extends Seeder
             $package->plans()->delete();
             $i = 0;
             foreach ($config['plans'] ?? [] as $planKey => $plan) {
-                $package->plans()->create([
+                $createdPlan = $package->plans()->create([
                     'key' => is_string($planKey) ? $planKey : Str::slug($plan['label'] ?? 'plan'),
                     'label' => $plan['label'] ?? 'Plan',
                     'duration' => $plan['duration'] ?? null,
@@ -65,6 +65,16 @@ class PackageSeeder extends Seeder
                     'is_active' => true,
                     'sort_order' => $i++,
                 ]);
+                foreach (['included' => $plan['includes'] ?? [], 'monthly_pace' => $plan['monthly_pace'] ?? []] as $group => $items) {
+                    foreach ($items as $deliverableIndex => $name) {
+                        $createdPlan->deliverables()->create([
+                            'group' => $group,
+                            'name' => $name,
+                            'is_active' => true,
+                            'sort_order' => $deliverableIndex,
+                        ]);
+                    }
+                }
             }
         }
 
@@ -99,6 +109,16 @@ class PackageSeeder extends Seeder
                 'is_active' => true,
                 'sort_order' => 0,
             ]);
+
+            $package->features()->delete();
+            foreach (($plan['features'] ?? []) as $featureIndex => $feature) {
+                $package->features()->create([
+                    'name' => $feature,
+                    'is_included' => true,
+                    'is_active' => true,
+                    'sort_order' => $featureIndex,
+                ]);
+            }
         }
 
         foreach (config('cebinova.kirana_addons', []) as $index => $addon) {

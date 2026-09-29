@@ -15,8 +15,8 @@ class ContactController extends Controller
 
         $payload = [
             'ok' => true,
-            'message' => 'Thank you for contacting CEBINOVA Technologies.',
-            'detail' => 'Our team will review your requirement and get in touch with you shortly.',
+            'message' => 'Thank you! Your enquiry has been received.',
+            'detail' => 'Our team will contact you shortly.',
         ];
 
         if ($request->expectsJson() || $request->ajax()) {

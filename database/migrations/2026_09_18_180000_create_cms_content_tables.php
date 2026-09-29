@@ -8,31 +8,6 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('projects', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->string('slug')->unique();
-            $table->string('client_name')->nullable();
-            $table->string('category')->nullable();
-            $table->string('preview')->nullable();
-            $table->string('type')->nullable();
-            $table->json('technologies')->nullable();
-            $table->string('short_description')->nullable();
-            $table->text('full_case_study')->nullable();
-            $table->string('thumbnail')->nullable();
-            $table->json('gallery')->nullable();
-            $table->string('project_url')->nullable();
-            $table->date('completed_at')->nullable();
-            $table->boolean('is_featured')->default(false);
-            $table->unsignedInteger('sort_order')->default(0);
-            $table->string('status')->default('published'); // draft|published
-            $table->string('seo_title')->nullable();
-            $table->text('seo_description')->nullable();
-            $table->softDeletes();
-            $table->timestamps();
-            $table->index(['status', 'sort_order']);
-        });
-
         Schema::create('testimonials', function (Blueprint $table) {
             $table->id();
             $table->string('customer_name');
@@ -98,6 +73,5 @@ return new class extends Migration
         Schema::dropIfExists('faqs');
         Schema::dropIfExists('team_members');
         Schema::dropIfExists('testimonials');
-        Schema::dropIfExists('projects');
     }
 };

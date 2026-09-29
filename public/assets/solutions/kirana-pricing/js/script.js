@@ -36,17 +36,41 @@
 
     const plans = readJson("cebinova-website-plans");
     if (Array.isArray(plans)) {
+      const activePlanKeys = plans.map(function (plan) { return String(plan.key); });
+      document.querySelectorAll('input[name="website"]').forEach(function (input) {
+        const card = input.closest("label, .option-card");
+        if (card) card.hidden = activePlanKeys.indexOf(input.value) === -1;
+      });
+      const emptyState = document.getElementById("pricingEmpty");
+      if (emptyState) emptyState.hidden = activePlanKeys.length > 0;
       plans.forEach(function (plan) {
         if (!plan || !plan.key) return;
         const key = String(plan.key);
         const input = document.querySelector('input[name="website"][value="' + key + '"]');
         if (!input) return;
+        if (plan.id != null) input.setAttribute("data-package-id", String(plan.id));
         if (plan.price != null) input.setAttribute("data-price", String(plan.price));
         if (plan.title) {
           input.setAttribute("data-label", plan.title);
           const card = input.closest("label, .pkg-card, .option-card, .pkg-option");
           const nameEl = card ? card.querySelector(".option-name") : null;
           if (nameEl) nameEl.textContent = plan.title;
+          const priceEl = card ? card.querySelector(".option-price") : null;
+          if (priceEl && plan.price != null) priceEl.textContent = formatINR(plan.price);
+          const descriptionEl = card ? card.querySelector(".best-for") : null;
+          if (descriptionEl && plan.for) descriptionEl.textContent = plan.for;
+          const insightEl = card ? card.querySelector(".plan-insight") : null;
+          if (insightEl && plan.insight) insightEl.textContent = plan.insight;
+          const badgeEl = card ? card.querySelector(".best-pill") : null;
+          if (badgeEl && plan.badge) badgeEl.textContent = plan.badge;
+          const featureList = card ? card.querySelector(".mini-features") : null;
+          if (featureList && Array.isArray(plan.features)) {
+            featureList.innerHTML = plan.features.map(function (feature) {
+              const item = typeof feature === "string" ? { name: feature, included: true } : feature;
+              const value = item.value ? " · " + item.value : "";
+              return '<li><i class="fa-solid fa-' + (item.included === false ? 'xmark' : 'check') + '" aria-hidden="true"></i> ' + item.name + value + '</li>';
+            }).join("");
+          }
         }
         if (plan.delivery) input.setAttribute("data-delivery", plan.delivery);
         if (plan.support) {
@@ -60,6 +84,11 @@
           PLAN_META[key].training = plan.training;
         }
       });
+      const selectedWebsite = document.querySelector('input[name="website"]:checked');
+      if (!selectedWebsite || !selectedWebsite.getAttribute("data-package-id")) {
+        const firstActiveWebsite = document.querySelector('input[name="website"][data-package-id]');
+        if (firstActiveWebsite) firstActiveWebsite.checked = true;
+      }
     }
 
     const addons = readJson("cebinova-website-addons");
@@ -86,6 +115,47 @@
       });
       APP_PRICES.bundle = APP_PRICES.android + APP_PRICES.ios;
     }
+
+    const options = readJson("cebinova-pricing-options");
+    if (Array.isArray(options)) {
+      const byKey = {};
+      options.forEach(function (option) { byKey[option.key] = option; });
+
+      document.querySelectorAll("[data-option-key]").forEach(function (element) {
+        const option = byKey[element.getAttribute("data-option-key")];
+        if (!option) {
+          const card = element.matches("input") ? element.closest("label, .option-card") : element;
+          if (card) card.hidden = true;
+          return;
+        }
+        element.setAttribute("data-option-id", String(option.id));
+        if (element.matches('input[name="domainOption"], input[name="hostingOption"]')) {
+          element.value = String(option.price);
+          const priceEl = element.closest("label, .option-card")?.querySelector(".option-price");
+          if (priceEl) priceEl.textContent = formatINR(option.price);
+        }
+        if (element.hasAttribute("data-price")) element.setAttribute("data-price", String(option.price));
+        if (element.matches("button.domain-provider")) {
+          const providerPrice = element.querySelector("span");
+          if (providerPrice) providerPrice.textContent = formatINR(option.price);
+        }
+      });
+
+      [["optAndroid", byKey["android-app"]], ["optIos", byKey["ios-app"]]].forEach(function (entry) {
+        const input = document.getElementById(entry[0]);
+        const option = entry[1];
+        if (!input) return;
+        const card = input.closest("label, .option-card");
+        if (!option) { if (card) card.hidden = true; return; }
+        input.setAttribute("data-option-id", String(option.id));
+        input.setAttribute("data-price", String(option.price));
+        const priceEl = card ? card.querySelector(".option-price") : null;
+        if (priceEl) priceEl.textContent = formatINR(option.price);
+      });
+      if (byKey["android-app"]) APP_PRICES.android = Number(byKey["android-app"].price);
+      if (byKey["ios-app"]) APP_PRICES.ios = Number(byKey["ios-app"].price);
+      APP_PRICES.bundle = APP_PRICES.android + APP_PRICES.ios;
+    }
   })();
 
   const navToggle = document.getElementById("navToggle");
@@ -108,6 +178,7 @@
   const estimateSavingsLabel = document.getElementById("estimateSavingsLabel");
   const estimateSavingsValue = document.getElementById("estimateSavingsValue");
   const selectedPlanBadge = document.getElementById("selectedPlanBadge");
+  const pricingEnquiry = document.getElementById("pricingEnquiry");
   const bundleHint = document.getElementById("bundleHint");
   const appBothBanner = document.getElementById("appBothBanner");
   const appRecommend = document.getElementById("appRecommend");
@@ -616,6 +687,13 @@
       delivery: delivery,
       websiteLabel: websiteLabel,
       websiteKey: websiteKey,
+      packageId: website ? website.getAttribute("data-package-id") : null,
+      optionIds: [
+        androidOn ? document.getElementById("optAndroid")?.getAttribute("data-option-id") : null,
+        iosOn ? document.getElementById("optIos")?.getAttribute("data-option-id") : null,
+        domainOpt ? domainOpt.getAttribute("data-option-id") : null,
+        hostingOpt ? hostingOpt.getAttribute("data-option-id") : null
+      ].filter(Boolean).filter(function (id, index, ids) { return ids.indexOf(id) === index; }),
       appSavings: appSavings,
       bundleSelected: bundleSelected,
       androidOnly: androidOnly,
@@ -765,6 +843,16 @@
     if (whatsappEstimate) whatsappEstimate.href = waUrl;
     if (contactWhatsapp) contactWhatsapp.href = waUrl;
     if (floatWhatsapp) floatWhatsapp.href = waUrl;
+
+    if (pricingEnquiry && estimate.packageId) {
+      const enquiryUrl = new URL(CONTACT_FALLBACK, window.location.origin);
+      enquiryUrl.searchParams.set("pricing_package_id", estimate.packageId);
+      (estimate.optionIds || []).forEach(function (id) {
+        enquiryUrl.searchParams.append("pricing_option_ids[]", id);
+      });
+      enquiryUrl.searchParams.set("message", estimate.message);
+      pricingEnquiry.href = enquiryUrl.toString();
+    }
 
     if (printBody) {
       printBody.innerHTML = buildPremiumInvoiceHTML(estimate);
@@ -976,6 +1064,7 @@
 
         newDomainInput.value = price;
         newDomainInput.setAttribute("data-provider", provider);
+        newDomainInput.setAttribute("data-option-id", btn.getAttribute("data-option-id") || "");
         newDomainInput.checked = true;
 
         if (priceEl) priceEl.textContent = formatINR(price);

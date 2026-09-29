@@ -12,7 +12,7 @@ use Illuminate\View\View;
 class FaqController extends Controller
 {
     public const PAGES = [
-        'general', 'home', 'about', 'contact', 'services', 'solutions', 'portfolio', 'demos', 'marketing',
+        'general', 'home', 'about', 'contact', 'services', 'solutions', 'demos', 'marketing',
     ];
 
     public function index(Request $request): View
