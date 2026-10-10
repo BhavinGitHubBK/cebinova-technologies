@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Support\MarketingPackages;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
@@ -24,6 +25,7 @@ class PageRoutesTest extends TestCase
             ['/solutions/ecommerce'],
             ['/solutions/business-management'],
             ['/industries'],
+            ['/industries/retail'],
             ['/marketing-packages'],
             ['/demos'],
             ['/pricing'],
@@ -32,7 +34,50 @@ class PageRoutesTest extends TestCase
             ['/contact'],
             ['/privacy-policy'],
             ['/terms'],
+            ['/sitemap.xml'],
         ];
+    }
+
+    public function test_sitemap_lists_public_pages_without_tracking_parameters(): void
+    {
+        $this->get('/sitemap.xml')
+            ->assertOk()
+            ->assertHeader('Content-Type', 'application/xml; charset=UTF-8')
+            ->assertSee('<loc>'.url('/pricing').'</loc>', false)
+            ->assertSee('<loc>'.url('/services/web-development').'</loc>', false)
+            ->assertSee('<loc>'.url('/contact').'</loc>', false)
+            ->assertSee('<loc>'.url('/industries/retail').'</loc>', false)
+            ->assertDontSee('<loc>'.url('/case-studies').'</loc>', false)
+            ->assertDontSee('<loc>'.url('/reviews').'</loc>', false)
+            ->assertDontSee('utm_', false)
+            ->assertDontSee('/admin', false);
+    }
+
+    public function test_service_pages_render_specific_content_and_related_services(): void
+    {
+        $this->get('/services/web-development')
+            ->assertOk()
+            ->assertSee('Types of websites', false)
+            ->assertSee('How long does a website take?', false);
+
+        $this->get('/services/custom-software')
+            ->assertOk()
+            ->assertSee('Your current process', false)
+            ->assertSee('CRM', false);
+
+        $this->get('/services/ai-automation')
+            ->assertOk()
+            ->assertSee('WhatsApp sends an acknowledgement', false)
+            ->assertSee('FAQPage', false);
+    }
+
+    public function test_about_page_omits_leadership(): void
+    {
+        $this->get('/about')
+            ->assertOk()
+            ->assertDontSee('The people behind CEBINOVA', false)
+            ->assertDontSee('Bhavin Khadela', false)
+            ->assertDontSee('Chintan Thakkar', false);
     }
 
     #[DataProvider('pages')]
@@ -56,10 +101,10 @@ class PageRoutesTest extends TestCase
             ->assertSee('A clear path from conversation to launch - without unnecessary complexity.', false)
             ->assertSee('Understand', false)
             ->assertSee('Support &amp; Grow', false)
-            ->assertSee('More Than a Service Company.', false)
-            ->assertSee('IT services today. A connected technology platform tomorrow.', false)
-            ->assertSee('CEBINOVA Commerce', false)
-            ->assertSee('CEBINOVA Cloud', false)
+            ->assertDontSee('Future ecosystem', false)
+            ->assertDontSee('More Than a Service Company.', false)
+            ->assertDontSee('IT services today. A connected technology platform tomorrow.', false)
+            ->assertDontSee('CEBINOVA Commerce', false)
             ->assertSee('Ready to Take Your Business Forward?', false)
             ->assertSee('Start with the solution you need today.', false)
             ->assertSee('<strong>CEBINOVA</strong> can grow with you tomorrow.', false)
@@ -104,27 +149,28 @@ class PageRoutesTest extends TestCase
         $this->assertFileExists(public_path('favicon.png'));
     }
 
-    public function test_homepage_teases_three_marketing_categories(): void
+    public function test_homepage_features_website_packages_without_marketing_cards(): void
     {
         $this->get('/')
             ->assertOk()
-            ->assertSee('Regular Marketing', false)
-            ->assertSee('Festival Marketing', false)
-            ->assertSee('Complete Growth', false)
-            ->assertSee('Monthly', false)
-            ->assertSee('Quarterly', false)
-            ->assertSee('Half-Yearly', false)
-            ->assertSee('Yearly', false)
-            ->assertSee('Explore Marketing Plans', false)
-            ->assertSee('Marketing Packages', false)
-            ->assertSee('#regular-marketing', false)
-            ->assertSee('#festival-marketing', false)
-            ->assertSee('#complete-growth', false)
+            ->assertSee('Explore marketing packages', false)
+            ->assertSee(route('marketing-packages'), false)
+            ->assertSee('data-package="Starter"', false)
+            ->assertSee('data-package="Business"', false)
+            ->assertSee('data-package="Professional"', false)
+            ->assertSee('#plans', false)
+            ->assertDontSee('Regular Marketing', false)
+            ->assertDontSee('Festival Marketing', false)
+            ->assertDontSee('Complete Growth', false)
+            ->assertDontSee('#regular-marketing', false)
+            ->assertDontSee('#festival-marketing', false)
+            ->assertDontSee('#complete-growth', false)
             ->assertDontSee('10 Social Media Posts', false)
             ->assertDontSee('Full package details coming soon', false)
             ->assertDontSee('BizPilot', false)
-            ->assertSee('Technology Built Around Your Business.', false)
-            ->assertSee('Go Digital', false)
+            ->assertDontSee('Technology Built Around Your Business.', false)
+            ->assertDontSee('Go Digital', false)
+            ->assertDontSee('Start with the problem in front of you.', false)
             ->assertSee('Discover CEBINOVA', false)
             ->assertSee('Solutions Built for Real Businesses.', false)
             ->assertSee('CEBINOVA does not only talk about services. These working demos show what we can build for different businesses.', false)
@@ -135,6 +181,16 @@ class PageRoutesTest extends TestCase
             ->assertSee('/demos/professional-services', false)
             ->assertSee('View Demos', false)
             ->assertSee('Explore All Solutions', false);
+    }
+
+    public function test_about_page_includes_future_ecosystem(): void
+    {
+        $this->get('/about')
+            ->assertOk()
+            ->assertSee('Future ecosystem', false)
+            ->assertSee('More Than a Service Company.', false)
+            ->assertSee('CEBINOVA Commerce', false)
+            ->assertSee('CEBINOVA Cloud', false);
     }
 
     public function test_legacy_marketing_and_packages_urls_redirect(): void
@@ -172,6 +228,8 @@ class PageRoutesTest extends TestCase
             ->assertSee('Regular Marketing Plans', false)
             ->assertSee('Festival Marketing Plans', false)
             ->assertSee('Complete Growth', false)
+            ->assertSee('6 Months', false)
+            ->assertSee('id="complete-growth"', false)
             ->assertSee('BEST VALUE', false)
             ->assertSee('RECOMMENDED', false)
             ->assertSee('Which plan is for you?', false)
@@ -192,7 +250,7 @@ class PageRoutesTest extends TestCase
             ->assertSee('/ 3 months', false)
             ->assertSee('/ year', false)
             ->assertSee('Just ₹3,750/month · Save ₹14,989', false)
-            ->assertSee('GST extra, if applicable. No hidden package charges.', false)
+            ->assertSee('GST 18% extra, if applicable. No hidden package charges.', false)
             ->assertSee('Festival creatives follow the CEBINOVA Festival Calendar - Diwali, Navratri, Independence Day and other important dates.', false)
             ->assertSee('10 Social Media Posts', false)
             ->assertSee('Current Month Festival Coverage', false)
@@ -208,12 +266,12 @@ class PageRoutesTest extends TestCase
 
     public function test_yearly_marketing_plans_save_against_monthly(): void
     {
-        $this->assertSame(14989, \App\Support\MarketingPackages::savingsVsMonthly('Regular Marketing', 'Yearly'));
-        $this->assertSame(7989, \App\Support\MarketingPackages::savingsVsMonthly('Festival Marketing', 'Yearly'));
-        $this->assertSame(21989, \App\Support\MarketingPackages::savingsVsMonthly('Complete Growth', 'Yearly'));
-        $this->assertNull(\App\Support\MarketingPackages::savingsVsMonthly('Regular Marketing', 'Monthly'));
-        $this->assertSame(3750, \App\Support\MarketingPackages::effectiveMonthly('Regular Marketing', 'Yearly'));
-        $this->assertSame('₹44,999/year · Just ₹3,750/month · Save ₹14,989', \App\Support\MarketingPackages::priceHeadline('Regular Marketing', 'Yearly'));
+        $this->assertSame(14989, MarketingPackages::savingsVsMonthly('Regular Marketing', 'Yearly'));
+        $this->assertSame(7989, MarketingPackages::savingsVsMonthly('Festival Marketing', 'Yearly'));
+        $this->assertSame(21989, MarketingPackages::savingsVsMonthly('Complete Growth', 'Yearly'));
+        $this->assertNull(MarketingPackages::savingsVsMonthly('Regular Marketing', 'Monthly'));
+        $this->assertSame(3750, MarketingPackages::effectiveMonthly('Regular Marketing', 'Yearly'));
+        $this->assertSame('₹44,999/year · Just ₹3,750/month · Save ₹14,989', MarketingPackages::priceHeadline('Regular Marketing', 'Yearly'));
     }
 
     public function test_festival_marketing_plans_include_reels(): void
@@ -327,7 +385,9 @@ class PageRoutesTest extends TestCase
             ->assertSee('Open in Google Maps', false)
             ->assertSee('https://maps.app.goo.gl/2W1U72STLQ9ZEme18', false)
             ->assertSee('Simple Process. Powerful Results.', false)
-            ->assertSee('Ready to Take Your Business Forward?', false);
+            ->assertSee('Ask on WhatsApp', false)
+            ->assertDontSee('Get Free Consultation', false)
+            ->assertDontSee('Ready to Take Your Business Forward?', false);
     }
 
     public function test_contact_form_preselects_package_enquiry(): void
@@ -420,7 +480,7 @@ class PageRoutesTest extends TestCase
     {
         $this->get('/pricing')
             ->assertOk()
-            ->assertSee('Build Your Digital Store', false)
+            ->assertSee('Choose the Right Solution for Your Business', false)
             ->assertSee('price-page-hero', false)
             ->assertSee('Know your exact investment.', false)
             ->assertSee('Live calculator', false)
@@ -433,8 +493,10 @@ class PageRoutesTest extends TestCase
     {
         $this->get('/pricing')
             ->assertOk()
-            ->assertSee('Build Your Digital Store', false)
+            ->assertSee('Choose the Right Solution for Your Business', false)
             ->assertSee('Pricing', false)
+            ->assertSee('id="grandTotal">₹28,798', false)
+            ->assertDontSee('Website wd', false)
             ->assertSee('Choose website', false)
             ->assertSee('Choose Support Plan', false)
             ->assertSee('Book Free Consultation', false)

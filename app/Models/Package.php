@@ -20,6 +20,12 @@ class Package extends Model
         'other' => 'Other',
     ];
 
+    public const MARKETING_CATEGORIES = [
+        'marketing_regular',
+        'marketing_festival',
+        'marketing_growth',
+    ];
+
     protected $fillable = [
         'category',
         'name',
@@ -62,11 +68,6 @@ class Package extends Model
         return $this->hasMany(PackagePlan::class)->orderBy('sort_order');
     }
 
-    public function features(): HasMany
-    {
-        return $this->hasMany(PackageFeature::class)->orderBy('sort_order')->orderBy('id');
-    }
-
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('is_active', true)
@@ -80,11 +81,12 @@ class Package extends Model
 
     public function scopeMarketing(Builder $query): Builder
     {
-        return $query->whereIn('category', [
-            'marketing_regular',
-            'marketing_festival',
-            'marketing_growth',
-        ]);
+        return $query->whereIn('category', self::MARKETING_CATEGORIES);
+    }
+
+    public function isMarketing(): bool
+    {
+        return in_array($this->category, self::MARKETING_CATEGORIES, true);
     }
 
     public function scopeWebsite(Builder $query): Builder

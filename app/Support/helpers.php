@@ -1,6 +1,9 @@
 <?php
 
 use App\Support\MarketingPackages;
+use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Route;
 
 if (! function_exists('whatsapp_url')) {
     function whatsapp_url(?string $message = null): string
@@ -106,7 +109,7 @@ if (! function_exists('cebinova_phone')) {
 if (! function_exists('cebinova_inr')) {
     function cebinova_inr(int|string $amount): string
     {
-        return '₹'.number_format((int) $amount, 0, '.', ',');
+        return "\u{20B9}".number_format((int) $amount, 0, '.', ',');
     }
 }
 
@@ -192,6 +195,10 @@ if (! function_exists('nav_item_active')) {
             return request()->routeIs('services.*');
         }
 
+        if ($route === 'offers.index') {
+            return request()->routeIs('offers.*');
+        }
+
         return request()->routeIs($route) || request()->routeIs($route.'.*');
     }
 }
@@ -207,6 +214,76 @@ if (! function_exists('nav_solution_href')) {
     }
 }
 
+if (! function_exists('admin_site_link')) {
+    function admin_site_link(): Closure
+    {
+        return function (string $attribute, mixed $value, Closure $fail): void {
+            if (! is_string($value) || trim($value) === '') {
+                return;
+            }
+
+            $link = trim($value);
+            if (preg_match('~^(https?://|mailto:|tel:)~i', $link) && filter_var($link, FILTER_VALIDATE_URL)) {
+                return;
+            }
+            if (preg_match('~^/[\w./?&=%+#\-]*$~', $link) || preg_match('/^#[\w\-]+$/', $link)) {
+                return;
+            }
+
+            $fail('Enter a site path such as /contact, or a full link starting with http:// or https://.');
+        };
+    }
+}
+
+if (! function_exists('admin_rows')) {
+    function admin_rows(?string $value, int $min = 2): int
+    {
+        $text = trim((string) $value);
+        if ($text === '') {
+            return $min;
+        }
+
+        $lines = 0;
+        foreach (preg_split("/\r\n|\r|\n/", $text) ?: [] as $line) {
+            $lines += max(1, (int) ceil(max(1, mb_strlen($line)) / 48));
+        }
+
+        return max($min, min($lines, 80));
+    }
+}
+
+if (! function_exists('admin_sort')) {
+    /**
+     * @param  list<string>  $allowed
+     * @return array{0: string, 1: string}
+     */
+    function admin_sort(Request $request, array $allowed, string $default, string $defaultDir = 'asc'): array
+    {
+        $sort = in_array($request->query('sort'), $allowed, true) ? (string) $request->query('sort') : $default;
+        $dir = $request->query('dir');
+
+        return [$sort, $dir === 'asc' || $dir === 'desc' ? $dir : $defaultDir];
+    }
+}
+
+if (! function_exists('admin_sort_rows')) {
+    function admin_sort_rows(array $rows, int $column, string $dir): array
+    {
+        usort($rows, function ($left, $right) use ($column, $dir) {
+            $pick = function ($row) use ($column) {
+                $value = $row[$column] ?? '';
+
+                return is_array($value) ? (string) ($value['text'] ?? '') : (string) $value;
+            };
+            $compared = strnatcasecmp($pick($left), $pick($right));
+
+            return $dir === 'desc' ? -$compared : $compared;
+        });
+
+        return $rows;
+    }
+}
+
 if (! function_exists('is_active_route')) {
     function is_active_route(string $route, bool $startsWith = false): bool
     {
@@ -215,5 +292,72 @@ if (! function_exists('is_active_route')) {
         }
 
         return request()->routeIs($route);
+    }
+}
+
+if (! function_exists('admin_index_url')) {
+    function admin_index_url(): ?string
+    {
+        $name = request()->route()?->getName();
+        if (! is_string($name) || ! preg_match('/^(admin\..+)\.(edit|create|show|update)$/', $name, $match)) {
+            return null;
+        }
+
+        $index = $match[1].'.index';
+        if (! Route::has($index)) {
+            return null;
+        }
+
+        $params = [];
+        $package = request()->route('package');
+        if (request('group') === 'marketing' || (is_object($package) && method_exists($package, 'isMarketing') && $package->isMarketing())) {
+            $params['group'] = 'marketing';
+        }
+
+        return route($index, $params);
+    }
+}
+
+if (! function_exists('page_label')) {
+    function page_label(?string $path): string
+    {
+        $path = trim((string) $path);
+        if ($path === '') {
+            return '—';
+        }
+
+        $path = '/'.ltrim((string) (parse_url($path, PHP_URL_PATH) ?: $path), '/');
+        $path = $path === '/' ? '/' : rtrim($path, '/');
+
+        $known = [
+            '/' => 'Home',
+            '/about' => 'About',
+            '/services' => 'Services',
+            '/solutions' => 'Solutions',
+            '/industries' => 'Industries',
+            '/pricing' => 'Pricing',
+            '/contact' => 'Contact',
+            '/demos' => 'Demos',
+            '/marketing-packages' => 'Marketing packages',
+            '/privacy-policy' => 'Privacy policy',
+            '/terms' => 'Terms',
+        ];
+
+        if (isset($known[$path])) {
+            return $known[$path];
+        }
+
+        return ucwords(str_replace(['-', '_'], ' ', basename($path)));
+    }
+}
+
+if (! function_exists('ist')) {
+    function ist(?DateTimeInterface $time, string $format = 'd M, h:i A'): string
+    {
+        if ($time === null) {
+            return '—';
+        }
+
+        return Carbon::parse($time)->timezone('Asia/Kolkata')->format($format).' IST';
     }
 }

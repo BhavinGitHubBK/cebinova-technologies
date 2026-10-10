@@ -54,5 +54,18 @@
         </p>
     </div>
 </div>
+@if (session('logged_out'))
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.22.2/dist/sweetalert2.all.min.js"></script>
+    <script>
+        Swal.fire({
+            title: 'Logged out',
+            text: @json(session('logged_out')),
+            icon: 'success',
+            confirmButtonText: 'OK',
+            buttonsStyling: false,
+            customClass: { popup: 'admin-swal', confirmButton: 'admin-swal-btn' },
+        });
+    </script>
+@endif
 </body>
 </html>

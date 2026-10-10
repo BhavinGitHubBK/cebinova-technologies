@@ -4,6 +4,7 @@ namespace App\Support;
 
 use App\Models\Package;
 use App\Models\PackagePlan;
+use App\Services\Promotions\PromotionEngine;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
@@ -37,11 +38,7 @@ class MarketingPackages
             ->mapWithKeys(fn (Package $p) => [$p->name => $p->key ?: strtolower(str_replace(' ', '-', $p->name))])
             ->all();
 
-        if ($keys !== [] || Package::query()->marketing()->exists()) {
-            return $keys;
-        }
-
-        return self::KEY_MAP;
+        return $keys !== [] ? $keys : self::KEY_MAP;
     }
 
     public static function categories(): array
@@ -76,11 +73,9 @@ class MarketingPackages
             }
         }
 
-        if ($ordered !== [] || Package::query()->marketing()->exists()) {
-            return $ordered;
-        }
-
-        return config('cebinova.marketing.frequencies', ['Monthly', 'Quarterly', 'Half-Yearly', 'Yearly']);
+        return $ordered !== []
+            ? $ordered
+            : config('cebinova.marketing.frequencies', ['Monthly', 'Quarterly', 'Half-Yearly', 'Yearly']);
     }
 
     public static function isValid(string $category, string $duration): bool
@@ -108,15 +103,7 @@ class MarketingPackages
             })
             ->first();
 
-        if ($plan) {
-            return $plan->price;
-        }
-
-        $databasePackageExists = Package::query()->marketing()->where(function ($query) use ($category) {
-            $query->where('name', $category)->orWhere('service_label', $category);
-        })->exists();
-
-        return $databasePackageExists ? null : self::configPriceAmount($category, $duration);
+        return $plan?->price ?? self::configPriceAmount($category, $duration);
     }
 
     public static function formattedPrice(?string $category, ?string $duration): ?string
@@ -191,6 +178,17 @@ class MarketingPackages
         };
 
         $headline = cebinova_inr($price).$period;
+        $plan = self::tablesReady() ? PackagePlan::query()->active()->where('label', $duration)->whereHas('package', function ($query) use ($category) {
+            $query->marketing()->active()->where(function ($inner) use ($category) {
+                $inner->where('name', $category)->orWhere('service_label', $category);
+            });
+        })->first() : null;
+        if ($plan) {
+            $promo = self::promotionPreview($plan->id, $plan->package_id, $plan->price);
+            if ($promo) {
+                return cebinova_inr((int) round((float) $promo['final'])).$period.' · '.$promo['name'].' · Save '.cebinova_inr((int) round((float) $promo['savings']));
+            }
+        }
         $saved = self::savingsVsMonthly($category, $duration);
         $effective = self::effectiveMonthly($category, $duration);
 
@@ -231,12 +229,8 @@ class MarketingPackages
             ->where(function ($q) use ($key) {
                 $q->where('key', $key)->orWhere('slug', $key);
             })
-            ->with(['plans' => fn ($q) => $q->active()->with(['deliverables' => fn ($deliverables) => $deliverables->active()])->orderBy('sort_order')])
+            ->with(['plans' => fn ($q) => $q->active()->orderBy('sort_order')])
             ->first();
-
-        if (! $package && Package::query()->when($category, fn ($q) => $q->where('category', $category))->where(fn ($q) => $q->where('key', $key)->orWhere('slug', $key))->exists()) {
-            return null;
-        }
 
         if (! $package) {
             $config = config('cebinova.marketing.'.$key);
@@ -246,34 +240,24 @@ class MarketingPackages
 
         $plans = [];
         foreach ($package->plans as $plan) {
-            $included = $plan->deliverables->where('group', 'included')->pluck('name')->values()->all();
-            $monthlyPace = $plan->deliverables->where('group', 'monthly_pace')->pluck('name')->values()->all();
             $plans[$plan->key ?: Str::slug($plan->label)] = [
                 'id' => $plan->id,
                 'package_id' => $package->id,
                 'label' => $plan->label,
                 'duration' => $plan->duration,
                 'price' => $plan->price,
+                'promotion' => self::promotionPreview($plan->id, $package->id, $plan->price),
                 'period' => $plan->period,
                 'badge' => $plan->badge,
                 'cta' => $plan->cta,
                 'note' => $plan->note,
-                'includes' => $included !== [] ? $included : ($plan->features ?? []),
-                'monthly_pace' => $monthlyPace !== [] ? $monthlyPace : $plan->monthly_pace,
-                'enquiry_url' => route('contact', [
-                    'service' => self::SERVICE,
-                    'package_category' => $package->service_label ?: $package->name,
-                    'plan_duration' => $plan->label,
-                    'source' => $package->service_label ?: $package->name,
-                    'marketing_package_id' => $package->id,
-                    'marketing_plan_id' => $plan->id,
-                ]),
+                'includes' => $plan->features ?? [],
+                'monthly_pace' => $plan->monthly_pace,
             ];
         }
 
         return [
             'key' => $package->key ?: $key,
-            'id' => $package->id,
             'title' => $package->name,
             'heading' => $package->heading,
             'subheading' => $package->subheading,
@@ -325,5 +309,21 @@ class MarketingPackages
         }
 
         return null;
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    private static function promotionPreview(int $planId, int $packageId, int|string $amount): ?array
+    {
+        try {
+            if (! Schema::hasTable('promotion_campaigns')) {
+                return null;
+            }
+
+            return app(PromotionEngine::class)->previewLine('marketing_plan', $planId, $amount, $packageId);
+        } catch (\Throwable) {
+            return null;
+        }
     }
 }

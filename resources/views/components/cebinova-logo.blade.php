@@ -9,10 +9,13 @@
     $tone = $tone === 'dark' ? 'dark' : 'light';
     $showTagline = $variant !== 'compact';
     $href = $href ?? route('home');
-    $logoVer = (int) @filemtime(public_path('assets/brand/cebinova-c-icon.png'));
-    $logoPng = asset('assets/brand/cebinova-c-icon.png').($logoVer ? '?v='.$logoVer : '');
-    $logoWebp = asset('assets/brand/cebinova-c-icon.webp').($logoVer ? '?v='.$logoVer : '');
-    $logoSvg = asset('assets/brand/cebinova-c-icon.svg').($logoVer ? '?v='.$logoVer : '');
+    $iconFile = $tone === 'dark' && is_file(public_path('assets/brand/cebinova-c-icon-on-dark.png'))
+        ? 'cebinova-c-icon-on-dark.png'
+        : 'cebinova-c-icon.png';
+    $logoVer = (int) @filemtime(public_path('assets/brand/'.$iconFile));
+    $logoPng = asset('assets/brand/'.$iconFile).($logoVer ? '?v='.$logoVer : '');
+    $logoWebp = $tone === 'dark' ? null : asset('assets/brand/cebinova-c-icon.webp').($logoVer ? '?v='.$logoVer : '');
+    $logoSvg = $tone === 'dark' ? null : asset('assets/brand/cebinova-c-icon.svg').($logoVer ? '?v='.$logoVer : '');
 @endphp
 
 <a
@@ -21,9 +24,13 @@
     aria-label="CEBINOVA Technologies"
 >
     <picture>
+        @if ($logoWebp)
+            <source type="image/webp" srcset="{{ $logoWebp }}">
+        @endif
+        @if ($logoSvg)
+            <source type="image/svg+xml" srcset="{{ $logoSvg }}">
+        @endif
         <source type="image/png" srcset="{{ $logoPng }}">
-        <source type="image/webp" srcset="{{ $logoWebp }}">
-        <source type="image/svg+xml" srcset="{{ $logoSvg }}">
         <img
             src="{{ $logoPng }}"
             alt=""

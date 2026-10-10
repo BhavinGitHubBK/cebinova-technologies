@@ -7,6 +7,5 @@
     @include('sections.demos.hero')
     @include('sections.demos.catalog')
     @include('sections.home.process')
-    @include('sections.demos.faq')
     @include('sections.home.cta')
 @endsection

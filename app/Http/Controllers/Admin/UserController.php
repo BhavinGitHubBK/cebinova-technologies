@@ -16,11 +16,37 @@ use Illuminate\View\View;
 
 class UserController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
-        $users = User::query()->orderBy('name')->paginate(20);
+        $matched = User::query()
+            ->when($request->filled('q'), function ($query) use ($request) {
+                $term = '%'.$request->string('q').'%';
+                $query->where(function ($query) use ($term) {
+                    $query->where('name', 'like', $term)->orWhere('email', 'like', $term);
+                });
+            })
+            ->when($request->filled('role'), fn ($query) => $query->where('role', $request->string('role')));
+        $counts = [
+            'all' => (clone $matched)->count(),
+            'active' => (clone $matched)->where('is_active', true)->count(),
+            'inactive' => (clone $matched)->where('is_active', false)->count(),
+        ];
+        [$sort, $dir] = admin_sort($request, ['name', 'email', 'role', 'is_active', 'last_login_at'], 'name');
+        $users = $matched
+            ->when($request->filled('status'), fn ($query) => $query->where('is_active', $request->status === 'active'))
+            ->orderBy($sort, $dir)
+            ->orderBy('id')
+            ->paginate(20)
+            ->withQueryString();
 
-        return view('admin.users.index', compact('users'));
+        return view('admin.users.index', [
+            'users' => $users,
+            'counts' => $counts,
+            'status' => $request->string('status')->toString(),
+            'roles' => UserRole::cases(),
+            'sort' => $sort,
+            'dir' => $dir,
+        ]);
     }
 
     public function create(): View
@@ -48,7 +74,7 @@ class UserController extends Controller
 
         ActivityLogger::log('create', 'users', $user, 'User created');
 
-        return redirect()->route('admin.users.index')->with('success', 'User created.');
+        return redirect()->route('admin.users.edit', $user)->with('success', 'User created.');
     }
 
     public function edit(User $user): View
@@ -83,7 +109,7 @@ class UserController extends Controller
 
         ActivityLogger::log('update', 'users', $user, 'User updated');
 
-        return redirect()->route('admin.users.index')->with('success', 'User updated.');
+        return redirect()->route('admin.users.edit', $user)->with('success', 'User updated.');
     }
 
     public function destroy(Request $request, User $user): RedirectResponse

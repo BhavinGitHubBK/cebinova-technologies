@@ -26,8 +26,15 @@
     $priceMap = \App\Support\MarketingPackages::priceMap();
 @endphp
 
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.22.2/dist/sweetalert2.all.min.js"></script>
+@endpush
+
 <form id="{{ $id }}" class="js-lead-form sx-form relative card-surface p-6 sm:p-8 lg:p-9" method="POST" action="{{ route('contact.store') }}" novalidate>
     @csrf
+    @foreach(['demo_id'] as $proofField)
+        @if(request()->filled($proofField) || old($proofField))<input type="hidden" name="{{ $proofField }}" value="{{ old($proofField, request($proofField)) }}">@endif
+    @endforeach
     <input type="text" name="website" tabindex="-1" autocomplete="off" class="absolute left-[-9999px] h-0 w-0 overflow-hidden" aria-hidden="true">
     <input type="hidden" name="source" class="js-lead-source" value="{{ $selectedSource }}">
     @if (request()->filled('pricing_package_id'))
@@ -182,6 +189,11 @@
         </label>
 
         <label class="block">
+            <span class="mb-1.5 block text-sm font-semibold text-navy">Coupon code</span>
+            <input type="text" name="coupon_code" value="{{ old('coupon_code') }}" maxlength="40" autocomplete="off" placeholder="Optional">
+            @error('coupon_code')<p class="mt-1 text-sm text-red-700">{{ $message }}</p>@enderror
+        </label>
+        <label class="block sm:col-span-2">
             <span class="mb-1.5 block text-sm font-semibold text-navy">Message</span>
             <textarea name="message" rows="4" placeholder="Tell us what you need to start, sell, manage or grow.">{{ $selectedMessage }}</textarea>
             <span class="js-error mt-1 block text-xs text-red-600" data-error="message"></span>

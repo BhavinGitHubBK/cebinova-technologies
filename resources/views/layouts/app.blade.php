@@ -7,7 +7,10 @@
         $pageTitle = trim($__env->yieldContent('title')) ?: config('cebinova.seo.default_title');
         $pageDescription = trim($__env->yieldContent('description')) ?: config('cebinova.seo.default_description');
         $canonical = trim($__env->yieldContent('canonical')) ?: url()->current();
-        $ogImage = asset('images/branding/logo-original.png');
+        $ogSetting = config('cebinova.seo.og_image');
+        $ogImage = filled($ogSetting)
+            ? (str_starts_with((string) $ogSetting, 'http') ? $ogSetting : url($ogSetting))
+            : asset('images/branding/logo-original.png');
     @endphp
     <title>{{ $pageTitle }}</title>
     <meta name="description" content="{{ $pageDescription }}">
@@ -21,7 +24,11 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{{ $pageTitle }}">
     <meta name="twitter:description" content="{{ $pageDescription }}">
+    <meta name="twitter:image" content="{{ $ogImage }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    @hasSection('robots')
+        <meta name="robots" content="@yield('robots')">
+    @endif
     <link rel="icon" type="image/png" sizes="64x64" href="{{ asset('favicon.png') }}?v=cebinova">
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}?v=cebinova">
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}?v=cebinova">
@@ -33,7 +40,7 @@
         @stack('head')
     <script type="application/ld+json">
         {!! json_encode([
-            '@context' => 'https://schema.org',
+            '@@context' => 'https://schema.org',
             '@type' => 'Organization',
             'name' => 'CEBINOVA Technologies',
             'slogan' => 'Technology for Every Business.',
@@ -51,12 +58,54 @@
 </head>
 <body class="bg-paper text-ink">
     <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-gold focus:px-4 focus:py-2 focus:text-navy-deep">Skip to content</a>
+    <x-promotions />
     <x-navbar />
     <main id="main">
         @yield('content')
     </main>
     <x-footer />
     <x-whatsapp-float />
+    <x-live-chat />
+    @include('components.analytics-boot')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.22.2/dist/sweetalert2.all.min.js"></script>
+    <script>
+        document.addEventListener('submit', (event) => {
+            const form = event.target;
+            if (!(form instanceof HTMLFormElement) || !form.action.includes('/account/logout')) return;
+            if (form.dataset.confirmed === '1') return;
+            event.preventDefault();
+            const ask = typeof Swal === 'undefined'
+                ? Promise.resolve(window.confirm('Log out of your account?'))
+                : Swal.fire({
+                    title: 'Log out?',
+                    text: 'You will leave your account on this device.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Log out',
+                    cancelButtonText: 'Cancel',
+                    confirmButtonColor: '#013a9d',
+                    cancelButtonColor: '#64748b',
+                }).then((result) => result.isConfirmed);
+            ask.then((confirmed) => {
+                if (!confirmed) return;
+                form.dataset.confirmed = '1';
+                form.submit();
+            });
+        });
+    </script>
+    @if (session('logged_out'))
+        <script>
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    title: 'Logged out',
+                    text: @json(session('logged_out')),
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#013a9d',
+                });
+            }
+        </script>
+    @endif
     @stack('scripts')
 </body>
 </html>

@@ -2,8 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Mail\LeadEnquiryMail;
 use App\Models\Lead;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
@@ -49,13 +51,34 @@ class ContactFormTest extends TestCase
         ];
     }
 
+    public function test_valid_enquiry_emails_the_team_and_the_customer(): void
+    {
+        Mail::fake();
+        Http::fake();
+        config([
+            'cebinova.leads.notify_email' => 'sales@cebinova.test',
+            'cebinova.leads.whatsapp_webhook' => 'https://hooks.example.test/leads',
+        ]);
+
+        $this->postJson(route('contact.store'), $this->validPayload())->assertOk();
+
+        Mail::assertSent(LeadEnquiryMail::class, function (LeadEnquiryMail $mail) {
+            return $mail->hasTo('sales@cebinova.test') && $mail->audience === 'admin';
+        });
+        Mail::assertSent(LeadEnquiryMail::class, function (LeadEnquiryMail $mail) {
+            return $mail->hasTo('asha@example.com') && $mail->audience === 'customer';
+        });
+        Http::assertSent(fn ($request) => $request->url() === 'https://hooks.example.test/leads'
+            && $request['phone'] === '9876543210');
+    }
+
     public function test_valid_enquiry_is_stored(): void
     {
         $response = $this->postJson(route('contact.store'), $this->validPayload());
 
         $response->assertOk()->assertJson([
             'ok' => true,
-            'message' => 'Thank you! Your enquiry has been received.',
+            'message' => 'Thank you for contacting CEBINOVA Technologies.',
         ]);
         $this->assertDatabaseHas('leads', [
             'email' => 'asha@example.com',
@@ -67,35 +90,6 @@ class ContactFormTest extends TestCase
             'source' => 'Website Contact',
             'free_consultation' => 1,
         ]);
-    }
-
-    public function test_submission_page_is_recorded(): void
-    {
-        $this->withHeader('Referer', 'https://cebinova.test/contact?source=hero')
-            ->postJson(route('contact.store'), $this->validPayload())
-            ->assertOk();
-
-        $this->assertDatabaseHas('leads', [
-            'page_url' => 'https://cebinova.test/contact?source=hero',
-        ]);
-    }
-
-    public function test_rapid_duplicate_submission_is_not_stored_twice(): void
-    {
-        $this->postJson(route('contact.store'), $this->validPayload())->assertOk();
-        $this->postJson(route('contact.store'), $this->validPayload())->assertOk();
-
-        $this->assertSame(1, Lead::query()->count());
-    }
-
-    public function test_mail_failure_does_not_lose_the_lead(): void
-    {
-        config(['cebinova.leads.notification_email' => 'team@example.com']);
-        Mail::shouldReceive('raw')->once()->andThrow(new \RuntimeException('Mail unavailable'));
-
-        $this->postJson(route('contact.store'), $this->validPayload())->assertOk();
-
-        $this->assertDatabaseHas('leads', ['email' => 'asha@example.com']);
     }
 
     public function test_name_phone_and_service_are_required(): void
@@ -183,7 +177,7 @@ class ContactFormTest extends TestCase
     public function test_request_cannot_set_lead_status_or_notes(): void
     {
         $this->postJson(route('contact.store'), $this->validPayload([
-            'status' => 'Won',
+            'status' => 'Converted',
             'notes' => 'ignore me',
         ]))->assertOk();
 

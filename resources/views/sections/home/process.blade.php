@@ -43,10 +43,6 @@
         </div>
 
         <p class="home-proc-cta">
-            <x-button :href="consultation_url()" size="sm">
-                Get Free Consultation
-                <svg class="arrow-shift h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></svg>
-            </x-button>
             <x-button :href="route('about')" variant="outline" size="sm">
                 Discover CEBINOVA
                 <svg class="arrow-shift h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></svg>

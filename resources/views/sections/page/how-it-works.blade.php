@@ -1,5 +1,4 @@
 @php
-    $topic = is_string($topic ?? null) ? $topic : null;
     $title = is_string($howTitle ?? null) ? $howTitle : config('cebinova.page.how_title');
     $text = is_string($howText ?? null) ? $howText : config('cebinova.page.how_text');
 @endphp
@@ -18,9 +17,5 @@
                 </li>
             @endforeach
         </ol>
-        <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-            <x-button href="{{ consultation_url($topic) }}">Get Free Consultation</x-button>
-            <x-button href="{{ page_whatsapp_url($topic) }}" variant="outline">Ask on WhatsApp</x-button>
-        </div>
     </div>
 </section>

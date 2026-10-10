@@ -46,7 +46,7 @@ class ServicesManagementSystemTest extends TestCase
         $this->get(route('services.show', 'ecommerce'))->assertNotFound();
     }
 
-    public function test_detail_page_renders_database_features_process_and_faq(): void
+    public function test_detail_page_renders_database_features_and_process(): void
     {
         $service = Service::query()->where('slug', 'custom-software')->firstOrFail();
         $features = $service->sections()->where('type', 'features')->firstOrFail();
@@ -55,14 +55,11 @@ class ServicesManagementSystemTest extends TestCase
         $process = $service->sections()->where('type', 'process')->firstOrFail();
         $process->items()->delete();
         $process->items()->create(['title' => 'Dynamic Discovery', 'description' => 'Map the workflow.', 'is_active' => true]);
-        $service->faqs()->delete();
-        $service->faqs()->create(['page' => 'service', 'question' => 'Dynamic question?', 'answer' => 'Dynamic answer.', 'is_active' => true]);
 
         $this->get(route('services.show', $service->slug))
             ->assertOk()
             ->assertSee('Dynamic CRM')
-            ->assertSee('Dynamic Discovery')
-            ->assertSee('Dynamic question?');
+            ->assertSee('Dynamic Discovery');
     }
 
     public function test_admin_authentication_and_authorization_are_enforced(): void
@@ -75,14 +72,13 @@ class ServicesManagementSystemTest extends TestCase
     public function test_editor_can_create_update_reorder_and_deactivate_service_without_slug_drift(): void
     {
         $editor = User::factory()->create(['role' => UserRole::Editor, 'is_active' => true]);
-        $this->actingAs($editor)->post(route('admin.services.store'), $this->payload())->assertRedirect(route('admin.services.index'));
-
+        $response = $this->actingAs($editor)->post(route('admin.services.store'), $this->payload());
         $service = Service::query()->where('slug', 'managed-service')->firstOrFail();
+        $response->assertRedirect(route('admin.services.edit', $service));
         $this->assertDatabaseHas('service_section_items', ['title' => 'Managed feature']);
-        $this->assertDatabaseHas('faqs', ['service_id' => $service->id, 'question' => 'Managed question?']);
 
         $payload = $this->payload(['name' => 'Renamed Managed Service', 'slug' => '', 'sort_order' => 99, 'is_active' => 0]);
-        $this->actingAs($editor)->put(route('admin.services.update', $service), $payload)->assertRedirect(route('admin.services.index'));
+        $this->actingAs($editor)->put(route('admin.services.update', $service), $payload)->assertRedirect(route('admin.services.edit', $service));
 
         $service->refresh();
         $this->assertSame('managed-service', $service->slug);
@@ -137,7 +133,6 @@ class ServicesManagementSystemTest extends TestCase
             'features_text' => 'Managed feature',
             'process_title' => 'Managed process',
             'process_text' => 'Managed step | Managed description',
-            'faqs_text' => 'Managed question? | Managed answer.',
             'sort_order' => 8,
             'is_featured' => 1,
             'is_active' => 1,

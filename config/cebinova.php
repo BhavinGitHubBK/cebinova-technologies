@@ -1,5 +1,5 @@
 <?php
-  
+
 return [
     'name' => 'CEBINOVA Technologies',
     'short_name' => 'CEBINOVA',
@@ -11,15 +11,15 @@ return [
         'phone' => env('CEBINOVA_PHONE', '+91 90543 15515'),
         'email' => env('CEBINOVA_EMAIL', 'cebinovatechnologies@gmail.com'),
         'email_alt' => env('CEBINOVA_EMAIL_ALT', ''),
-        'whatsapp' => env('CEBINOVA_WHATSAPP', '9054315515'),
+        'whatsapp' => env('CEBINOVA_WHATSAPP', '919054315515'),
         'whatsapp_message' => "Hi CEBINOVA,\nI'd like to know more about your technology solutions.",
         'whatsapp_package_message' => "Hi CEBINOVA,\nI'm interested in the {package} – {duration} Plan.\nPlease share more details.",
         'address' => env('CEBINOVA_ADDRESS', '301, Satyam64, opp. Gujarat High Court, Sarkhej - Gandhinagar Hwy, Sola, Ahmedabad, Gujarat 380060'),
         'maps_url' => env('CEBINOVA_MAPS_URL', 'https://maps.app.goo.gl/2W1U72STLQ9ZEme18'),
         'social' => [
-            'linkedin' => env('CEBINOVA_LINKEDIN', '#'),
-            'instagram' => env('CEBINOVA_INSTAGRAM', '#'),
-            'facebook' => env('CEBINOVA_FACEBOOK', '#'),
+            'linkedin' => env('CEBINOVA_LINKEDIN', 'https://www.linkedin.com/in/cebinova-technologies-31b44943a/'),
+            'instagram' => env('CEBINOVA_INSTAGRAM', 'https://www.instagram.com/cebinovatechnologies/'),
+            'facebook' => env('CEBINOVA_FACEBOOK', 'https://www.facebook.com/profile.php?id=61594302886895'),
         ],
     ],
 
@@ -28,12 +28,22 @@ return [
         'default_description' => 'CEBINOVA Technologies provides websites, eCommerce, custom software, AI automation and complete digital solutions for businesses.',
     ],
 
+    'pricing' => [
+        'gst_percent' => 18,
+    ],
+
+    'leads' => [
+        'notify_email' => env('LEAD_NOTIFY_EMAIL'),
+        'whatsapp_webhook' => env('LEAD_WHATSAPP_WEBHOOK_URL'),
+    ],
+
     'nav' => [
         ['label' => 'Home', 'route' => 'home'],
-        ['label' => 'Services', 'route' => 'services.index'],
+        ['label' => 'Services', 'route' => 'services.index', 'type' => 'services'],
         ['label' => 'Solutions', 'route' => 'solutions', 'type' => 'mega'],
         ['label' => 'Marketing Packages', 'route' => 'marketing-packages', 'badge' => 'Popular'],
         ['label' => 'Pricing', 'route' => 'pricing', 'badge' => 'Hot'],
+        ['label' => 'Offers', 'route' => 'offers.index', 'type' => 'offers'],
         ['label' => 'Demos', 'route' => 'demos'],
         ['label' => 'About', 'route' => 'about'],
         ['label' => 'Contact', 'route' => 'contact'],
@@ -245,12 +255,6 @@ return [
     'page' => [
         'how_title' => 'A simple path from first chat to launch.',
         'how_text' => 'You always know what happens next. No long onboarding. No stack you will not use.',
-        'faq' => [
-            ['q' => 'How do we start?', 'a' => 'Book a free consultation or message on WhatsApp. We map what you need now - website, store, software or marketing.'],
-            ['q' => 'Do I pay to talk?', 'a' => 'No. Consultation is free. You pay only after you choose a plan or a scoped project.'],
-            ['q' => 'Do I need everything at once?', 'a' => 'No. Start with presence or the one system that removes the most friction. Add selling, software and growth later.'],
-            ['q' => 'Are there hidden charges?', 'a' => 'GST extra, if applicable. Ad spend, photography and third-party fees are only added if you ask for them.'],
-        ],
     ],
 
     'journey' => [
@@ -1005,9 +1009,7 @@ return [
 
     'leads' => [
         'default_status' => 'New',
-        'statuses' => ['New', 'Contacted', 'Qualified', 'Proposal Sent', 'Won', 'Lost'],
-        'notification_email' => env('CONTACT_NOTIFICATION_EMAIL'),
-        'send_acknowledgement' => env('CONTACT_SEND_ACKNOWLEDGEMENT', false),
+        'statuses' => ['New', 'Contacted', 'Follow-up', 'Converted', 'Lost'],
         'sources' => [
             'Website Contact',
             'Free Consultation',
@@ -1017,7 +1019,6 @@ return [
             'WhatsApp',
             'Technology Solution',
             'CEBINOVA Kirana Solution',
-            'CEBINOVA Pricing',
             'CEBINOVA Demos',
             'CEBINOVA Solutions',
         ],

@@ -3,6 +3,7 @@
 namespace Tests\Feature\Admin;
 
 use App\Enums\UserRole;
+use App\Models\PageSection;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
@@ -21,25 +22,24 @@ class CmsContentTest extends TestCase
         ], $overrides));
     }
 
-    public function test_editor_can_create_testimonial(): void
+    public function test_editor_can_create_page_section(): void
     {
         $editor = $this->admin(['role' => UserRole::Editor]);
 
         $this->actingAs($editor)
-            ->post(route('admin.testimonials.store'), [
-                'customer_name' => 'Priya Shah',
-                'company' => 'Retail Demo',
-                'position' => 'Owner',
-                'review' => 'CEBINOVA delivered a clean storefront our team can actually use.',
-                'rating' => 5,
+            ->post(route('admin.page-sections.store'), [
+                'page' => 'about',
+                'key' => 'hero',
+                'heading' => 'About CEBINOVA',
                 'sort_order' => 1,
-                'is_active' => 1,
+                'is_visible' => 1,
             ])
-            ->assertRedirect(route('admin.testimonials.index'));
+            ->assertRedirect(route('admin.page-sections.edit', PageSection::query()->where('key', 'hero')->where('page', 'about')->first()));
 
-        $this->assertDatabaseHas('testimonials', [
-            'customer_name' => 'Priya Shah',
-            'company' => 'Retail Demo',
+        $this->assertDatabaseHas('page_sections', [
+            'page' => 'about',
+            'key' => 'hero',
+            'heading' => 'About CEBINOVA',
         ]);
     }
 
@@ -55,18 +55,27 @@ class CmsContentTest extends TestCase
         $this->get('/blog/live-post')->assertNotFound();
     }
 
+    public function test_faq_routes_are_removed(): void
+    {
+        $this->get('/admin/faqs')->assertNotFound();
+        $this->actingAs($this->admin())
+            ->get('/admin/faqs')
+            ->assertNotFound();
+    }
+
     public function test_viewer_forbidden_from_create(): void
     {
         $viewer = $this->admin(['role' => UserRole::Viewer]);
 
         $this->actingAs($viewer)
-            ->get(route('admin.testimonials.create'))
+            ->get(route('admin.page-sections.create'))
             ->assertForbidden();
 
         $this->actingAs($viewer)
-            ->post(route('admin.testimonials.store'), [
-                'customer_name' => 'Should Fail',
-                'review' => 'Should fail.',
+            ->post(route('admin.page-sections.store'), [
+                'page' => 'about',
+                'key' => 'hero',
+                'heading' => 'Should Fail',
             ])
             ->assertForbidden();
     }

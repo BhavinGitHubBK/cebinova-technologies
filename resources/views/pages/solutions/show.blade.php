@@ -8,7 +8,6 @@
     $nextHref = page_next_url($guide, $solution['title']);
     $nextLabel = $guide['next_label'] ?? 'Request this solution';
     $whatsapp = page_whatsapp_url($solution['title'].' solution');
-    $faqs = config('cebinova.page.faq', []);
 @endphp
 
 @extends('layouts.app')
@@ -41,9 +40,13 @@
                 @if ($solution['preview'])
                     <img src="{{ asset('assets/'.$solution['preview']) }}" alt="" class="w-full rounded-none border border-line object-cover">
                 @endif
-                @if (! empty($guide['best_for']))
-                    <p class="{{ $solution['preview'] ? 'mt-8' : '' }} text-[12px] font-bold uppercase tracking-[0.16em] text-gold-dark">Who this is for</p>
-                    <p class="mt-3 text-[17px] leading-relaxed text-navy">{{ $guide['best_for'] }}</p>
+                @if (! empty($solution['problem']))
+                    <p class="{{ $solution['preview'] ? 'mt-8' : '' }} text-[12px] font-bold uppercase tracking-[0.16em] text-gold-dark">The business problem</p>
+                    <p class="mt-3 whitespace-pre-line text-[17px] leading-relaxed text-navy">{{ $solution['problem'] }}</p>
+                @endif
+                @if (! empty($solution['audience']) || ! empty($guide['best_for']))
+                    <p class="mt-8 text-[12px] font-bold uppercase tracking-[0.16em] text-gold-dark">Who this is for</p>
+                    <p class="mt-3 text-[17px] leading-relaxed text-navy">{{ $solution['audience'] ?? $guide['best_for'] }}</p>
                 @endif
                 <h2 class="mt-8 text-2xl font-extrabold text-navy">What this solution covers</h2>
                 <ul class="mt-5 grid gap-3 sm:grid-cols-2">
@@ -58,7 +61,7 @@
             <aside class="lg:col-span-5">
                 <div class="card-surface p-7 sm:p-8">
                     <x-badge>Next step</x-badge>
-                    <h2 class="mt-4 text-xl font-bold text-navy">{{ $guide['outcome'] ?? 'Talk to CEBINOVA about this solution' }}</h2>
+                    <h2 class="mt-4 text-xl font-bold text-navy">{{ $solution['outcome'] ?? $guide['outcome'] ?? 'Talk to CEBINOVA about this solution' }}</h2>
                     <p class="mt-3 text-[15.5px] leading-relaxed text-muted">Tell us how the business operates today. We will map the right starting point - website, store, software or automation.</p>
                     <div class="mt-6 flex flex-col gap-3">
                         <x-button href="{{ $nextHref }}" class="w-full">{{ $nextLabel }}</x-button>
@@ -71,12 +74,49 @@
         </div>
     </section>
 
-    @include('sections.page.how-it-works', ['topic' => $solution['title']])
+    @if (! empty($solution['sections']))
+        <section class="section-pad">
+            <div class="container-wide grid gap-8">
+                @foreach ($solution['sections'] as $section)
+                    <article>
+                        @if (! empty($section['title']))
+                            <h2 class="text-2xl font-extrabold text-navy">{{ $section['title'] }}</h2>
+                        @endif
+                        @if (! empty($section['content']))
+                            <p class="mt-3 whitespace-pre-line text-[16px] leading-relaxed text-navy">{{ $section['content'] }}</p>
+                        @endif
+                        @if (! empty($section['items']))
+                            <ul class="mt-4 grid gap-3 sm:grid-cols-2">
+                                @foreach ($section['items'] as $item)
+                                    <li class="rounded-xl bg-white px-4 py-4">
+                                        <strong class="text-navy">{{ $item['title'] }}</strong>
+                                        @if (! empty($item['description']))
+                                            <p class="mt-1 text-sm leading-relaxed text-muted">{{ $item['description'] }}</p>
+                                        @endif
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @endif
+                    </article>
+                @endforeach
+            </div>
+        </section>
+    @endif
 
-    @include('sections.page.faq', [
-        'faqItems' => $faqs,
-        'topic' => $solution['title'],
-    ])
+    @if (! empty($solution['related_industries']))
+        <section class="section-pad section-soft">
+            <div class="container-wide">
+                <h2 class="text-2xl font-extrabold text-navy">Industries this fits</h2>
+                <ul class="mt-5 flex flex-wrap gap-3">
+                    @foreach ($solution['related_industries'] as $industry)
+                        <li><a class="rounded-full border border-line bg-white px-4 py-2 text-sm font-semibold text-navy" href="{{ route('industries.show', $industry['slug']) }}">{{ $industry['title'] }}</a></li>
+                    @endforeach
+                </ul>
+            </div>
+        </section>
+    @endif
+
+    @include('sections.page.how-it-works', ['topic' => $solution['title']])
 
     @include('sections.home.cta')
 @endsection

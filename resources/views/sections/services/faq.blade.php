@@ -1,35 +1,35 @@
 @php
-    $items = config('cebinova.page.faq', []);
+    $questions = collect(config('cebinova.service_guides', []))
+        ->map(function ($guide, $slug) {
+            $first = $guide['faq'][0] ?? null;
+            if (! is_array($first)) {
+                return null;
+            }
+
+            return [
+                'q' => $first['q'],
+                'a' => $first['a'],
+                'slug' => $slug,
+            ];
+        })
+        ->filter()
+        ->values();
 @endphp
 
-@if (count($items))
-    <section class="svc-page-faq section-pad-lg" id="page-faq" aria-label="Services FAQ">
-        <div class="container-wide">
-            <div class="svc-page-head" data-reveal>
-                <p class="svc-page-kicker">
-                    <span class="svc-page-dot" aria-hidden="true"></span>
-                    Simple answers
-                </p>
-                <h2 class="section-title">Questions people ask before they start.</h2>
-                <p class="section-support">Short answers. No jargon.</p>
-            </div>
-
-            <div class="svc-page-faq-list" data-stagger>
-                @foreach ($items as $item)
-                    <details class="svc-page-faq-item">
-                        <summary>
-                            <span class="svc-page-faq-q">{{ $item['q'] }}</span>
-                            <span class="svc-page-faq-toggle" aria-hidden="true">+</span>
-                        </summary>
-                        <p class="svc-page-faq-a">{{ $item['a'] }}</p>
-                    </details>
-                @endforeach
-            </div>
-
-            <div class="svc-page-faq-actions">
-                <x-button href="{{ consultation_url() }}">Get Free Consultation</x-button>
-                <x-button href="{{ whatsapp_url() }}" variant="outline">Ask on WhatsApp</x-button>
-            </div>
+@if ($questions->isNotEmpty())
+<section class="section-pad bg-white" aria-label="Service questions">
+    <div class="container-wide max-w-3xl">
+        <x-section-heading eyebrow="Questions" title="Questions people ask before they start.">
+            A short answer for each service. The service page has the rest.
+        </x-section-heading>
+        <div class="mt-8 grid gap-4">
+            @foreach ($questions as $item)
+                <article class="card-surface p-6">
+                    <h3 class="text-lg font-extrabold text-navy">{{ $item['q'] }}</h3>
+                    <p class="mt-2 text-[15px] leading-relaxed text-muted">{{ $item['a'] }}</p>
+                </article>
+            @endforeach
         </div>
-    </section>
+    </div>
+</section>
 @endif

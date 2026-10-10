@@ -6,8 +6,8 @@
 @section('content')
     @include('sections.services.hero')
     @include('sections.services.catalog')
+    @include('sections.services.faq')
     @include('sections.services.path')
     @include('sections.home.process')
-    @include('sections.services.faq')
     @include('sections.home.cta')
 @endsection

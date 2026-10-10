@@ -15,11 +15,26 @@ class PricingOptionController extends Controller
 {
     public function index(Request $request): View
     {
+        $matched = PricingOption::query()
+            ->when($request->filled('type'), fn ($query) => $query->where('type', $request->string('type')))
+            ->when($request->filled('q'), fn ($query) => $query->where('name', 'like', '%'.$request->string('q').'%'));
+        $counts = [
+            'all' => (clone $matched)->count(),
+            'active' => (clone $matched)->where('is_active', true)->count(),
+            'inactive' => (clone $matched)->where('is_active', false)->count(),
+        ];
+
+        [$sort, $dir] = admin_sort($request, ['name', 'type', 'price', 'billing_period', 'sort_order', 'is_active'], 'sort_order');
+
         return view('admin.pricing-options.index', [
-            'options' => PricingOption::query()
-                ->when($request->filled('type'), fn ($query) => $query->where('type', $request->string('type')))
-                ->ordered()->paginate(30)->withQueryString(),
+            'options' => $matched
+                ->when($request->filled('status'), fn ($query) => $query->where('is_active', $request->status === 'active'))
+                ->orderBy($sort, $dir)->orderBy('id')->paginate(30)->withQueryString(),
             'types' => PricingOption::TYPES,
+            'counts' => $counts,
+            'status' => $request->string('status')->toString(),
+            'sort' => $sort,
+            'dir' => $dir,
         ]);
     }
 
@@ -33,7 +48,7 @@ class PricingOptionController extends Controller
         $option = PricingOption::query()->create($this->validated($request));
         ActivityLogger::log('create', 'pricing_options', $option, 'Pricing option created');
 
-        return redirect()->route('admin.pricing-options.index')->with('success', 'Pricing option created.');
+        return redirect()->route('admin.pricing-options.edit', $option)->with('success', 'Pricing option created.');
     }
 
     public function edit(PricingOption $pricingOption): View
@@ -46,7 +61,7 @@ class PricingOptionController extends Controller
         $pricingOption->update($this->validated($request, $pricingOption));
         ActivityLogger::log('update', 'pricing_options', $pricingOption, 'Pricing option updated');
 
-        return redirect()->route('admin.pricing-options.index')->with('success', 'Pricing option updated.');
+        return redirect()->route('admin.pricing-options.edit', $pricingOption)->with('success', 'Pricing option updated.');
     }
 
     public function destroy(PricingOption $pricingOption): RedirectResponse

@@ -4,20 +4,24 @@ use App\Http\Controllers\Admin\ActivityLogController;
 use App\Http\Controllers\Admin\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Admin\Auth\NewPasswordController;
 use App\Http\Controllers\Admin\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Admin\CacheController;
+use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\FaqController;
+use App\Http\Controllers\Admin\IndustryController;
 use App\Http\Controllers\Admin\LeadController;
-use App\Http\Controllers\Admin\MediaController;
+use App\Http\Controllers\Admin\LiveChatController;
+use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\PackageController;
 use App\Http\Controllers\Admin\PageSectionController;
-use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\PricingOptionController;
+use App\Http\Controllers\Admin\ProfileController;
+use App\Http\Controllers\Admin\PromotionCampaignController;
+use App\Http\Controllers\Admin\PromotionCouponController;
+use App\Http\Controllers\Admin\PromotionReportController;
+use App\Http\Controllers\Admin\ProofController;
 use App\Http\Controllers\Admin\ServiceController;
-use App\Http\Controllers\Admin\SolutionController;
-use App\Http\Controllers\Admin\IndustryController;
 use App\Http\Controllers\Admin\SettingController;
-use App\Http\Controllers\Admin\TeamMemberController;
-use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\Admin\SolutionController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Middleware\EnsureAdminIsActive;
 use Illuminate\Support\Facades\Route;
@@ -36,8 +40,10 @@ Route::middleware('web')->prefix('admin')->name('admin.')->group(function () {
 
     Route::middleware(['auth', EnsureAdminIsActive::class])->group(function () {
         Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+        Route::post('notifications/seen', [NotificationController::class, 'seen'])->name('notifications.seen');
 
         Route::get('/', [DashboardController::class, 'index'])->middleware('can:admin.dashboard')->name('dashboard');
+        Route::get('dashboard/sections/{section}', [DashboardController::class, 'section'])->middleware('can:admin.dashboard')->name('dashboard.section');
 
         Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -79,6 +85,7 @@ Route::middleware('web')->prefix('admin')->name('admin.')->group(function () {
             Route::get('solutions', [SolutionController::class, 'index'])->name('solutions.index');
             Route::get('solutions/{solution}', [SolutionController::class, 'show'])->name('solutions.show');
         });
+
         Route::middleware('can:admin.industries.manage')->group(function () {
             Route::get('industries/create', [IndustryController::class, 'create'])->name('industries.create');
             Route::post('industries', [IndustryController::class, 'store'])->name('industries.store');
@@ -89,6 +96,31 @@ Route::middleware('web')->prefix('admin')->name('admin.')->group(function () {
         Route::middleware('can:admin.industries.view')->group(function () {
             Route::get('industries', [IndustryController::class, 'index'])->name('industries.index');
             Route::get('industries/{industry}', [IndustryController::class, 'show'])->name('industries.show');
+        });
+
+        Route::middleware('can:admin.promotions.view')->group(function () {
+            Route::get('promotions', [PromotionCampaignController::class, 'index'])->name('promotions.campaigns.index');
+            Route::get('promotions/coupons', [PromotionCouponController::class, 'index'])->name('promotions.coupons.index');
+            Route::get('promotions/usage', [PromotionReportController::class, 'usage'])->name('promotions.usage');
+            Route::get('promotions/analytics', [PromotionReportController::class, 'analytics'])->name('promotions.analytics');
+            Route::get('promotions/{campaign}/preview', [PromotionCampaignController::class, 'preview'])->whereNumber('campaign')->name('promotions.campaigns.preview');
+            Route::get('promotions/{campaign}', [PromotionCampaignController::class, 'edit'])->whereNumber('campaign')->name('promotions.campaigns.edit');
+            Route::get('promotions/coupons/{coupon}/edit', [PromotionCouponController::class, 'edit'])->name('promotions.coupons.edit');
+        });
+        Route::middleware('can:admin.promotions.manage')->group(function () {
+            Route::get('promotions/create', [PromotionCampaignController::class, 'create'])->name('promotions.campaigns.create');
+            Route::post('promotions', [PromotionCampaignController::class, 'store'])->name('promotions.campaigns.store');
+            Route::put('promotions/{campaign}', [PromotionCampaignController::class, 'update'])->whereNumber('campaign')->name('promotions.campaigns.update');
+            Route::delete('promotions/{campaign}', [PromotionCampaignController::class, 'destroy'])->whereNumber('campaign')->name('promotions.campaigns.destroy');
+            Route::post('promotions/{campaign}/duplicate', [PromotionCampaignController::class, 'duplicate'])->whereNumber('campaign')->name('promotions.campaigns.duplicate');
+            Route::get('promotions/coupons/create', [PromotionCouponController::class, 'create'])->name('promotions.coupons.create');
+            Route::post('promotions/coupons', [PromotionCouponController::class, 'store'])->name('promotions.coupons.store');
+            Route::put('promotions/coupons/{coupon}', [PromotionCouponController::class, 'update'])->name('promotions.coupons.update');
+            Route::delete('promotions/coupons/{coupon}', [PromotionCouponController::class, 'destroy'])->name('promotions.coupons.destroy');
+        });
+        Route::middleware('can:admin.promotions.publish')->group(function () {
+            Route::post('promotions/{campaign}/publish', [PromotionCampaignController::class, 'publish'])->whereNumber('campaign')->name('promotions.campaigns.publish');
+            Route::post('promotions/{campaign}/disable', [PromotionCampaignController::class, 'disable'])->whereNumber('campaign')->name('promotions.campaigns.disable');
         });
 
         Route::middleware('can:admin.packages.manage')->group(function () {
@@ -110,24 +142,6 @@ Route::middleware('web')->prefix('admin')->name('admin.')->group(function () {
         });
 
         Route::middleware('can:admin.content.manage')->group(function () {
-            Route::get('testimonials/create', [TestimonialController::class, 'create'])->name('testimonials.create');
-            Route::post('testimonials', [TestimonialController::class, 'store'])->name('testimonials.store');
-            Route::get('testimonials/{testimonial}/edit', [TestimonialController::class, 'edit'])->name('testimonials.edit');
-            Route::put('testimonials/{testimonial}', [TestimonialController::class, 'update'])->name('testimonials.update');
-            Route::delete('testimonials/{testimonial}', [TestimonialController::class, 'destroy'])->name('testimonials.destroy');
-
-            Route::get('team-members/create', [TeamMemberController::class, 'create'])->name('team-members.create');
-            Route::post('team-members', [TeamMemberController::class, 'store'])->name('team-members.store');
-            Route::get('team-members/{team_member}/edit', [TeamMemberController::class, 'edit'])->name('team-members.edit');
-            Route::put('team-members/{team_member}', [TeamMemberController::class, 'update'])->name('team-members.update');
-            Route::delete('team-members/{team_member}', [TeamMemberController::class, 'destroy'])->name('team-members.destroy');
-
-            Route::get('faqs/create', [FaqController::class, 'create'])->name('faqs.create');
-            Route::post('faqs', [FaqController::class, 'store'])->name('faqs.store');
-            Route::get('faqs/{faq}/edit', [FaqController::class, 'edit'])->name('faqs.edit');
-            Route::put('faqs/{faq}', [FaqController::class, 'update'])->name('faqs.update');
-            Route::delete('faqs/{faq}', [FaqController::class, 'destroy'])->name('faqs.destroy');
-
             Route::get('page-sections/create', [PageSectionController::class, 'create'])->name('page-sections.create');
             Route::post('page-sections', [PageSectionController::class, 'store'])->name('page-sections.store');
             Route::get('page-sections/{page_section}/edit', [PageSectionController::class, 'edit'])->name('page-sections.edit');
@@ -136,27 +150,38 @@ Route::middleware('web')->prefix('admin')->name('admin.')->group(function () {
         });
 
         Route::middleware('can:admin.content.view')->group(function () {
-            Route::get('testimonials', [TestimonialController::class, 'index'])->name('testimonials.index');
-            Route::get('testimonials/{testimonial}', [TestimonialController::class, 'show'])->name('testimonials.show');
-
-            Route::get('team-members', [TeamMemberController::class, 'index'])->name('team-members.index');
-            Route::get('team-members/{team_member}', [TeamMemberController::class, 'show'])->name('team-members.show');
-
-            Route::get('faqs', [FaqController::class, 'index'])->name('faqs.index');
-            Route::get('faqs/{faq}', [FaqController::class, 'show'])->name('faqs.show');
-
             Route::get('page-sections', [PageSectionController::class, 'index'])->name('page-sections.index');
             Route::get('page-sections/{page_section}', [PageSectionController::class, 'show'])->name('page-sections.show');
         });
 
-        Route::middleware('can:admin.media.view')->get('media', [MediaController::class, 'index'])->name('media.index');
-        Route::middleware('can:admin.media.manage')->group(function () {
-            Route::post('media', [MediaController::class, 'store'])->name('media.store');
-            Route::delete('media/{medium}', [MediaController::class, 'destroy'])->name('media.destroy');
-        });
+        foreach (['demos'] as $kind) {
+            Route::middleware('can:admin.content.view')->get($kind, [ProofController::class, 'index'])
+                ->defaults('kind', $kind)->name($kind.'.index');
+            Route::middleware('can:admin.content.manage')->group(function () use ($kind) {
+                Route::get($kind.'/create', [ProofController::class, 'create'])->defaults('kind', $kind)->name($kind.'.create');
+                Route::post($kind, [ProofController::class, 'store'])->defaults('kind', $kind)->name($kind.'.store');
+                Route::get($kind.'/{record}/edit', [ProofController::class, 'edit'])->whereNumber('record')->defaults('kind', $kind)->name($kind.'.edit');
+                Route::put($kind.'/{record}', [ProofController::class, 'update'])->whereNumber('record')->defaults('kind', $kind)->name($kind.'.update');
+                Route::delete($kind.'/{record}', [ProofController::class, 'destroy'])->whereNumber('record')->defaults('kind', $kind)->name($kind.'.destroy');
+            });
+        }
 
         Route::middleware('can:admin.settings.view')->get('settings', [SettingController::class, 'edit'])->name('settings.edit');
         Route::middleware('can:admin.settings.manage')->put('settings', [SettingController::class, 'update'])->name('settings.update');
+        Route::middleware('can:admin.cache.manage')->group(function () {
+            Route::get('cache', [CacheController::class, 'index'])->name('cache.index');
+            Route::post('cache/application/clear', [CacheController::class, 'clearApplication'])->name('cache.application.clear');
+            Route::post('cache/config/clear', [CacheController::class, 'clearConfig'])->name('cache.config.clear');
+            Route::post('cache/config/rebuild', [CacheController::class, 'rebuildConfig'])->name('cache.config.rebuild');
+            Route::post('cache/routes/clear', [CacheController::class, 'clearRoutes'])->name('cache.routes.clear');
+            Route::post('cache/routes/rebuild', [CacheController::class, 'rebuildRoutes'])->name('cache.routes.rebuild');
+            Route::post('cache/views/clear', [CacheController::class, 'clearViews'])->name('cache.views.clear');
+            Route::post('cache/views/rebuild', [CacheController::class, 'rebuildViews'])->name('cache.views.rebuild');
+            Route::post('cache/events/clear', [CacheController::class, 'clearEvents'])->name('cache.events.clear');
+            Route::post('cache/events/rebuild', [CacheController::class, 'rebuildEvents'])->name('cache.events.rebuild');
+            Route::post('cache/compiled/clear', [CacheController::class, 'clearCompiled'])->name('cache.compiled.clear');
+            Route::post('cache/all/clear', [CacheController::class, 'clearAll'])->name('cache.all.clear');
+        });
 
         Route::middleware('can:admin.users.manage')->group(function () {
             Route::get('users/create', [UserController::class, 'create'])->name('users.create');
@@ -169,5 +194,11 @@ Route::middleware('web')->prefix('admin')->name('admin.')->group(function () {
         Route::middleware('can:admin.users.view')->get('users', [UserController::class, 'index'])->name('users.index');
 
         Route::middleware('can:admin.activity.view')->get('activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
+
+        require __DIR__.'/reports.php';
+        require __DIR__.'/analytics.php';
+        Route::middleware('can:admin.analytics.view')->get('customers', [CustomerController::class, 'index'])->name('customers.index');
+        Route::middleware('can:admin.leads.view')->get('live-chats', [LiveChatController::class, 'index'])->name('live-chats.index');
+        Route::middleware('can:admin.leads.view')->get('live-chats/{liveChat}', [LiveChatController::class, 'show'])->name('live-chats.show');
     });
 });

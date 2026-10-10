@@ -31,10 +31,25 @@ class AdminAccessPolicy
         return $user->canWriteContent();
     }
 
-    public function viewSolutions(User $user): bool { return true; }
-    public function manageSolutions(User $user): bool { return $user->canWriteContent(); }
-    public function viewIndustries(User $user): bool { return true; }
-    public function manageIndustries(User $user): bool { return $user->canWriteContent(); }
+    public function viewSolutions(User $user): bool
+    {
+        return true;
+    }
+
+    public function manageSolutions(User $user): bool
+    {
+        return $user->canWriteContent();
+    }
+
+    public function viewIndustries(User $user): bool
+    {
+        return true;
+    }
+
+    public function manageIndustries(User $user): bool
+    {
+        return $user->canWriteContent();
+    }
 
     public function viewPackages(User $user): bool
     {
@@ -46,22 +61,17 @@ class AdminAccessPolicy
         return $user->canWriteContent();
     }
 
-    public function viewMedia(User $user): bool
-    {
-        return true;
-    }
-
-    public function manageMedia(User $user): bool
-    {
-        return $user->canWriteContent();
-    }
-
     public function viewSettings(User $user): bool
     {
         return true;
     }
 
     public function manageSettings(User $user): bool
+    {
+        return $user->canWriteContent();
+    }
+
+    public function manageCache(User $user): bool
     {
         return $user->canWriteContent();
     }
@@ -79,6 +89,21 @@ class AdminAccessPolicy
     public function viewActivityLogs(User $user): bool
     {
         return true;
+    }
+
+    public function viewPromotions(User $user): bool
+    {
+        return true;
+    }
+
+    public function managePromotions(User $user): bool
+    {
+        return $user->canWriteContent();
+    }
+
+    public function publishPromotions(User $user): bool
+    {
+        return $user->canWriteContent();
     }
 
     public function viewContent(User $user): bool

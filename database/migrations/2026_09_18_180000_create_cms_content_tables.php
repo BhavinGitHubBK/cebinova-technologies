@@ -8,45 +8,6 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('testimonials', function (Blueprint $table) {
-            $table->id();
-            $table->string('customer_name');
-            $table->string('company')->nullable();
-            $table->string('position')->nullable();
-            $table->text('review');
-            $table->unsignedTinyInteger('rating')->default(5);
-            $table->string('photo')->nullable();
-            $table->boolean('is_featured')->default(false);
-            $table->boolean('is_active')->default(true);
-            $table->unsignedInteger('sort_order')->default(0);
-            $table->timestamps();
-        });
-
-        Schema::create('team_members', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('designation')->nullable();
-            $table->text('bio')->nullable();
-            $table->string('photo')->nullable();
-            $table->string('email')->nullable();
-            $table->string('phone')->nullable();
-            $table->string('linkedin_url')->nullable();
-            $table->boolean('is_active')->default(true);
-            $table->unsignedInteger('sort_order')->default(0);
-            $table->timestamps();
-        });
-
-        Schema::create('faqs', function (Blueprint $table) {
-            $table->id();
-            $table->string('page')->default('general'); // general|home|about|contact|services|solutions|...
-            $table->string('question');
-            $table->text('answer');
-            $table->boolean('is_active')->default(true);
-            $table->unsignedInteger('sort_order')->default(0);
-            $table->timestamps();
-            $table->index(['page', 'is_active', 'sort_order']);
-        });
-
         Schema::create('page_sections', function (Blueprint $table) {
             $table->id();
             $table->string('page')->default('home');
@@ -70,8 +31,5 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('page_sections');
-        Schema::dropIfExists('faqs');
-        Schema::dropIfExists('team_members');
-        Schema::dropIfExists('testimonials');
     }
 };

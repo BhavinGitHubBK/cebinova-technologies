@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Enums\LeadStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Lead;
+use App\Models\Service;
 use App\Models\User;
 use App\Services\Admin\ActivityLogger;
-use App\Services\LeadService;
+use App\Support\MarketingPackages;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -48,25 +50,42 @@ class LeadController extends Controller
             $query->withoutTrashed();
         }
 
-        $sort = in_array($request->get('sort'), ['created_at', 'name', 'status', 'follow_up_at'], true)
-            ? $request->get('sort')
-            : 'created_at';
-        $dir = $request->get('dir') === 'asc' ? 'asc' : 'desc';
-
-        $leads = $query->orderBy($sort, $dir)->paginate(20)->withQueryString();
+        [$sort, $dir] = $this->listingOrder($request);
+        $leads = $query->orderBy($sort, $dir)->orderByDesc('id')->paginate(20)->withQueryString();
 
         return view('admin.leads.index', [
             'leads' => $leads,
             'statuses' => Lead::STATUSES,
             'admins' => User::query()->where('is_active', true)->orderBy('name')->get(),
             'filters' => $request->only(['q', 'status', 'service', 'package_category', 'source', 'from', 'to', 'trashed', 'sort', 'dir']),
+            'sort' => $sort,
+            'dir' => $dir,
             'newCount' => Lead::query()->where('status', Lead::STATUS_NEW)->count(),
+            'serviceOptions' => $this->filterChoices('service', Schema::hasTable('services') ? Service::query()->orderBy('name')->pluck('name') : collect()),
+            'packageOptions' => $this->filterChoices('package_category', collect(array_keys(MarketingPackages::categoryKeys()))),
+            'sourceOptions' => $this->filterChoices('source', collect(config('cebinova.leads.sources', []))),
         ]);
+    }
+
+    private function listingOrder(Request $request): array
+    {
+        $columns = ['name', 'phone', 'service', 'status', 'source', 'created_at'];
+        $sort = in_array($request->get('sort'), $columns, true) ? $request->get('sort') : 'created_at';
+        $dir = $request->get('dir') === 'asc' ? 'asc' : 'desc';
+
+        return [$sort, $dir];
+    }
+
+    private function filterChoices(string $column, $known)
+    {
+        $used = Lead::query()->whereNotNull($column)->where($column, '!=', '')->distinct()->orderBy($column)->pluck($column);
+
+        return $known->merge($used)->map(fn ($value) => trim((string) $value))->filter()->unique()->sort()->values();
     }
 
     public function show(Lead $lead): View
     {
-        $lead->load('assignee');
+        $lead->load(['assignee', 'tasks']);
 
         return view('admin.leads.show', [
             'lead' => $lead,
@@ -75,7 +94,7 @@ class LeadController extends Controller
         ]);
     }
 
-    public function update(Request $request, Lead $lead, LeadService $leads): RedirectResponse
+    public function update(Request $request, Lead $lead): RedirectResponse|JsonResponse
     {
         $data = $request->validate([
             'status' => ['required', 'in:'.implode(',', Lead::STATUSES)],
@@ -85,10 +104,24 @@ class LeadController extends Controller
         ]);
 
         $before = $lead->only(['status', 'notes', 'follow_up_at', 'assigned_to']);
-        $status = LeadStatus::from($data['status']);
-        unset($data['status']);
+        $sameFollowUp = blank($before['follow_up_at']) && blank($data['follow_up_at'] ?? null)
+            || filled($before['follow_up_at']) && filled($data['follow_up_at'] ?? null)
+            && $before['follow_up_at']->format('Y-m-d H:i') === Carbon::parse($data['follow_up_at'])->format('Y-m-d H:i');
+        $unchanged = $before['status'] === $data['status']
+            && (string) ($before['notes'] ?? '') === (string) ($data['notes'] ?? '')
+            && (string) ($before['assigned_to'] ?? '') === (string) ($data['assigned_to'] ?? '')
+            && $sameFollowUp;
+
+        if ($unchanged) {
+            $message = 'This lead is already '.$data['status'].'.';
+            if ($request->expectsJson() || $request->headers->has('X-Admin-Ajax')) {
+                return response()->json(['ok' => false, 'message' => $message], 422);
+            }
+
+            return back()->withErrors(['status' => $message]);
+        }
+
         $lead->update($data);
-        $leads->updateStatus($lead, $status);
 
         ActivityLogger::log('update', 'leads', $lead, 'Lead updated', [
             'before' => $before,
@@ -98,19 +131,48 @@ class LeadController extends Controller
         return back()->with('success', 'Lead updated.');
     }
 
-    public function bulkStatus(Request $request, LeadService $leads): RedirectResponse
+    public function bulkStatus(Request $request): RedirectResponse|JsonResponse
     {
         $data = $request->validate([
-            'ids' => ['required', 'array'],
+            'ids' => ['required', 'array', 'min:1'],
             'ids.*' => ['integer', 'exists:leads,id'],
             'status' => ['required', 'in:'.implode(',', Lead::STATUSES)],
         ]);
 
-        $status = LeadStatus::from($data['status']);
-        Lead::query()->whereIn('id', $data['ids'])->each(fn (Lead $lead) => $leads->updateStatus($lead, $status));
-        ActivityLogger::log('bulk_status', 'leads', null, 'Bulk status update', $data);
+        $leads = Lead::query()->whereIn('id', $data['ids'])->get();
+        $pending = $leads->reject(fn (Lead $lead) => $lead->status === $data['status'])->values();
+        $already = $leads->count() - $pending->count();
 
-        return back()->with('success', 'Selected leads updated.');
+        if ($pending->isEmpty()) {
+            $message = 'Selected leads are already '.$data['status'].'.';
+            if ($request->expectsJson() || $request->headers->has('X-Admin-Ajax')) {
+                return response()->json(['ok' => false, 'message' => $message], 422);
+            }
+
+            return back()->withErrors(['status' => $message]);
+        }
+
+        Lead::query()->whereIn('id', $pending->pluck('id'))->update(['status' => $data['status']]);
+        ActivityLogger::log('bulk_status', 'leads', null, 'Bulk status update', [
+            'ids' => $pending->pluck('id')->all(),
+            'status' => $data['status'],
+        ]);
+
+        $message = $pending->count().' '.($pending->count() === 1 ? 'lead' : 'leads').' updated to '.$data['status'].'.';
+        if ($already > 0) {
+            $message .= ' '.$already.' '.($already === 1 ? 'was' : 'were').' already '.$data['status'].'.';
+        }
+
+        if ($request->expectsJson() || $request->headers->has('X-Admin-Ajax')) {
+            return response()->json([
+                'ok' => true,
+                'message' => $message,
+                'status' => $data['status'],
+                'ids' => $pending->pluck('id')->values(),
+            ]);
+        }
+
+        return back()->with('success', $message);
     }
 
     public function destroy(Lead $lead): RedirectResponse
@@ -148,12 +210,13 @@ class LeadController extends Controller
             }
         }
 
+        [$sort, $dir] = $this->listingOrder($request);
         $filename = 'leads-'.now()->format('Ymd-His').'.csv';
 
-        return response()->streamDownload(function () use ($query) {
+        return response()->streamDownload(function () use ($query, $sort, $dir) {
             $out = fopen('php://output', 'w');
             fputcsv($out, ['ID', 'Name', 'Business', 'Phone', 'Email', 'Service', 'Package', 'Status', 'Source', 'Created']);
-            $query->orderByDesc('id')->chunk(200, function ($rows) use ($out) {
+            $query->orderBy($sort, $dir)->orderByDesc('id')->chunk(200, function ($rows) use ($out) {
                 foreach ($rows as $lead) {
                     fputcsv($out, [
                         $lead->id,

@@ -8,6 +8,7 @@ use App\Models\Package;
 use App\Models\PricingOption;
 use App\Models\User;
 use App\Services\PricingCalculator;
+use App\Support\WebsitePackages;
 use Database\Seeders\PackageSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
@@ -33,7 +34,7 @@ class PricingSystemTest extends TestCase
         $business->update(['sort_order' => 10]);
         $professional->update(['is_active' => false]);
 
-        $plans = \App\Support\WebsitePackages::plans();
+        $plans = WebsitePackages::plans();
 
         $this->assertSame('business', $plans[0]['key']);
         $this->assertSame('starter', $plans[1]['key']);
@@ -50,7 +51,7 @@ class PricingSystemTest extends TestCase
         $package->features()->delete();
         $package->features()->create(['name' => 'Admin-managed feature', 'display_value' => '100 products']);
 
-        $plan = collect(\App\Support\WebsitePackages::plans())->firstWhere('key', 'business');
+        $plan = collect(WebsitePackages::plans())->firstWhere('key', 'business');
 
         $this->assertSame('Admin-managed feature', $plan['features'][0]['name']);
         $this->assertSame('100 products', $plan['features'][0]['value']);
@@ -113,14 +114,16 @@ class PricingSystemTest extends TestCase
             'is_active' => true,
             'password' => Hash::make('password'),
         ]);
-        $this->actingAs($editor)->post(route('admin.pricing-options.store'), [
+        $response = $this->actingAs($editor)->post(route('admin.pricing-options.store'), [
             'type' => 'addon',
             'name' => 'Custom Integration',
             'price' => '12500.50',
             'billing_period' => 'one_time',
             'sort_order' => 5,
             'is_active' => 1,
-        ])->assertRedirect(route('admin.pricing-options.index'));
+        ]);
+        $option = PricingOption::query()->where('slug', 'custom-integration')->firstOrFail();
+        $response->assertRedirect(route('admin.pricing-options.edit', $option));
 
         $this->assertDatabaseHas('pricing_options', ['slug' => 'custom-integration', 'price' => 12500.50]);
     }
@@ -129,9 +132,10 @@ class PricingSystemTest extends TestCase
     {
         $editor = User::factory()->create(['role' => UserRole::Editor, 'is_active' => true]);
 
-        $this->actingAs($editor)->post(route('admin.packages.store'), [
+        $response = $this->actingAs($editor)->post(route('admin.packages.store'), [
             'category' => 'website',
             'name' => 'Enterprise',
+            'teaser' => 'For larger builds',
             'key' => 'enterprise',
             'sort_order' => 40,
             'is_active' => 1,
@@ -143,14 +147,15 @@ class PricingSystemTest extends TestCase
                 'period' => 'One Time',
                 'is_active' => 1,
             ]],
-        ])->assertRedirect(route('admin.packages.index'));
-
+        ]);
         $package = Package::query()->where('key', 'enterprise')->firstOrFail();
+        $response->assertRedirect(route('admin.packages.edit', $package));
         $this->assertDatabaseHas('package_features', ['package_id' => $package->id, 'name' => 'Custom dashboard', 'display_value' => 'Included']);
 
         $this->actingAs($editor)->put(route('admin.packages.update', $package), [
             'category' => 'website',
             'name' => 'Enterprise',
+            'teaser' => 'For larger builds',
             'slug' => $package->slug,
             'key' => 'enterprise',
             'sort_order' => 40,
@@ -163,7 +168,7 @@ class PricingSystemTest extends TestCase
                 'period' => 'One Time',
                 'is_active' => 1,
             ]],
-        ])->assertRedirect(route('admin.packages.index'));
+        ])->assertRedirect(route('admin.packages.edit', $package));
 
         $this->assertFalse($package->fresh()->is_active);
         $this->assertDatabaseHas('package_features', ['package_id' => $package->id, 'name' => 'Updated feature']);

@@ -90,8 +90,7 @@ export function initPackageTabs() {
         link.addEventListener('click', (event) => {
             event.preventDefault();
             const cat = link.dataset.cat;
-            if (cat === 'growth') {
-                document.getElementById('complete-growth')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            if (!cat) {
                 return;
             }
             setCategory(cat);
@@ -148,6 +147,11 @@ export function initPackageTabs() {
         if (hash === 'regular-marketing' || hash === 'regular') {
             setCategory('regular');
             syncSticky(explorer.querySelector('.js-pack-duration.is-active[data-cat="regular"]'));
+            return;
+        }
+        if (hash === 'complete-growth' || hash === 'growth') {
+            setCategory('growth');
+            syncSticky(explorer.querySelector('.js-pack-duration.is-active[data-cat="growth"]'));
         }
     };
 

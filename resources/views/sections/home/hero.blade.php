@@ -43,11 +43,11 @@
             </p>
 
             <div class="hero-actions" data-hero-item>
-                <x-button href="{{ $heroCtaUrl }}" class="hero-btn hero-btn-primary group">
+                <x-button href="{{ $heroCtaUrl }}" class="hero-btn hero-btn-primary group" data-analytics-event="cta_click" data-analytics-location="homepage_hero" data-analytics-action="primary">
                     {{ $heroCtaLabel }}
                     <svg class="arrow-shift h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></svg>
                 </x-button>
-                <x-button href="{{ $heroSecondaryUrl }}" variant="outline" class="hero-btn hero-btn-secondary group">
+                <x-button href="{{ $heroSecondaryUrl }}" variant="outline" class="hero-btn hero-btn-secondary group" data-analytics-event="cta_click" data-analytics-location="homepage_hero" data-analytics-action="secondary">
                     {{ $heroSecondaryLabel }}
                     <svg class="arrow-shift h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6"/></svg>
                 </x-button>

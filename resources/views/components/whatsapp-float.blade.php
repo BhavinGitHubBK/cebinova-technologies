@@ -40,6 +40,9 @@
             href="{{ $waHref }}"
             class="wa-widget-cta"
             data-wa-start
+            data-analytics-event="whatsapp_click"
+            data-analytics-location="whatsapp_widget"
+            data-analytics-action="start_conversation"
             @if ($isWhatsApp) target="_blank" rel="noopener noreferrer" @endif
         >
             <svg class="wa-widget-cta-mark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">

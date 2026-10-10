@@ -45,7 +45,11 @@ class StoreLeadRequest extends FormRequest
             'pricing_option_ids.*' => ['integer'],
             'marketing_package_id' => ['nullable', 'integer', 'required_with:marketing_plan_id'],
             'marketing_plan_id' => ['nullable', 'integer', 'required_with:marketing_package_id'],
+            'coupon_code' => ['nullable', 'string', 'max:40'],
             'service_id' => ['nullable', 'integer'],
+            'solution_id' => ['nullable', 'integer', Rule::exists('solutions', 'id')->where(fn ($q) => $q->where('is_active', true)->whereNull('deleted_at'))],
+            'industry_id' => ['nullable', 'integer', Rule::exists('industries', 'id')->where(fn ($q) => $q->where('is_active', true)->whereNull('deleted_at'))],
+            'demo_id' => ['nullable', 'integer', Rule::exists('demos', 'id')->where('is_active', true)->whereNull('deleted_at')],
         ];
     }
 

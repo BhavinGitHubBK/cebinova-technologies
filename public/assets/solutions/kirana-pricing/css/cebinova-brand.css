@@ -2,8 +2,12 @@
 
 .kirana-pricing {
   --estimate-sticky-top: 5.75rem;
-  padding-top: 1.5rem;
+  padding-top: 0;
   overflow-x: visible;
+}
+
+.price-page-hero {
+  padding-bottom: 1rem;
 }
 
 /* overflow-x: hidden on html/body/main creates a non-viewport sticky containing block */
@@ -13,10 +17,25 @@ html:has(.kirana-pricing) main {
   overflow-x: visible;
 }
 
-.kirana-pricing .included-strip,
+.kirana-pricing .included-strip {
+  container-type: inline-size;
+  flex-wrap: nowrap;
+  overflow: visible;
+}
+
 .kirana-pricing .included-list {
   flex-wrap: wrap;
-  overflow: hidden;
+  gap: 6px;
+}
+
+.kirana-pricing .included-list li {
+  padding: 6px 8px;
+}
+
+@container (min-width: 830px) {
+  .kirana-pricing .included-list {
+    flex-wrap: nowrap;
+  }
 }
 
 .kirana-pricing .calc-progress {
@@ -497,6 +516,7 @@ html:has(.kirana-pricing) main {
 
 /* Site-pattern polish for calculator chrome */
 .kirana-pricing .calc-section {
+  padding-top: 1.25rem;
   background:
     radial-gradient(ellipse 40% 68% at 94% 0%, rgba(1, 58, 157, 0.05), transparent 58%),
     #eef4fb;

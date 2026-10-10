@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Demo;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Schema;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class DemoSiteController extends Controller
@@ -16,6 +18,10 @@ class DemoSiteController extends Controller
     public function show(string $demo, ?string $path = null): BinaryFileResponse|Response
     {
         abort_unless(isset(self::DEMOS[$demo]), 404);
+
+        if (Schema::hasTable('demos')) {
+            abort_unless(Demo::active()->where('local_demo', $demo)->exists(), 404);
+        }
 
         if ($path === null || $path === '') {
             $relative = 'index.html';
@@ -38,6 +44,10 @@ class DemoSiteController extends Controller
 
         if (str_contains($mime, 'html')) {
             $html = $this->brandHtml((string) file_get_contents($absolute), $demo);
+            $boot = view('components.analytics-boot')->render();
+            $html = preg_match('/<\/body>/i', $html)
+                ? (preg_replace('/<\/body>/i', $boot.'</body>', $html, 1) ?? $html)
+                : $html.$boot;
 
             return response($html, 200)->header('Content-Type', 'text/html; charset=UTF-8');
         }
@@ -102,10 +112,13 @@ class DemoSiteController extends Controller
             'jewellery-retail' => 'Retail & Jewellery',
         ];
 
-        $enquiry = e(solution_enquiry_url([
-            'solution' => $titles[$demo] ?? 'Business Solution',
-            'source' => 'CEBINOVA Demos',
-        ]));
+        if (Schema::hasTable('demos')) {
+            $record = Demo::active()->where('local_demo', $demo)->orderBy('sort_order')->firstOrFail();
+            $enquiry = e($record->enquiryUrl());
+        } else {
+            $enquiry = e(route('contact'));
+        }
+
         $demos = e(route('demos'));
         $home = e(route('home'));
         $base = e(url('/demos/'.$demo).'/');

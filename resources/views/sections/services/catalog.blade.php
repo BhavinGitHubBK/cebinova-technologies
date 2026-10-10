@@ -15,7 +15,7 @@
             </p>
             <h2 class="section-title">Pick the work that matches your stage.</h2>
             <p class="section-support">
-                Filter by category or browse all six areas - web, commerce, software, automation, digitisation and growth.
+                Services are the work CEBINOVA does: websites, stores, software, automation and marketing. Solutions are what we build for a type of business, such as retail or a professional firm. Filter by category, or browse all six.
             </p>
         </div>
 

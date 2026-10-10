@@ -36,41 +36,17 @@
 
     const plans = readJson("cebinova-website-plans");
     if (Array.isArray(plans)) {
-      const activePlanKeys = plans.map(function (plan) { return String(plan.key); });
-      document.querySelectorAll('input[name="website"]').forEach(function (input) {
-        const card = input.closest("label, .option-card");
-        if (card) card.hidden = activePlanKeys.indexOf(input.value) === -1;
-      });
-      const emptyState = document.getElementById("pricingEmpty");
-      if (emptyState) emptyState.hidden = activePlanKeys.length > 0;
       plans.forEach(function (plan) {
         if (!plan || !plan.key) return;
         const key = String(plan.key);
         const input = document.querySelector('input[name="website"][value="' + key + '"]');
         if (!input) return;
-        if (plan.id != null) input.setAttribute("data-package-id", String(plan.id));
         if (plan.price != null) input.setAttribute("data-price", String(plan.price));
         if (plan.title) {
           input.setAttribute("data-label", plan.title);
           const card = input.closest("label, .pkg-card, .option-card, .pkg-option");
           const nameEl = card ? card.querySelector(".option-name") : null;
           if (nameEl) nameEl.textContent = plan.title;
-          const priceEl = card ? card.querySelector(".option-price") : null;
-          if (priceEl && plan.price != null) priceEl.textContent = formatINR(plan.price);
-          const descriptionEl = card ? card.querySelector(".best-for") : null;
-          if (descriptionEl && plan.for) descriptionEl.textContent = plan.for;
-          const insightEl = card ? card.querySelector(".plan-insight") : null;
-          if (insightEl && plan.insight) insightEl.textContent = plan.insight;
-          const badgeEl = card ? card.querySelector(".best-pill") : null;
-          if (badgeEl && plan.badge) badgeEl.textContent = plan.badge;
-          const featureList = card ? card.querySelector(".mini-features") : null;
-          if (featureList && Array.isArray(plan.features)) {
-            featureList.innerHTML = plan.features.map(function (feature) {
-              const item = typeof feature === "string" ? { name: feature, included: true } : feature;
-              const value = item.value ? " · " + item.value : "";
-              return '<li><i class="fa-solid fa-' + (item.included === false ? 'xmark' : 'check') + '" aria-hidden="true"></i> ' + item.name + value + '</li>';
-            }).join("");
-          }
         }
         if (plan.delivery) input.setAttribute("data-delivery", plan.delivery);
         if (plan.support) {
@@ -84,11 +60,6 @@
           PLAN_META[key].training = plan.training;
         }
       });
-      const selectedWebsite = document.querySelector('input[name="website"]:checked');
-      if (!selectedWebsite || !selectedWebsite.getAttribute("data-package-id")) {
-        const firstActiveWebsite = document.querySelector('input[name="website"][data-package-id]');
-        if (firstActiveWebsite) firstActiveWebsite.checked = true;
-      }
     }
 
     const addons = readJson("cebinova-website-addons");
@@ -116,45 +87,35 @@
       APP_PRICES.bundle = APP_PRICES.android + APP_PRICES.ios;
     }
 
-    const options = readJson("cebinova-pricing-options");
-    if (Array.isArray(options)) {
-      const byKey = {};
-      options.forEach(function (option) { byKey[option.key] = option; });
-
-      document.querySelectorAll("[data-option-key]").forEach(function (element) {
-        const option = byKey[element.getAttribute("data-option-key")];
-        if (!option) {
-          const card = element.matches("input") ? element.closest("label, .option-card") : element;
-          if (card) card.hidden = true;
-          return;
-        }
-        element.setAttribute("data-option-id", String(option.id));
-        if (element.matches('input[name="domainOption"], input[name="hostingOption"]')) {
-          element.value = String(option.price);
-          const priceEl = element.closest("label, .option-card")?.querySelector(".option-price");
-          if (priceEl) priceEl.textContent = formatINR(option.price);
-        }
-        if (element.hasAttribute("data-price")) element.setAttribute("data-price", String(option.price));
-        if (element.matches("button.domain-provider")) {
-          const providerPrice = element.querySelector("span");
-          if (providerPrice) providerPrice.textContent = formatINR(option.price);
-        }
+    const choices = readJson("cebinova-pricing-choices");
+    if (choices) {
+      window.CEBINOVA_GST = Number(choices.gst_percent || 0);
+      (choices.domain || []).forEach(function (option) {
+        if (!option || !option.name) return;
+        document.querySelectorAll(".domain-provider").forEach(function (button) {
+          const provider = (button.getAttribute("data-provider") || "").toLowerCase();
+          if (provider && String(option.name).toLowerCase().indexOf(provider) !== -1) {
+            button.setAttribute("data-price", String(option.price));
+            const label = button.querySelector("span");
+            if (label) label.textContent = formatINR(option.price);
+            if (button.classList.contains("is-active")) {
+              const input = document.getElementById("domainOptionNew");
+              const priceEl = document.getElementById("domainNewPrice");
+              if (input) input.value = String(option.price);
+              if (priceEl) priceEl.textContent = formatINR(option.price);
+            }
+          }
+        });
       });
-
-      [["optAndroid", byKey["android-app"]], ["optIos", byKey["ios-app"]]].forEach(function (entry) {
-        const input = document.getElementById(entry[0]);
-        const option = entry[1];
-        if (!input) return;
-        const card = input.closest("label, .option-card");
-        if (!option) { if (card) card.hidden = true; return; }
-        input.setAttribute("data-option-id", String(option.id));
-        input.setAttribute("data-price", String(option.price));
-        const priceEl = card ? card.querySelector(".option-price") : null;
-        if (priceEl) priceEl.textContent = formatINR(option.price);
+      (choices.hosting || []).forEach(function (option) {
+        if (!option || !option.name) return;
+        document.querySelectorAll('input[name="hostingOption"]').forEach(function (input) {
+          const label = (input.getAttribute("data-label") || "").toLowerCase();
+          if (label && String(option.name).toLowerCase().indexOf(label) !== -1) {
+            input.value = String(option.price);
+          }
+        });
       });
-      if (byKey["android-app"]) APP_PRICES.android = Number(byKey["android-app"].price);
-      if (byKey["ios-app"]) APP_PRICES.ios = Number(byKey["ios-app"].price);
-      APP_PRICES.bundle = APP_PRICES.android + APP_PRICES.ios;
     }
   })();
 
@@ -178,7 +139,6 @@
   const estimateSavingsLabel = document.getElementById("estimateSavingsLabel");
   const estimateSavingsValue = document.getElementById("estimateSavingsValue");
   const selectedPlanBadge = document.getElementById("selectedPlanBadge");
-  const pricingEnquiry = document.getElementById("pricingEnquiry");
   const bundleHint = document.getElementById("bundleHint");
   const appBothBanner = document.getElementById("appBothBanner");
   const appRecommend = document.getElementById("appRecommend");
@@ -514,12 +474,15 @@
 
     const domain = domainOpt ? parseMoney(domainOpt.value) : 0;
     const hosting = hostingOpt ? parseMoney(hostingOpt.value) : 0;
+    const supportOpt = form.querySelector('input[name="supportOption"]:checked');
+    const supportAmount = supportOpt ? parseMoney(supportOpt.value) : 0;
+    const supportLabel = supportOpt ? (supportOpt.getAttribute("data-label") || "Support") : "Support";
 
     if (bundleHint) bundleHint.hidden = true;
 
     const lines = [];
     const displayRows = [];
-    let total = websitePrice + domain + hosting;
+    let total = websitePrice + domain + hosting + supportAmount;
     let appSavings = 0;
     let bundleSelected = false;
     let appsTotal = 0;
@@ -650,6 +613,21 @@
       billing: "yearly"
     });
 
+    if (supportOpt) {
+      lines.push({ label: "Support · " + supportLabel, amount: supportAmount, billing: supportAmount > 0 ? "yearly" : "fixed" });
+      displayRows.push({
+        id: "support",
+        icon: "fa-headset",
+        iconTone: "",
+        title: "Support",
+        detail: supportLabel,
+        amount: supportAmount,
+        selected: true,
+        included: supportAmount === 0,
+        billing: supportAmount > 0 ? "yearly" : "fixed"
+      });
+    }
+
     let selection = websiteLabel + " Website package";
     if (androidOn && iosOn) selection += " with Android + iOS Apps";
     else if (androidOn) selection += " with Android App";
@@ -667,7 +645,7 @@
       ". I would like to discuss this project.";
 
     const fixedTotal = websitePrice + appsTotal;
-    const yearlyTotal = domain + hosting;
+    const yearlyTotal = domain + hosting + supportAmount;
 
     latestEstimate = {
       lines: lines,
@@ -677,8 +655,10 @@
         apps: appsTotal,
         domain: domain,
         hosting: hosting,
+        support: supportAmount,
         fixedTotal: fixedTotal,
-        yearlyTotal: yearlyTotal
+        yearlyTotal: yearlyTotal,
+        gstRate: Number(window.CEBINOVA_GST || 0)
       },
       total: total,
       fixedTotal: fixedTotal,
@@ -687,13 +667,6 @@
       delivery: delivery,
       websiteLabel: websiteLabel,
       websiteKey: websiteKey,
-      packageId: website ? website.getAttribute("data-package-id") : null,
-      optionIds: [
-        androidOn ? document.getElementById("optAndroid")?.getAttribute("data-option-id") : null,
-        iosOn ? document.getElementById("optIos")?.getAttribute("data-option-id") : null,
-        domainOpt ? domainOpt.getAttribute("data-option-id") : null,
-        hostingOpt ? hostingOpt.getAttribute("data-option-id") : null
-      ].filter(Boolean).filter(function (id, index, ids) { return ids.indexOf(id) === index; }),
       appSavings: appSavings,
       bundleSelected: bundleSelected,
       androidOnly: androidOnly,
@@ -703,6 +676,8 @@
       message: message,
       support: meta.support
     };
+
+    document.dispatchEvent(new CustomEvent("cebinova:estimate", { detail: latestEstimate }));
 
     return latestEstimate;
   }
@@ -778,7 +753,10 @@
       '<div><span>Domain <em class="est-charge-inline yearly">Yearly</em></span><strong>' + formatINR(b.domain) + (b.domain > 0 ? "<small>/yr</small>" : "") + "</strong></div>" +
       '<div><span>Hosting <em class="est-charge-inline yearly">Yearly</em></span><strong>' + formatINR(b.hosting) + (b.hosting > 0 ? "<small>/yr</small>" : "") + "</strong></div>" +
       '<div class="est-price-split"><span>Fixed total</span><strong>' + formatINR(b.fixedTotal || 0) + "</strong></div>" +
-      '<div class="est-price-split yearly"><span>Yearly total</span><strong>' + formatINR(b.yearlyTotal || 0) + (b.yearlyTotal > 0 ? "<small>/yr</small>" : "") + "</strong></div>";
+      '<div class="est-price-split yearly"><span>Yearly total</span><strong>' + formatINR(b.yearlyTotal || 0) + (b.yearlyTotal > 0 ? "<small>/yr</small>" : "") + "</strong></div>" +
+      (b.gstRate > 0
+        ? '<div><span>GST ' + b.gstRate + '% extra</span><strong>' + formatINR(Math.round((estimate.total || 0) * b.gstRate / 100)) + "</strong></div>"
+        : "");
   }
 
   function renderSummary(estimate) {
@@ -843,16 +821,6 @@
     if (whatsappEstimate) whatsappEstimate.href = waUrl;
     if (contactWhatsapp) contactWhatsapp.href = waUrl;
     if (floatWhatsapp) floatWhatsapp.href = waUrl;
-
-    if (pricingEnquiry && estimate.packageId) {
-      const enquiryUrl = new URL(CONTACT_FALLBACK, window.location.origin);
-      enquiryUrl.searchParams.set("pricing_package_id", estimate.packageId);
-      (estimate.optionIds || []).forEach(function (id) {
-        enquiryUrl.searchParams.append("pricing_option_ids[]", id);
-      });
-      enquiryUrl.searchParams.set("message", estimate.message);
-      pricingEnquiry.href = enquiryUrl.toString();
-    }
 
     if (printBody) {
       printBody.innerHTML = buildPremiumInvoiceHTML(estimate);
@@ -1064,7 +1032,6 @@
 
         newDomainInput.value = price;
         newDomainInput.setAttribute("data-provider", provider);
-        newDomainInput.setAttribute("data-option-id", btn.getAttribute("data-option-id") || "");
         newDomainInput.checked = true;
 
         if (priceEl) priceEl.textContent = formatINR(price);

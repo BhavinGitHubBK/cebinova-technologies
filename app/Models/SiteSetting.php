@@ -33,7 +33,16 @@ class SiteSetting extends Model
         'maintenance_message',
         'footer_text',
         'copyright_text',
+        'gst_percent',
+        'lead_notify_email',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'gst_percent' => 'integer',
+        ];
+    }
 
     public static function current(): self
     {
@@ -91,6 +100,7 @@ class SiteSetting extends Model
         $seo = array_filter([
             'default_title' => $settings->seo_title,
             'default_description' => $settings->seo_description,
+            'og_image' => $settings->og_image_path,
         ], fn ($v) => filled($v));
 
         if ($seo !== []) {
@@ -104,6 +114,14 @@ class SiteSetting extends Model
         }
         if (filled($settings->tagline)) {
             config(['cebinova.tagline' => $settings->tagline]);
+        }
+
+        if (Schema::hasColumn('site_settings', 'gst_percent') && $settings->gst_percent !== null) {
+            config(['cebinova.pricing.gst_percent' => (int) $settings->gst_percent]);
+        }
+
+        if (Schema::hasColumn('site_settings', 'lead_notify_email') && filled($settings->lead_notify_email)) {
+            config(['cebinova.leads.notify_email' => $settings->lead_notify_email]);
         }
     }
 }

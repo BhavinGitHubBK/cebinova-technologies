@@ -10,13 +10,14 @@ class PageSection extends Model
     protected $fillable = [
         'page', 'key', 'heading', 'subheading', 'body', 'image_path',
         'cta_label', 'cta_url', 'secondary_cta_label', 'secondary_cta_url',
-        'stats', 'is_visible', 'sort_order',
+        'stats', 'settings', 'is_visible', 'sort_order',
     ];
 
     protected function casts(): array
     {
         return [
             'stats' => 'array',
+            'settings' => 'array',
             'is_visible' => 'boolean',
             'sort_order' => 'integer',
         ];
@@ -25,5 +26,10 @@ class PageSection extends Model
     public function scopeVisible(Builder $query): Builder
     {
         return $query->where('is_visible', true);
+    }
+
+    public function scopeOrdered(Builder $query): Builder
+    {
+        return $query->orderBy('sort_order')->orderBy('id');
     }
 }

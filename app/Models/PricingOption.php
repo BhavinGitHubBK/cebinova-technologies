@@ -10,7 +10,8 @@ class PricingOption extends Model
 {
     use SoftDeletes;
 
-    public const TYPES = ['addon' => 'Add-ons', 'domain' => 'Domain Plans', 'hosting' => 'Hosting Plans'];
+    public const TYPES = ['addon' => 'Add-ons', 'domain' => 'Domain Plans', 'hosting' => 'Hosting Plans', 'support' => 'Support Plans'];
+
     public const BILLING_PERIODS = ['one_time' => 'One time', 'monthly' => 'Monthly', 'yearly' => 'Yearly', 'custom' => 'Custom'];
 
     protected $fillable = ['type', 'name', 'slug', 'description', 'price', 'billing_period', 'metadata', 'is_recommended', 'is_active', 'sort_order'];

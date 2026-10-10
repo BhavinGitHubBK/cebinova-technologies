@@ -7,6 +7,4 @@
     @include('sections.contact.hero')
     @include('sections.contact.panel')
     @include('sections.home.process')
-    @include('sections.contact.faq')
-    @include('sections.home.cta')
 @endsection

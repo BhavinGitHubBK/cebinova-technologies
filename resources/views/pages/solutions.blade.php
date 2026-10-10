@@ -9,6 +9,5 @@
     @include('sections.solutions.paths')
     @include('sections.solutions.industries')
     @include('sections.home.process')
-    @include('sections.solutions.faq')
     @include('sections.home.cta')
 @endsection

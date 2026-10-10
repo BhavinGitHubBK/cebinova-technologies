@@ -4,6 +4,7 @@ namespace App\Support;
 
 use App\Models\Package;
 use App\Models\PricingOption;
+use App\Services\Promotions\PromotionEngine;
 use Illuminate\Support\Facades\Schema;
 
 class WebsitePackages
@@ -22,14 +23,11 @@ class WebsitePackages
         $packages = Package::query()
             ->website()
             ->active()
-            ->with([
-                'plans' => fn ($q) => $q->active()->orderBy('sort_order'),
-                'features' => fn ($q) => $q->active(),
-            ])
+            ->with(['plans' => fn ($q) => $q->active()->orderBy('sort_order')])
             ->orderBy('sort_order')
             ->get();
 
-        if ($packages->isEmpty() && ! Package::query()->website()->exists()) {
+        if ($packages->isEmpty()) {
             return $configPlans->values()->all();
         }
 
@@ -38,17 +36,16 @@ class WebsitePackages
             $config = $configPlans->get($package->key, []);
 
             return [
-                'key' => $package->key,
                 'id' => $package->id,
+                'key' => $package->key,
                 'title' => $package->name,
                 'price' => $plan?->price ?? ($config['price'] ?? 0),
+                'promotion' => $plan ? self::offer('website_package', $package->id, $plan->price) : null,
                 'period' => $plan?->period ?? ($config['period'] ?? 'One Time'),
                 'badge' => $package->badge ?? $plan?->badge ?? ($config['badge'] ?? null),
                 'for' => $package->short_description ?? ($config['for'] ?? null),
                 'insight' => $package->teaser ?? ($config['insight'] ?? null),
-                'features' => $package->features->isNotEmpty()
-                    ? $package->features->map(fn ($feature) => ['name' => $feature->name, 'value' => $feature->display_value, 'included' => $feature->is_included])->all()
-                    : ($plan?->features ?: ($package->includes ?? ($config['features'] ?? []))),
+                'features' => $plan?->features ?: ($package->includes ?? ($config['features'] ?? [])),
                 'support' => $config['support'] ?? null,
                 'training' => $config['training'] ?? null,
                 'delivery' => $config['delivery'] ?? null,
@@ -66,6 +63,19 @@ class WebsitePackages
             return config('cebinova.kirana_addons', []);
         }
 
+        if (Schema::hasTable('pricing_options')) {
+            $options = PricingOption::query()->active()->where('type', 'addon')->ordered()->get();
+            if ($options->isNotEmpty()) {
+                return $options->map(fn ($option) => [
+                    'id' => $option->id,
+                    'title' => $option->name,
+                    'price' => (int) $option->price,
+                    'note' => $option->description,
+                    'promotion' => self::offer('pricing_option', $option->id, $option->price),
+                ])->all();
+            }
+        }
+
         $packages = Package::query()
             ->whereIn('category', ['app', 'other'])
             ->active()
@@ -73,7 +83,7 @@ class WebsitePackages
             ->orderBy('sort_order')
             ->get();
 
-        if ($packages->isEmpty() && ! Package::query()->whereIn('category', ['app', 'other'])->exists()) {
+        if ($packages->isEmpty()) {
             return config('cebinova.kirana_addons', []);
         }
 
@@ -88,22 +98,72 @@ class WebsitePackages
         })->all();
     }
 
-    public static function options(): array
+    /**
+     * Domain, hosting and support prices edited under Extra Charges.
+     *
+     * @return array{domain: list<array<string, mixed>>, hosting: list<array<string, mixed>>, support: list<array<string, mixed>>}
+     */
+    public static function commercialChoices(): array
     {
-        if (! Schema::hasTable('pricing_options')) {
-            return [];
+        $fallback = [
+            'domain' => [
+                ['name' => 'Use Existing Domain', 'price' => 0, 'recommended' => false],
+                ['name' => 'Hostinger Domain', 'price' => 799, 'recommended' => true],
+                ['name' => 'GoDaddy Domain', 'price' => 999, 'recommended' => false],
+                ['name' => 'BigRock Domain', 'price' => 899, 'recommended' => false],
+            ],
+            'hosting' => [
+                ['name' => 'Use Existing Hosting', 'price' => 0, 'recommended' => false],
+                ['name' => 'Basic Hosting', 'price' => 3000, 'recommended' => false],
+                ['name' => 'Premium Hosting', 'price' => 6000, 'recommended' => true],
+            ],
+            'support' => [],
+        ];
+
+        try {
+            if (! Schema::hasTable('pricing_options')) {
+                return $fallback;
+            }
+
+            $rows = PricingOption::query()->active()->ordered()->whereIn('type', ['domain', 'hosting', 'support'])->get();
+        } catch (\Throwable) {
+            return $fallback;
         }
 
-        return PricingOption::query()->active()->ordered()->get()->map(fn (PricingOption $option) => [
-            'id' => $option->id,
-            'type' => $option->type,
-            'key' => $option->slug,
-            'name' => $option->name,
-            'description' => $option->description,
-            'price' => (float) $option->price,
-            'billing_period' => $option->billing_period,
-            'recommended' => $option->is_recommended,
-        ])->all();
+        if ($rows->isEmpty()) {
+            return $fallback;
+        }
+
+        $grouped = ['domain' => [], 'hosting' => [], 'support' => []];
+        foreach ($rows as $row) {
+            $grouped[$row->type][] = [
+                'id' => $row->id,
+                'name' => $row->name,
+                'slug' => $row->slug,
+                'price' => (int) $row->price,
+                'recommended' => (bool) $row->is_recommended,
+                'description' => $row->description,
+            ];
+        }
+
+        foreach (['domain', 'hosting'] as $type) {
+            if ($grouped[$type] === []) {
+                $grouped[$type] = $fallback[$type];
+            }
+        }
+
+        return $grouped;
+    }
+
+    public static function choicePrice(array $rows, string $needle, int $fallback): int
+    {
+        foreach ($rows as $row) {
+            if (str_contains(strtolower((string) ($row['name'] ?? '')), strtolower($needle))) {
+                return (int) $row['price'];
+            }
+        }
+
+        return $fallback;
     }
 
     private static function tablesReady(): bool
@@ -112,6 +172,22 @@ class WebsitePackages
             return Schema::hasTable('packages');
         } catch (\Throwable) {
             return false;
+        }
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    private static function offer(string $type, int $id, int|string $amount, ?int $packageId = null): ?array
+    {
+        try {
+            if (! Schema::hasTable('promotion_campaigns')) {
+                return null;
+            }
+
+            return app(PromotionEngine::class)->previewLine($type, $id, $amount, $packageId);
+        } catch (\Throwable) {
+            return null;
         }
     }
 }

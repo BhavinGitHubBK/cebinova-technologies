@@ -48,11 +48,6 @@ return new class extends Migration
             $table->index(['service_section_id', 'is_active', 'sort_order'], 'service_section_items_lookup');
         });
 
-        Schema::table('faqs', function (Blueprint $table) {
-            $table->foreignId('service_id')->nullable()->after('id')->constrained()->cascadeOnDelete();
-            $table->index(['service_id', 'is_active', 'sort_order']);
-        });
-
         Schema::table('leads', function (Blueprint $table) {
             $table->foreignId('service_id')->nullable()->after('service')->constrained('services')->nullOnDelete();
             $table->json('service_snapshot')->nullable()->after('service_id');
@@ -119,18 +114,6 @@ return new class extends Migration
                 ]);
             }
 
-            foreach (($guide['faq'] ?? []) as $index => $faq) {
-                DB::table('faqs')->insert([
-                    'service_id' => $service->id,
-                    'page' => 'service',
-                    'question' => $faq['q'],
-                    'answer' => $faq['a'],
-                    'is_active' => true,
-                    'sort_order' => $index,
-                    'created_at' => $now,
-                    'updated_at' => $now,
-                ]);
-            }
         }
     }
 
@@ -139,9 +122,6 @@ return new class extends Migration
         Schema::table('leads', function (Blueprint $table) {
             $table->dropConstrainedForeignId('service_id');
             $table->dropColumn('service_snapshot');
-        });
-        Schema::table('faqs', function (Blueprint $table) {
-            $table->dropConstrainedForeignId('service_id');
         });
         Schema::dropIfExists('service_section_items');
         Schema::dropIfExists('service_sections');

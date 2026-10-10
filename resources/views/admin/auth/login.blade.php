@@ -22,10 +22,7 @@
         </div>
     </div>
     <div class="admin-auth-row">
-        <label class="admin-auth-remember">
-            <input type="checkbox" name="remember" value="1">
-            <span>Remember me</span>
-        </label>
+        <span></span>
         <a class="admin-auth-link" href="{{ route('admin.password.request') }}">Forgot password?</a>
     </div>
     <button class="admin-btn admin-btn-primary admin-auth-submit" type="submit">

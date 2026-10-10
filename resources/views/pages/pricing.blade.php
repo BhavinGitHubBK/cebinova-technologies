@@ -13,10 +13,28 @@
         ? whatsapp_url("Hi CEBINOVA,\nI want to schedule a free 30-minute consultation about a digital solution for my business.")
         : consultation_url('Business Solution');
     $enquiry = solution_enquiry_url([
-        'solution' => 'Digital Store',
+        'solution' => 'Digital Solution',
         'source' => 'CEBINOVA Pricing',
         'business_type' => 'Retail',
     ]);
+    $estimatePlans = collect($kiranaPlans ?? \App\Support\WebsitePackages::plans());
+    $estimateBusiness = $estimatePlans->first(fn ($plan) => ($plan['key'] ?? null) === 'business') ?? [];
+    $estimateWebsite = (int) ($estimateBusiness['price'] ?? 24999);
+    $pricingChoices = $pricingChoices ?? \App\Support\WebsitePackages::commercialChoices();
+    $gstPercent = (int) ($gstPercent ?? config('cebinova.pricing.gst_percent', 18));
+    $estimateDomain = \App\Support\WebsitePackages::choicePrice($pricingChoices['domain'] ?? [], 'hostinger', 799);
+    $estimateHosting = \App\Support\WebsitePackages::choicePrice($pricingChoices['hosting'] ?? [], 'basic', 3000);
+    $estimatePremiumHosting = \App\Support\WebsitePackages::choicePrice($pricingChoices['hosting'] ?? [], 'premium', 6000);
+    $estimateGoDaddy = \App\Support\WebsitePackages::choicePrice($pricingChoices['domain'] ?? [], 'godaddy', 999);
+    $estimateBigRock = \App\Support\WebsitePackages::choicePrice($pricingChoices['domain'] ?? [], 'bigrock', 899);
+    $estimateTotal = $estimateWebsite + $estimateDomain + $estimateHosting;
+    $supportChoices = $pricingChoices['support'] ?? [];
+    $pricingChoicesJson = [
+        'gst_percent' => $gstPercent,
+        'domain' => $pricingChoices['domain'] ?? [],
+        'hosting' => $pricingChoices['hosting'] ?? [],
+        'support' => $supportChoices,
+    ];
 @endphp
 
 @section('title', 'Pricing | CEBINOVA Technologies')
@@ -46,7 +64,7 @@
 <div class="kirana-pricing" data-wa="{{ $phoneDigits }}" data-email="{{ $email }}" data-contact="{{ $enquiry }}">
   <script type="application/json" id="cebinova-website-plans">@json($kiranaPlans ?? \App\Support\WebsitePackages::plans())</script>
   <script type="application/json" id="cebinova-website-addons">@json($kiranaAddons ?? \App\Support\WebsitePackages::addons())</script>
-  <script type="application/json" id="cebinova-pricing-options">@json($pricingOptions ?? [])</script>
+  <script type="application/json" id="cebinova-pricing-choices">@json($pricingChoicesJson)</script>
   <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
   <div id="plans"></div>
     <section class="section calc-section" id="calculator">
@@ -57,7 +75,7 @@
             Live calculator
           </p>
           <h2 class="section-title">Know your exact investment.</h2>
-          <p class="section-support">Pick a website package, then add apps, domain, hosting and support only if you need them.</p>
+          <p class="section-support">Pick a website package, then add apps, domain, hosting and support only if you need them. eCommerce, custom software and AI are quoted after a short consultation.</p>
           <ul class="price-page-trust" aria-label="Why this calculator">
             <li>No Hidden Charges</li>
             <li>Live Calculator</li>
@@ -80,7 +98,7 @@
               <li class="active current" data-step="1">
                 <span class="calc-step-num">1</span>
                 <span class="calc-step-copy">
-                  <strong class="calc-step-label">Website wd</strong>
+                  <strong class="calc-step-label">Website</strong>
                   <em class="calc-step-value" data-step-value>Choose</em>
                 </span>
               </li>
@@ -139,7 +157,6 @@
 
               <div class="package-options" role="radiogroup" aria-label="Website package">
 
-                @if (collect($kiranaPlans)->contains('key', 'starter'))
                 <label class="option-card package-select pkg-starter">
                   <input type="radio" name="website" value="starter" data-price="14999" data-label="Starter" data-delivery="5–7 Days" data-support="7 Days" data-training="Free">
                   <span class="option-body">
@@ -199,8 +216,6 @@
                   </span>
                 </label>
 
-                @endif
-                @if (collect($kiranaPlans)->contains('key', 'business'))
                 <label class="option-card package-select recommended pkg-business">
                   <input type="radio" name="website" value="business" data-price="24999" data-label="Business" data-delivery="7–10 Days" data-support="15 Days" data-training="Free" checked>
                   <span class="option-body">
@@ -260,8 +275,6 @@
                   </span>
                 </label>
 
-                @endif
-                @if (collect($kiranaPlans)->contains('key', 'professional'))
                 <label class="option-card package-select complete pkg-pro">
                   <input type="radio" name="website" value="professional" data-price="29999" data-label="Professional" data-delivery="10–15 Days" data-support="30 Days" data-training="Free">
                   <span class="option-body">
@@ -323,11 +336,6 @@
                     </span>
                   </span>
                 </label>
-                @endif
-              </div>
-              <div id="pricingEmpty" class="contact-page-card" @if(collect($kiranaPlans)->isNotEmpty()) hidden @endif>
-                <p>Custom pricing is available based on your requirements.</p>
-                <a class="btn btn-primary" href="{{ route('contact') }}">Contact our team for a quote</a>
               </div>
 
               <div class="compare-cta">
@@ -505,7 +513,7 @@
 
               <div class="domain-select-grid" role="radiogroup" aria-label="Website address option">
                 <label class="option-card domain-pick" data-domain="existing">
-                  <input type="radio" name="domainOption" value="0" data-label="Already have" data-option-key="existing-domain">
+                  <input type="radio" name="domainOption" value="0" data-label="Already have">
                   <span class="option-body">
                     <span class="domain-card-top">
                       <span class="domain-identity">
@@ -541,7 +549,7 @@
                 </label>
 
                 <label class="option-card domain-pick is-new" data-domain="new">
-                  <input type="radio" name="domainOption" id="domainOptionNew" value="799" data-label="New Domain" data-provider="Hostinger" data-option-key="hostinger-domain" checked>
+                  <input type="radio" name="domainOption" id="domainOptionNew" value="{{ $estimateDomain }}" data-label="New Domain" data-provider="Hostinger" checked>
                   <span class="option-body">
                     <span class="domain-card-top">
                       <span class="domain-identity">
@@ -557,7 +565,7 @@
 
                     <span class="domain-price-block">
                       <span class="domain-price-row">
-                        <span class="option-price" id="domainNewPrice">₹799</span>
+                        <span class="option-price" id="domainNewPrice">{{ cebinova_inr($estimateDomain) }}</span>
                         <span class="domain-price-period">/year</span>
                       </span>
                       <span class="domain-price-meta">
@@ -567,7 +575,7 @@
                     <span class="pkg-simple">
                       <span class="pkg-fact"><em>For</em> First-time online businesses</span>
                       <span class="pkg-fact"><em>Main benefit</em> A professional address customers can remember</span>
-                      <span class="pkg-fact"><em>Price</em> From ₹799 / year</span>
+                      <span class="pkg-fact"><em>Price</em> From {{ cebinova_inr($estimateDomain) }} / year</span>
                       <span class="pkg-fact"><em>Recommended because</em> New shops look more trusted with their own domain</span>
                     </span>
                     <details class="pkg-more">
@@ -575,17 +583,17 @@
                     <span class="domain-providers" role="group" aria-label="Domain provider prices">
                       <span class="domain-best-label">Choose provider</span>
                       <span class="domain-provider-list">
-                        <button type="button" class="domain-provider is-active" data-provider="Hostinger" data-price="799" data-option-key="hostinger-domain">
+                        <button type="button" class="domain-provider is-active" data-provider="Hostinger" data-price="{{ $estimateDomain }}">
                           <strong>Hostinger</strong>
-                          <span>₹799</span>
+                          <span>{{ cebinova_inr($estimateDomain) }}</span>
                         </button>
-                        <button type="button" class="domain-provider" data-provider="GoDaddy" data-price="999" data-option-key="godaddy-domain">
+                        <button type="button" class="domain-provider" data-provider="GoDaddy" data-price="{{ $estimateGoDaddy }}">
                           <strong>GoDaddy</strong>
-                          <span>₹999</span>
+                          <span>{{ cebinova_inr($estimateGoDaddy) }}</span>
                         </button>
-                        <button type="button" class="domain-provider" data-provider="BigRock" data-price="899" data-option-key="bigrock-domain">
+                        <button type="button" class="domain-provider" data-provider="BigRock" data-price="{{ $estimateBigRock }}">
                           <strong>BigRock</strong>
-                          <span>₹899</span>
+                          <span>{{ cebinova_inr($estimateBigRock) }}</span>
                         </button>
                       </span>
                       <span class="domain-provider-note">Approx. first-year .com / .in · Final cost depends on extension</span>
@@ -651,7 +659,7 @@
 
               <div class="hosting-select-grid" role="radiogroup" aria-label="Hosting option">
                 <label class="option-card hosting-pick" data-hosting="existing">
-                  <input type="radio" name="hostingOption" value="0" data-label="Use Existing" data-option-key="existing-hosting">
+                  <input type="radio" name="hostingOption" value="0" data-label="Use Existing">
                   <span class="option-body">
                     <span class="hosting-card-top">
                       <span class="hosting-identity">
@@ -687,7 +695,7 @@
                 </label>
 
                 <label class="option-card hosting-pick" data-hosting="basic">
-                  <input type="radio" name="hostingOption" value="3000" data-label="Basic Hosting" data-option-key="basic-hosting" checked>
+                  <input type="radio" name="hostingOption" value="{{ $estimateHosting }}" data-label="Basic Hosting" checked>
                   <span class="option-body">
                     <span class="hosting-card-top">
                       <span class="hosting-identity">
@@ -702,7 +710,7 @@
 
                     <span class="hosting-price-block">
                       <span class="hosting-price-row">
-                        <span class="option-price">₹3,000</span>
+                        <span class="option-price" id="hostingBasicPrice">{{ cebinova_inr($estimateHosting) }}</span>
                         <span class="hosting-price-period">/year</span>
                       </span>
                       <span class="hosting-price-meta">Good for new businesses.</span>
@@ -710,7 +718,7 @@
                     <span class="pkg-simple">
                       <span class="pkg-fact"><em>For</em> New and small businesses</span>
                       <span class="pkg-fact"><em>Main benefit</em> Website stays online 24×7 with SSL</span>
-                      <span class="pkg-fact"><em>Price</em> ₹3,000 / year</span>
+                      <span class="pkg-fact"><em>Price</em> {{ cebinova_inr($estimateHosting) }} / year</span>
                       <span class="pkg-fact"><em>Recommended because</em> Enough for most local shops to start</span>
                     </span>
                     <details class="pkg-more">
@@ -737,7 +745,7 @@
                 </label>
 
                 <label class="option-card hosting-pick is-premium" data-hosting="premium">
-                  <input type="radio" name="hostingOption" value="6000" data-label="Premium Hosting" data-option-key="premium-hosting">
+                  <input type="radio" name="hostingOption" value="{{ $estimatePremiumHosting }}" data-label="Premium Hosting">
                   <span class="option-body">
                     <span class="hosting-card-top">
                       <span class="hosting-identity">
@@ -752,7 +760,7 @@
 
                     <span class="hosting-price-block">
                       <span class="hosting-price-row">
-                        <span class="option-price">₹6,000</span>
+                        <span class="option-price" id="hostingPremiumPrice">{{ cebinova_inr($estimatePremiumHosting) }}</span>
                         <span class="hosting-price-period">/year</span>
                       </span>
                       <span class="hosting-price-meta">Built for growing businesses.</span>
@@ -760,12 +768,12 @@
 
                     <span class="hosting-upgrade-pill">
                       <span><i class="fa-solid fa-arrow-up" aria-hidden="true"></i> Upgrade from Basic</span>
-                      <strong>Only ₹3,000 More</strong>
+                      <strong>Only {{ cebinova_inr(max(0, $estimatePremiumHosting - $estimateHosting)) }} more</strong>
                     </span>
                     <span class="pkg-simple">
                       <span class="pkg-fact"><em>For</em> Growing stores with more visitors</span>
                       <span class="pkg-fact"><em>Main benefit</em> Faster site, daily backup, priority support</span>
-                      <span class="pkg-fact"><em>Price</em> ₹6,000 / year · about ₹250/month more</span>
+                      <span class="pkg-fact"><em>Price</em> {{ cebinova_inr($estimatePremiumHosting) }} / year</span>
                       <span class="pkg-fact"><em>Choose this if</em> You expect more traffic or run ads</span>
                     </span>
                     <details class="pkg-more">
@@ -837,6 +845,21 @@
 
               <p class="hosting-recommend" id="hostingRecommend" hidden role="status"></p>
             </fieldset>
+            @if ($supportChoices !== [])
+            <fieldset class="calc-step support-admin" data-step-panel="5" id="supportAdminChoices">
+              <legend>
+                <span class="step-badge"><span class="step-num">05</span><span class="step-dot" aria-hidden="true"></span></span>
+                Support
+              </legend>
+              <p class="step-hint">These options come from Extra Charges. Included support stays at ₹0 until you set a price.</p>
+              @foreach ($supportChoices as $choice)
+                <label class="support-admin-option">
+                  <input type="radio" name="supportOption" value="{{ (int) $choice['price'] }}" data-label="{{ $choice['name'] }}" @checked($loop->first)>
+                  <span>{{ $choice['name'] }} - {{ (int) $choice['price'] === 0 ? 'Included' : cebinova_inr($choice['price']) }}</span>
+                </label>
+              @endforeach
+            </fieldset>
+            @endif
           </form>
           </div>
 
@@ -857,7 +880,20 @@
             </div>
 
             <div class="invoice-body" id="invoiceBody">
-              <ul class="summary-lines est-lines" id="summaryLines"></ul>
+              <ul class="summary-lines est-lines" id="summaryLines">
+                <li>
+                  <span class="est-line-copy"><strong>Business website</strong><em>Recommended starting package</em></span>
+                  <span class="est-line-price">{{ cebinova_inr($estimateWebsite) }}</span>
+                </li>
+                <li>
+                  <span class="est-line-copy"><strong>New domain</strong><em>Yearly</em></span>
+                  <span class="est-line-price">{{ cebinova_inr($estimateDomain) }}</span>
+                </li>
+                <li>
+                  <span class="est-line-copy"><strong>Basic hosting</strong><em>Yearly</em></span>
+                  <span class="est-line-price">{{ cebinova_inr($estimateHosting) }}</span>
+                </li>
+              </ul>
 
               <div class="estimate-savings est-app-status" id="estimateSavings" hidden>
                 <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
@@ -870,9 +906,9 @@
                 <div class="est-price-rows" id="priceSummaryRows"></div>
                 <div class="est-price-total-row">
                   <span>Estimated Total</span>
-                  <strong id="subTotal">₹0</strong>
+                  <strong id="subTotal">{{ cebinova_inr($estimateTotal) }}</strong>
                 </div>
-                <span class="est-gst-badge">GST extra, if applicable. No hidden package charges.</span>
+                <span class="est-gst-badge" id="gstExtraNote">GST {{ $gstPercent }}% extra, if applicable. No hidden package charges.</span>
               </div>
               <ul class="est-clarity" aria-label="What happens next">
                 <li>Delivery: 5–15 working days after briefing, based on package.</li>
@@ -880,9 +916,14 @@
                 <li>Support: 7 / 15 / 30 free days included with the website plan.</li>
               </ul>
 
+              <div id="promotionBreakdown"></div>
+              <label class="est-gst-badge" for="promoCoupon">Coupon code
+                <input id="promoCoupon" autocomplete="off" placeholder="Optional">
+              </label>
+
               <div class="summary-total est-grand" id="grandTotalCard">
                 <span class="est-grand-label">Estimated Project Cost</span>
-                <strong id="grandTotal">₹0</strong>
+                <strong id="grandTotal">{{ cebinova_inr($estimateTotal) }}</strong>
                 <em class="est-grand-note">Fixed + yearly charges combined · see summary above</em>
               </div>
             </div>
@@ -897,7 +938,7 @@
             </p>
 
             <div class="summary-actions est-actions">
-              <a href="#contact" id="pricingEnquiry" class="btn btn-primary est-btn-primary">
+              <a href="#contact" class="btn btn-primary est-btn-primary">
                 Book Free Consultation
                 <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
               </a>
@@ -1019,7 +1060,7 @@
           <div class="support-plans-intro">
             <p class="support-plans-kicker">Free Support</p>
             <h3 class="support-plans-title">Choose Your Free Support Period</h3>
-            <p class="support-plans-lead">Every package includes free after-launch support. Pick how many free days you want - no charges during this period.</p>
+            <p class="support-plans-lead">Every package includes free after-launch support. Pick how many free days you want. A paid support price is added in the calculator only when it is set above zero in admin.</p>
             <ul class="support-plans-chips" aria-label="Support highlights">
               <li><i class="fa-solid fa-check" aria-hidden="true"></i> WhatsApp Support</li>
               <li><i class="fa-solid fa-check" aria-hidden="true"></i> Training Included</li>
@@ -1574,7 +1615,7 @@
   <div class="js-price-sticky price-sticky" aria-label="Selected estimate">
     <div class="price-sticky-copy">
       <p class="js-price-sticky-name price-sticky-name">Business website · recommended path</p>
-      <p class="js-price-sticky-price price-sticky-price" id="mobileGrandTotal">₹28,798</p>
+      <p class="js-price-sticky-price price-sticky-price" id="mobileGrandTotal">{{ cebinova_inr($estimateTotal) }}</p>
     </div>
     <div class="price-sticky-actions">
       <a class="price-sticky-cta" href="#contact">Book Free Consultation</a>

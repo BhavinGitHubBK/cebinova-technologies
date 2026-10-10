@@ -2,26 +2,27 @@
 
 namespace App\Models;
 
-use App\Enums\LeadStatus;
+use Database\Factories\LeadFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Lead extends Model
 {
-    /** @use HasFactory<\Database\Factories\LeadFactory> */
+    /** @use HasFactory<LeadFactory> */
     use HasFactory, SoftDeletes;
 
-    public const STATUS_NEW = LeadStatus::New->value;
+    public const STATUS_NEW = 'New';
 
     public const STATUSES = [
-        LeadStatus::New->value,
-        LeadStatus::Contacted->value,
-        LeadStatus::Qualified->value,
-        LeadStatus::ProposalSent->value,
-        LeadStatus::Won->value,
-        LeadStatus::Lost->value,
+        'New',
+        'Contacted',
+        'Qualified',
+        'Proposal Sent',
+        'Won',
+        'Lost',
     ];
 
     protected $attributes = [
@@ -36,50 +37,55 @@ class Lead extends Model
         'email',
         'business_type',
         'service',
-        'service_id',
-        'service_snapshot',
         'package_category',
-        'marketing_package_id',
         'plan_duration',
-        'marketing_plan_id',
         'selected_price',
-        'marketing_snapshot',
-        'pricing_package_id',
-        'pricing_option_ids',
-        'estimated_total',
-        'pricing_snapshot',
         'city',
         'budget',
         'message',
         'notes',
         'free_consultation',
         'source',
-        'page_url',
+        'source_page',
         'status',
         'follow_up_at',
-        'contacted_at',
-        'qualified_at',
-        'proposal_sent_at',
-        'won_at',
-        'lost_at',
         'assigned_to',
+        'priority',
+        'estimated_value',
+        'lost_reason',
+        'demo_id',
+        'service_id',
+        'solution_id',
+        'industry_id',
+        'solution_snapshot',
+        'industry_snapshot',
+        'service_snapshot',
+        'marketing_package_id',
+        'marketing_plan_id',
+        'marketing_snapshot',
+        'pricing_package_id',
+        'pricing_option_ids',
+        'estimated_total',
+        'pricing_snapshot',
+        'promotion_id',
+        'coupon_id',
+        'promotion_snapshot',
+        'page_url',
     ];
 
     protected function casts(): array
     {
         return [
             'free_consultation' => 'boolean',
-            'pricing_option_ids' => 'array',
-            'estimated_total' => 'decimal:2',
-            'pricing_snapshot' => 'array',
-            'marketing_snapshot' => 'array',
-            'service_snapshot' => 'array',
             'follow_up_at' => 'datetime',
-            'contacted_at' => 'datetime',
-            'qualified_at' => 'datetime',
-            'proposal_sent_at' => 'datetime',
-            'won_at' => 'datetime',
-            'lost_at' => 'datetime',
+            'estimated_value' => 'decimal:2',
+            'solution_snapshot' => 'array',
+            'industry_snapshot' => 'array',
+            'service_snapshot' => 'array',
+            'marketing_snapshot' => 'array',
+            'pricing_snapshot' => 'array',
+            'promotion_snapshot' => 'array',
+            'pricing_option_ids' => 'array',
         ];
     }
 
@@ -88,8 +94,13 @@ class Lead extends Model
         return $this->belongsTo(User::class, 'assigned_to');
     }
 
-    public function interestedService(): BelongsTo
+    public function demo(): BelongsTo
     {
-        return $this->belongsTo(Service::class, 'service_id');
+        return $this->belongsTo(Demo::class)->withTrashed();
+    }
+
+    public function tasks(): HasMany
+    {
+        return $this->hasMany(LeadTask::class);
     }
 }

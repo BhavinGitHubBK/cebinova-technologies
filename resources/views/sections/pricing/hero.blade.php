@@ -1,15 +1,22 @@
 <section class="price-page-hero" aria-label="Pricing overview">
+    @php
+        $copy = \App\Support\CmsContent::copy('pricing', 'hero', [
+            'eyebrow' => 'Pricing',
+            'heading' => 'Choose the Right Solution for Your Business',
+            'lead' => 'Start with a clear website package, then add apps, domain, hosting and support only if you need them. See a real estimate before you talk to us.',
+            'secondary_label' => 'Open Calculator',
+            'secondary_url' => '#calculator',
+        ]);
+    @endphp
     <div class="pointer-events-none absolute inset-0 bg-dots opacity-45"></div>
     <div class="container-wide relative">
         <div class="price-page-hero-copy" data-reveal>
             <p class="price-page-kicker">
                 <span class="price-page-dot" aria-hidden="true"></span>
-                Pricing
+                {{ $copy['eyebrow'] }}
             </p>
-            <h1 class="price-page-title">Build Your Digital Store</h1>
-            <p class="price-page-lead">
-                3 website packages. Add apps only if you need them. See your exact total in 2 minutes.
-            </p>
+            <h1 class="price-page-title break-words">{{ $copy['heading'] }}</h1>
+            <p class="price-page-lead break-words">{{ $copy['lead'] }}</p>
             <ul class="price-page-proof" aria-label="CEBINOVA pricing highlights">
                 <li>
                     <span class="price-page-proof-value">₹14,999</span>
@@ -29,9 +36,10 @@
                 </li>
             </ul>
             @include('sections.page.hero-ctas', [
-                'consultHref' => consultation_url('Business Solution'),
-                'extraHref' => '#calculator',
-                'extraLabel' => 'Open Calculator',
+                'consultHref' => \App\Support\CmsContent::href($copy['cta_url'], consultation_url('Business Solution')),
+                'consultLabel' => $copy['cta_label'],
+                'extraHref' => \App\Support\CmsContent::href($copy['secondary_url'], '#calculator'),
+                'extraLabel' => $copy['secondary_label'] ?: 'Open Calculator',
             ])
             <ol class="price-page-path" aria-label="How to get your price">
                 <li><strong>1</strong> Choose website</li>

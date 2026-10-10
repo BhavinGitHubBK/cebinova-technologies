@@ -3,14 +3,13 @@
     $nextHref = page_next_url($guide, $service['title']);
     $nextLabel = $service['next_label'] ?? 'Get Free Consultation';
     $whatsapp = page_whatsapp_url($service['title']);
-    $faqs = $service['faq'] ?? [];
     $process = collect($service['sections'] ?? [])->firstWhere('type', 'process');
 @endphp
 
 @extends('layouts.app')
 
-@section('title', $service['seo_title'] ?: $service['title'].' | CEBINOVA Technologies')
-@section('description', $service['seo_description'] ?: $service['short'])
+@section('title', ($service['seo_title'] ?? null) ?: $service['title'].' | CEBINOVA Technologies')
+@section('description', ($service['seo_description'] ?? null) ?: ($service['short'] ?? ''))
 
 @section('content')
     <x-page-hero
@@ -35,7 +34,17 @@
                     <p class="mt-3 text-[17px] leading-relaxed text-navy">{{ $service['audience'] }}</p>
                 @endif
 
-                <h2 class="mt-10 text-2xl font-extrabold text-navy">What this includes</h2>
+                <h2 class="mt-10 text-2xl font-extrabold text-navy">
+                    @if ($service['slug'] === 'web-development')
+                        Types of websites
+                    @elseif ($service['slug'] === 'custom-software')
+                        Systems we build
+                    @elseif ($service['slug'] === 'ai-automation')
+                        Work we automate
+                    @else
+                        What this includes
+                    @endif
+                </h2>
                 <ul class="mt-6 grid gap-3 sm:grid-cols-2">
                     @foreach ($service['includes'] as $item)
                         <li class="flex items-center gap-2.5 rounded-xl border border-line bg-white px-4 py-3.5 text-[15px] font-medium leading-none text-navy">
@@ -68,11 +77,91 @@
         @include('sections.services.dynamic-process', ['section' => $process, 'topic' => $service['title']])
     @endif
 
-    @include('sections.page.faq', [
-        'faqItems' => $faqs,
-        'topic' => $service['title'],
-        'consultHref' => service_enquiry_url($service),
-    ])
+    @if ($service['slug'] === 'custom-software')
+        <section class="section-pad bg-white" aria-label="How custom software changes the process">
+            <div class="container-wide">
+                <x-section-heading eyebrow="How it changes the work" title="From the current process to one system">
+                    The software is scoped around the work the team already does.
+                </x-section-heading>
+                <ol class="mt-8 grid gap-4 md:grid-cols-3">
+                    <li class="card-surface p-6">
+                        <p class="text-[12px] font-bold uppercase tracking-[0.16em] text-gold-dark">Today</p>
+                        <h3 class="mt-3 text-lg font-extrabold text-navy">Your current process</h3>
+                        <p class="mt-2 text-[15px] leading-relaxed text-muted">Stock, billing, dealers and follow-ups live in sheets, calls and separate tools.</p>
+                    </li>
+                    <li class="card-surface p-6">
+                        <p class="text-[12px] font-bold uppercase tracking-[0.16em] text-gold-dark">Build</p>
+                        <h3 class="mt-3 text-lg font-extrabold text-navy">CEBINOVA software</h3>
+                        <p class="mt-2 text-[15px] leading-relaxed text-muted">CRM, inventory, billing, orders, employee records, dealer portals or workflow — only the modules you need.</p>
+                    </li>
+                    <li class="card-surface p-6">
+                        <p class="text-[12px] font-bold uppercase tracking-[0.16em] text-gold-dark">After</p>
+                        <h3 class="mt-3 text-lg font-extrabold text-navy">A working process</h3>
+                        <p class="mt-2 text-[15px] leading-relaxed text-muted">The same work happens in one place, with a record of what was done and what is still open.</p>
+                    </li>
+                </ol>
+            </div>
+        </section>
+    @endif
+
+    @if ($service['slug'] === 'ai-automation')
+        <section class="section-pad bg-white" aria-label="Automation examples">
+            <div class="container-wide">
+                <x-section-heading eyebrow="Practical automation" title="What a lead workflow can look like">
+                    These are working patterns, not a promise that every business needs every step.
+                </x-section-heading>
+                <ol class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    @foreach ([
+                        'Website enquiry is saved',
+                        'It becomes a CRM lead',
+                        'WhatsApp sends an acknowledgement',
+                        'A salesperson is assigned',
+                        'A follow-up reminder is set',
+                        'Management gets a simple report',
+                    ] as $step)
+                        <li class="card-surface p-6">
+                            <p class="text-[12px] font-bold uppercase tracking-[0.16em] text-gold-dark">Step {{ $loop->iteration }}</p>
+                            <h3 class="mt-3 text-lg font-extrabold text-navy">{{ $step }}</h3>
+                        </li>
+                    @endforeach
+                </ol>
+            </div>
+        </section>
+    @endif
+
+    @if (! empty($service['faq']))
+        <section class="section-pad section-soft" aria-label="Questions">
+            <div class="container-wide max-w-3xl">
+                <x-section-heading eyebrow="Questions" title="Before you start">
+                    Straight answers for this service.
+                </x-section-heading>
+                <div class="mt-8 grid gap-4">
+                    @foreach ($service['faq'] as $item)
+                        <article class="card-surface p-6">
+                            <h3 class="text-lg font-extrabold text-navy">{{ $item['q'] }}</h3>
+                            <p class="mt-2 text-[15px] leading-relaxed text-muted">{{ $item['a'] }}</p>
+                        </article>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+        @push('head')
+            <script type="application/ld+json">
+                {!! json_encode([
+                    '@@context' => 'https://schema.org',
+                    '@type' => 'FAQPage',
+                    'mainEntity' => collect($service['faq'])->map(fn ($item) => [
+                        '@type' => 'Question',
+                        'name' => $item['q'],
+                        'acceptedAnswer' => [
+                            '@type' => 'Answer',
+                            'text' => $item['a'],
+                        ],
+                    ])->values()->all(),
+                ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}
+            </script>
+        @endpush
+    @endif
 
     <section class="section-pad bg-white">
         <div class="container-wide">

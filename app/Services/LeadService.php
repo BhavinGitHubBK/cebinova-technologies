@@ -4,12 +4,15 @@ namespace App\Services;
 
 use App\Enums\LeadStatus;
 use App\Http\Requests\StoreLeadRequest;
+use App\Models\Demo;
+use App\Models\Industry;
 use App\Models\Lead;
 use App\Models\Service;
+use App\Models\Solution;
+use App\Services\Promotions\PromotionEngine;
 use App\Support\MarketingPackages;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
-use Throwable;
+use App\Support\Promotions\Money;
+use Illuminate\Validation\ValidationException;
 
 class LeadService
 {
@@ -26,17 +29,40 @@ class LeadService
         if ($request->validated('service_id')) {
             $serviceRecord = Service::query()->active()->find($request->validated('service_id'));
             if (! $serviceRecord) {
-                throw \Illuminate\Validation\ValidationException::withMessages([
+                throw ValidationException::withMessages([
                     'service_id' => 'The selected service is unavailable.',
                 ]);
             }
         }
 
+        $solution = $request->validated('solution_id')
+            ? Solution::query()->active()->find($request->validated('solution_id'))
+            : null;
+        if ($request->validated('solution_id') && ! $solution) {
+            throw ValidationException::withMessages([
+                'solution_id' => 'The selected solution is unavailable.',
+            ]);
+        }
+
+        $industry = $request->validated('industry_id')
+            ? Industry::query()->active()->find($request->validated('industry_id'))
+            : null;
+        if ($request->validated('industry_id') && ! $industry) {
+            throw ValidationException::withMessages([
+                'industry_id' => 'The selected industry is unavailable.',
+            ]);
+        }
+
+        $coupon = $request->validated('coupon_code');
+        $customerKey = strtolower((string) ($request->validated('email') ?: $request->validated('phone')));
+
         $marketingData = null;
         if ($request->validated('marketing_package_id')) {
             $marketingData = app(MarketingPackageCalculator::class)->calculate(
                 (int) $request->validated('marketing_package_id'),
-                (int) $request->validated('marketing_plan_id')
+                (int) $request->validated('marketing_plan_id'),
+                $coupon,
+                $customerKey
             );
             $category = $marketingData['category'];
             $duration = $marketingData['duration'];
@@ -46,11 +72,22 @@ class LeadService
         if ($request->validated('pricing_package_id')) {
             $pricingData = ($pricing ?? app(PricingCalculator::class))->calculate(
                 (int) $request->validated('pricing_package_id'),
-                $request->validated('pricing_option_ids', [])
+                $request->validated('pricing_option_ids', []),
+                $coupon,
+                $customerKey
             );
         }
 
-        $duplicate = Lead::query()
+        $promotion = $pricingData['promotion'] ?? $marketingData['promotion'] ?? null;
+
+        $demo = $request->validated('demo_id') ? Demo::active()->findOrFail($request->validated('demo_id')) : null;
+        $source = $demo
+            ? 'demo'
+            : ($serviceRecord
+                ? 'Service'
+                : ($solution ? 'Technology Solution' : $this->resolvedSource($request, $category)));
+
+        $duplicateQuery = Lead::query()
             ->where('created_at', '>=', now()->subMinutes(2))
             ->where(function ($query) use ($request) {
                 $query->where('phone', $request->validated('phone'));
@@ -58,15 +95,47 @@ class LeadService
                 if ($request->validated('email')) {
                     $query->orWhere('email', $request->validated('email'));
                 }
-            })
-            ->latest()
-            ->first();
+            });
+
+        foreach ([
+            'name' => $request->validated('name'),
+            'business_name' => $request->validated('business_name'),
+            'phone' => $request->validated('phone'),
+            'whatsapp' => $request->validated('whatsapp'),
+            'email' => $request->validated('email'),
+            'business_type' => $request->validated('business_type'),
+            'service' => $serviceRecord?->name ?? $request->validated('service'),
+            'service_id' => $serviceRecord?->id,
+            'solution_id' => $solution?->id,
+            'industry_id' => $industry?->id,
+            'package_category' => $category,
+            'plan_duration' => $duration,
+            'pricing_package_id' => $pricingData['package_id'] ?? null,
+            'marketing_package_id' => $marketingData['package_id'] ?? null,
+            'marketing_plan_id' => $marketingData['plan_id'] ?? null,
+            'demo_id' => $demo?->id,
+            'source' => $source,
+            'message' => $request->validated('message'),
+            'free_consultation' => $request->boolean('consultation'),
+        ] as $field => $value) {
+            $value === null
+                ? $duplicateQuery->whereNull($field)
+                : $duplicateQuery->where($field, $value);
+        }
+
+        $duplicate = $duplicateQuery->latest()->first();
 
         if ($duplicate) {
             return $duplicate;
         }
 
         $lead = Lead::query()->create([
+            'demo_id' => $demo?->id,
+            'solution_id' => $solution?->id,
+            'solution_snapshot' => $solution ? ['solution_id' => $solution->id, 'name' => $solution->name, 'slug' => $solution->slug, 'captured_at' => now()->toIso8601String()] : null,
+            'industry_id' => $industry?->id,
+            'industry_snapshot' => $industry ? ['industry_id' => $industry->id, 'name' => $industry->name, 'slug' => $industry->slug, 'captured_at' => now()->toIso8601String()] : null,
+            'source_page' => $demo ? route('demos').'#'.$demo->slug : ($solution ? route('solutions.show', $solution->slug) : ($industry ? route('industries') : null)),
             'name' => $request->validated('name'),
             'business_name' => $request->validated('business_name'),
             'phone' => $request->validated('phone'),
@@ -91,16 +160,32 @@ class LeadService
             'pricing_option_ids' => $pricingData['option_ids'] ?? null,
             'estimated_total' => $pricingData['total'] ?? null,
             'pricing_snapshot' => $pricingData['snapshot'] ?? null,
+            'promotion_id' => $promotion['promotion_id'] ?? null,
+            'coupon_id' => $promotion['coupon_id'] ?? null,
+            'promotion_snapshot' => $promotion['snapshot'] ?? null,
             'city' => $request->validated('city'),
             'budget' => $request->validated('budget'),
             'message' => $request->validated('message'),
             'free_consultation' => $request->boolean('consultation'),
-            'source' => $serviceRecord ? 'Service' : $this->resolvedSource($request, $category),
+            'source' => $source,
             'page_url' => mb_substr((string) $request->headers->get('referer'), 0, 2048) ?: null,
             'status' => Lead::STATUS_NEW,
         ]);
 
-        $this->sendNotifications($lead);
+        if (is_array($promotion) && (int) Money::paise($promotion['discount_total'] ?? 0) > 0) {
+            try {
+                app(PromotionEngine::class)->redeem($lead, $promotion, $customerKey);
+            } catch (\Throwable $exception) {
+                $lead->delete();
+                throw $exception;
+            }
+        }
+
+        try {
+            app(LeadNotifier::class)->notify($lead);
+        } catch (\Throwable $exception) {
+            report($exception);
+        }
 
         return $lead;
     }
@@ -115,49 +200,6 @@ class LeadService
         }
 
         $lead->update($updates);
-    }
-
-    private function sendNotifications(Lead $lead): void
-    {
-        $recipient = config('cebinova.leads.notification_email');
-
-        try {
-            if (filled($recipient)) {
-                Mail::raw($this->adminMessage($lead), function ($message) use ($lead, $recipient) {
-                    $message->to($recipient)->subject('New website lead: '.$lead->name);
-                });
-            }
-
-            if (config('cebinova.leads.send_acknowledgement') && filled($lead->email)) {
-                Mail::raw(
-                    "Thank you! Your enquiry has been received. Our team will contact you shortly.\n\nCEBINOVA Technologies\nTechnology for Every Business",
-                    function ($message) use ($lead) {
-                        $message->to($lead->email)->subject('We received your enquiry');
-                    }
-                );
-            }
-        } catch (Throwable $exception) {
-            Log::warning('Lead saved but email notification failed.', [
-                'lead_id' => $lead->id,
-                'exception' => $exception->getMessage(),
-            ]);
-        }
-    }
-
-    private function adminMessage(Lead $lead): string
-    {
-        return implode("\n", [
-            'A new website enquiry has been received.',
-            '',
-            'Name: '.$lead->name,
-            'Business: '.($lead->business_name ?: 'Not provided'),
-            'Phone: '.$lead->phone,
-            'Email: '.($lead->email ?: 'Not provided'),
-            'Service: '.($lead->service ?: 'Not provided'),
-            'Budget: '.($lead->budget ?: 'Not provided'),
-            'Message: '.($lead->message ?: 'Not provided'),
-            'Submitted: '.$lead->created_at?->toDateTimeString(),
-        ]);
     }
 
     private function resolvedSource(StoreLeadRequest $request, ?string $category): string

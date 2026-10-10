@@ -14,18 +14,35 @@ class PageSectionController extends Controller
 {
     public function index(Request $request): View
     {
-        $sections = PageSection::query()
-            ->when($request->filled('section_page'), fn ($q) => $q->where('page', $request->section_page))
-            ->when($request->filled('q'), fn ($q) => $q->where(function ($inner) use ($request) {
-                $inner->where('key', 'like', '%'.$request->q.'%')
-                    ->orWhere('heading', 'like', '%'.$request->q.'%');
-            }))
-            ->orderBy('page')
+        $matched = PageSection::query()
+            ->when($request->filled('section_page'), fn ($query) => $query->where('page', $request->section_page))
+            ->when($request->filled('q'), function ($query) use ($request) {
+                $term = '%'.$request->string('q').'%';
+                $query->where(function ($query) use ($term) {
+                    $query->where('key', 'like', $term)->orWhere('heading', 'like', $term);
+                });
+            });
+        $counts = [
+            'all' => (clone $matched)->count(),
+            'active' => (clone $matched)->where('is_visible', true)->count(),
+            'inactive' => (clone $matched)->where('is_visible', false)->count(),
+        ];
+        [$sort, $dir] = admin_sort($request, ['page', 'key', 'heading', 'is_visible'], 'page');
+        $sections = $matched
+            ->when($request->filled('status'), fn ($query) => $query->where('is_visible', $request->status === 'active'))
+            ->orderBy($sort, $dir)
             ->orderBy('sort_order')
             ->paginate(20)
             ->withQueryString();
 
-        return view('admin.page-sections.index', compact('sections'));
+        return view('admin.page-sections.index', [
+            'sections' => $sections,
+            'counts' => $counts,
+            'status' => $request->string('status')->toString(),
+            'pages' => PageSection::query()->distinct()->orderBy('page')->pluck('page'),
+            'sort' => $sort,
+            'dir' => $dir,
+        ]);
     }
 
     public function create(): View
@@ -39,7 +56,7 @@ class PageSectionController extends Controller
         $section = PageSection::query()->create($data);
         ActivityLogger::log('create', 'page-sections', $section, 'Page section created');
 
-        return redirect()->route('admin.page-sections.index')->with('success', 'Section created.');
+        return redirect()->route('admin.page-sections.edit', $section)->with('success', 'Section created.');
     }
 
     public function show(PageSection $pageSection): View
@@ -57,7 +74,7 @@ class PageSectionController extends Controller
         $pageSection->update($this->validated($request, $pageSection));
         ActivityLogger::log('update', 'page-sections', $pageSection, 'Page section updated');
 
-        return redirect()->route('admin.page-sections.index')->with('success', 'Section updated.');
+        return redirect()->route('admin.page-sections.edit', $pageSection)->with('success', 'Section updated.');
     }
 
     public function destroy(PageSection $pageSection): RedirectResponse
@@ -83,13 +100,15 @@ class PageSectionController extends Controller
             'body' => ['nullable', 'string'],
             'image_path' => ['nullable', 'string', 'max:255'],
             'cta_label' => ['nullable', 'string', 'max:120'],
-            'cta_url' => ['nullable', 'string', 'max:255'],
+            'cta_url' => ['nullable', 'required_with:cta_label', 'string', 'max:255', admin_site_link()],
             'secondary_cta_label' => ['nullable', 'string', 'max:120'],
-            'secondary_cta_url' => ['nullable', 'string', 'max:255'],
+            'secondary_cta_url' => ['nullable', 'required_with:secondary_cta_label', 'string', 'max:255', admin_site_link()],
+            'settings' => ['nullable', 'json'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
             'is_visible' => ['sometimes', 'boolean'],
         ]);
 
+        $data['settings'] = $request->filled('settings') ? (json_decode($request->input('settings'), true) ?? []) : [];
         $data['is_visible'] = $request->boolean('is_visible', true);
         $data['sort_order'] = (int) ($data['sort_order'] ?? 0);
 

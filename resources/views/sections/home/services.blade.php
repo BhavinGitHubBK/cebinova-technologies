@@ -1,45 +1,16 @@
-@php    $services = collect(config('cebinova.services'))->keyBy('slug');
-    $layout = [
-        [
-            'slug' => 'web-development',
-            'tone' => 'start',
-            'flag' => 'Start here',
-            'tags' => ['Business sites', 'Lead capture'],
-            'note' => 'A site that explains you clearly and captures enquiry.',
-        ],
-        [
-            'slug' => 'ecommerce',
-            'tone' => '',
-            'tags' => ['Catalogue', 'Payments'],
-            'note' => 'Catalogue, payments and orders in one place.',
-        ],
-        [
-            'slug' => 'custom-software',
-            'tone' => '',
-            'tags' => ['CRM', 'Inventory', 'Portals'],
-            'note' => 'Software built around how your team actually works.',
-        ],
-        [
-            'slug' => 'ai-automation',
-            'tone' => 'ai',
-            'flag' => 'AI',
-            'tags' => ['Chatbots', 'WhatsApp', 'Workflows'],
-            'note' => 'WhatsApp, chatbots and workflows that keep moving.',
-        ],
-        [
-            'slug' => 'digital-business',
-            'tone' => '',
-            'tags' => ['Digitisation', 'Portals'],
-            'note' => 'Move from paper and calls to a setup your team can use.',
-        ],
-        [
-            'slug' => 'digital-growth',
-            'tone' => 'growth',
-            'flag' => 'Growth',
-            'tags' => ['Marketing', 'SEO'],
-            'note' => 'SEO, campaigns and content that bring the next customer.',
-        ],
-    ];
+@php
+    $services = collect($homeData['services'] ?? App\Services\HomepageBuilder::featuredServices())->keyBy('slug');
+    $layout = $services->map(function ($service, $slug) {
+        $tags = array_slice($service['includes'] ?? [], 0, 3);
+
+        return [
+            'slug' => $slug,
+            'tone' => $slug === 'ai-automation' ? 'ai' : ($slug === 'digital-growth' ? 'growth' : ($slug === 'web-development' ? 'start' : '')),
+            'flag' => $slug === 'web-development' ? 'Start here' : ($slug === 'ai-automation' ? 'AI' : ($slug === 'digital-growth' ? 'Growth' : null)),
+            'tags' => $tags !== [] ? $tags : ['Business', 'Growth'],
+            'note' => $service['short'] ?? $service['summary'] ?? '',
+        ];
+    })->values()->all();
 @endphp
 
 <section class="home-svc section-pad-lg" aria-label="CEBINOVA services">

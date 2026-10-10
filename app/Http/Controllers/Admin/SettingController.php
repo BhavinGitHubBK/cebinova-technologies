@@ -21,16 +21,16 @@ class SettingController extends Controller
     public function update(Request $request): RedirectResponse
     {
         $data = $request->validate([
-            'company_name' => ['nullable', 'string', 'max:190'],
+            'company_name' => ['required', 'string', 'max:190'],
             'tagline' => ['nullable', 'string', 'max:255'],
             'logo_path' => ['nullable', 'string', 'max:255'],
             'favicon_path' => ['nullable', 'string', 'max:255'],
-            'email' => ['nullable', 'email', 'max:190'],
+            'email' => ['required', 'email', 'max:190'],
             'email_alt' => ['nullable', 'email', 'max:190'],
-            'phone' => ['nullable', 'string', 'max:40'],
+            'phone' => ['required', 'string', 'max:40'],
             'whatsapp' => ['nullable', 'string', 'max:40'],
             'address' => ['nullable', 'string', 'max:1000'],
-            'maps_url' => ['nullable', 'string', 'max:500'],
+            'maps_url' => ['nullable', 'url:http,https', 'max:500'],
             'facebook' => ['nullable', 'string', 'max:255'],
             'instagram' => ['nullable', 'string', 'max:255'],
             'linkedin' => ['nullable', 'string', 'max:255'],
@@ -45,6 +45,8 @@ class SettingController extends Controller
             'maintenance_message' => ['nullable', 'string'],
             'footer_text' => ['nullable', 'string'],
             'copyright_text' => ['nullable', 'string', 'max:255'],
+            'gst_percent' => ['required', 'integer', 'min:0', 'max:100'],
+            'lead_notify_email' => ['nullable', 'email', 'max:190'],
         ]);
 
         $settings = SiteSetting::current();

@@ -84,9 +84,10 @@ class MarketingPackageSystemTest extends TestCase
     {
         $editor = User::factory()->create(['role' => UserRole::Editor, 'is_active' => true]);
 
-        $this->actingAs($editor)->post(route('admin.packages.store'), [
+        $response = $this->actingAs($editor)->post(route('admin.packages.store'), [
             'category' => 'marketing_regular',
             'name' => 'Local Marketing',
+            'teaser' => 'Monthly local promotion',
             'key' => 'local-marketing',
             'service_label' => 'Local Marketing',
             'is_active' => 1,
@@ -98,9 +99,11 @@ class MarketingPackageSystemTest extends TestCase
                 'monthly_pace_text' => 'Two posts each week',
                 'is_active' => 1,
             ]],
-        ])->assertRedirect(route('admin.packages.index'));
+        ]);
+        $created = Package::query()->where('key', 'local-marketing')->firstOrFail();
+        $response->assertRedirect(route('admin.packages.edit', $created));
 
-        $plan = Package::query()->where('key', 'local-marketing')->firstOrFail()->plans()->firstOrFail();
+        $plan = $created->plans()->firstOrFail();
         $this->assertDatabaseHas('marketing_plan_deliverables', ['package_plan_id' => $plan->id, 'group' => 'included', 'name' => 'Eight posts']);
         $this->assertDatabaseHas('marketing_plan_deliverables', ['package_plan_id' => $plan->id, 'group' => 'monthly_pace', 'name' => 'Two posts each week']);
     }

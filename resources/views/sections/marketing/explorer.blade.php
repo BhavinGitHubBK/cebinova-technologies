@@ -1,8 +1,7 @@
 @php
-    $catalog = $marketingCatalog ?? \App\Support\MarketingPackages::catalog();
-    $categories = collect(['regular', 'festival'])->mapWithKeys(fn ($key) => isset($catalog[$key]) ? [$key => $catalog[$key]] : [])->all();
-    $growth = $catalog['growth'] ?? null;
-    $defaultCategory = array_key_first($categories);
+    $regular = \App\Support\MarketingPackages::packageArray('regular') ?? [];
+    $festival = \App\Support\MarketingPackages::packageArray('festival') ?? [];
+    $growth = \App\Support\MarketingPackages::packageArray('growth') ?? [];
 @endphp
 
 <section id="marketing-plans" class="mkt-page-explorer scroll-mt-28 section-pad-lg" aria-label="Marketing plan prices">
@@ -18,40 +17,29 @@
             </p>
         </div>
 
-        @if ($categories !== [])
-        <div class="js-pack-explorer mkt-page-explorer-shell" data-default-cat="{{ $defaultCategory }}" data-default-duration="yearly">
+        <div class="js-pack-explorer mkt-page-explorer-shell" data-default-cat="regular" data-default-duration="yearly">
             <div class="mkt-page-cat-grid" role="tablist" aria-label="Marketing package categories">
-                @foreach ($categories as $key => $category)
+                @foreach (['regular' => $regular, 'festival' => $festival, 'growth' => $growth] as $key => $category)
                     <button
                         type="button"
-                        class="pack-cat js-pack-cat scroll-mt-28 {{ $key === $defaultCategory ? 'is-active' : '' }}"
-                        id="{{ $key }}-marketing"
+                        class="pack-cat js-pack-cat scroll-mt-28 {{ $key === 'regular' ? 'is-active' : '' }}"
+                        id="{{ $key === 'growth' ? 'complete-growth' : $key.'-marketing' }}"
                         data-cat="{{ $key }}"
                         role="tab"
-                        aria-selected="{{ $key === $defaultCategory ? 'true' : 'false' }}"
+                        aria-selected="{{ $key === 'regular' ? 'true' : 'false' }}"
                     >
                         <span class="pack-cat-title">{{ $category['title'] }}</span>
+                        @if (! empty($category['badge']))
+                            <span class="pack-cat-text">{{ $category['badge'] }}</span>
+                        @endif
                         <span class="pack-cat-text">{{ $category['teaser'] }}</span>
                     </button>
                 @endforeach
             </div>
 
-            @if ($growth && ! empty($growth['plans']))
-            <a href="#complete-growth" class="mkt-page-growth-banner">
-                <span class="mkt-page-growth-banner-copy">
-                    <span class="mkt-page-growth-banner-title">
-                        {{ $growth['title'] }}
-                        <span class="mkt-page-growth-banner-badge">Most Popular</span>
-                    </span>
-                    <span class="mkt-page-growth-banner-text">{{ $growth['teaser'] }} From {{ cebinova_inr($growth['plans']['monthly']['price']) }} / month - only ₹1,000 more than Regular.</span>
-                </span>
-                <span class="mkt-page-growth-banner-link">View →</span>
-            </a>
-            @endif
-
             <div class="mkt-page-panels">
-                @foreach ($categories as $category)
-                    <div class="js-pack-cat-panel {{ $category['key'] === $defaultCategory ? '' : 'hidden' }}" data-cat="{{ $category['key'] }}" @if ($category['key'] !== $defaultCategory) hidden @endif>
+                @foreach ([$regular, $festival, $growth] as $category)
+                    <div class="js-pack-cat-panel {{ $category['key'] === 'regular' ? '' : 'hidden' }}" data-cat="{{ $category['key'] }}" @if ($category['key'] !== 'regular') hidden @endif>
                         <div class="mkt-page-panel-head">
                             <p class="mkt-page-kicker">
                                 <span class="mkt-page-dot" aria-hidden="true"></span>
@@ -71,15 +59,18 @@
                                     class="pack-duration js-pack-duration {{ $durationKey === 'yearly' ? 'is-active' : '' }}"
                                     data-cat="{{ $category['key'] }}"
                                     data-duration="{{ $durationKey }}"
-                                    data-sticky-name="{{ $category['service'] }} · {{ $plan['label'] }}"
+                                    data-analytics-event="cta_click"
+                                    data-analytics-location="marketing_package"
+                                    data-analytics-action="{{ $durationKey }}"
+                                    data-sticky-name="{{ $category['service'] }} &middot; {{ $plan['label'] }}"
                                     data-sticky-price="{{ \App\Support\MarketingPackages::priceHeadline($category['service'], $plan['label']) }}"
-                                    data-sticky-cta="{{ $plan['enquiry_url'] ?? package_enquiry_url($category['service'], $plan['label']) }}"
+                                    data-sticky-cta="{{ package_enquiry_url($category['service'], $plan['label']) }}"
                                     data-sticky-wa="{{ package_whatsapp_url($category['service'], $plan['label']) }}"
                                     role="tab"
                                     aria-selected="{{ $durationKey === 'yearly' ? 'true' : 'false' }}"
                                 >
-                                    <span class="pack-duration-label">{{ $plan['label'] }}</span>
-                                    <span class="pack-duration-price">{{ cebinova_inr($plan['price']) }}</span>
+                                    <span class="pack-duration-label">{{ $plan['label'] === 'Half-Yearly' ? '6 Months' : $plan['label'] }}</span>
+                                    <span class="pack-duration-price">@if (! empty($plan['promotion']['final']))<s>{{ cebinova_inr($plan['price']) }}</s> {{ cebinova_inr((int) round((float) $plan['promotion']['final'])) }}@else{{ cebinova_inr($plan['price']) }}@endif</span>
                                     @if ($plan['badge'])
                                         <span class="pack-duration-badge">{{ $plan['badge'] }}</span>
                                     @endif
@@ -97,12 +88,15 @@
                                             @endif
                                             <h4 class="mkt-page-plan-label">{{ $plan['label'] }}</h4>
                                             <p class="mkt-page-plan-duration">Duration: {{ $plan['duration'] }}</p>
+                                            @if (! empty($plan['note']))
+                                                <p class="mkt-page-plan-note">{{ $plan['note'] }}</p>
+                                            @endif
                                             @include('sections.marketing.price-stack', ['service' => $category['service'], 'plan' => $plan, 'tone' => 'light'])
                                             @if ($category['key'] === 'regular' && $durationKey === 'monthly')
-                                                <p class="mkt-page-plan-note">Need festivals too? Complete Growth is only ₹1,000 more and includes them.</p>
+                                                <p class="mkt-page-plan-note">Need festivals too? Complete Growth is only {{ cebinova_inr(1000) }} more and includes them.</p>
                                             @endif
                                             <div class="mkt-page-plan-actions">
-                                                <x-button href="{{ $plan['enquiry_url'] ?? package_enquiry_url($category['service'], $plan['label']) }}" size="lg" class="w-full">Get This Plan</x-button>
+                                                <x-button href="{{ package_enquiry_url($category['service'], $plan['label']) }}" size="lg" class="w-full">Get This Plan</x-button>
                                                 <x-button href="{{ package_whatsapp_url($category['service'], $plan['label']) }}" variant="outline" size="lg" class="w-full">Ask on WhatsApp</x-button>
                                             </div>
                                         </div>
@@ -119,7 +113,7 @@
                                                 <p class="mkt-page-plan-section-label">What you get</p>
                                             @endif
                                             <ul class="mkt-page-plan-list">
-                                                @foreach ($plan['includes'] as $item)
+                                                @foreach ($plan['includes'] ?? $category['includes'] ?? [] as $item)
                                                     <li>{{ $item }}</li>
                                                 @endforeach
                                             </ul>
@@ -144,8 +138,5 @@
                 @endforeach
             </div>
         </div>
-        @else
-            <div class="card-surface p-8 text-center text-muted">Marketing packages are being updated. Please check back shortly.</div>
-        @endif
     </div>
 </section>

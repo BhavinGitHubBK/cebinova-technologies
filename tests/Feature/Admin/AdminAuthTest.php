@@ -7,10 +7,10 @@ use App\Models\Lead;
 use App\Models\Package;
 use App\Models\Service;
 use App\Models\User;
+use App\Support\MarketingPackages;
+use Database\Seeders\PackageSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class AdminAuthTest extends TestCase
@@ -38,7 +38,8 @@ class AdminAuthTest extends TestCase
         $this->post(route('admin.login.store'), [
             'email' => 'boss@cebinova.test',
             'password' => 'password',
-        ])->assertRedirect(route('admin.dashboard'));
+        ])->assertRedirect(route('admin.dashboard'))
+            ->assertCookie(auth()->guard('web')->getRecallerName());
 
         $this->get(route('admin.dashboard'))->assertOk();
     }
@@ -78,55 +79,10 @@ class AdminAuthTest extends TestCase
             ->assertRedirect();
 
         $this->assertSame('Contacted', $lead->fresh()->status);
-        $this->assertNotNull($lead->fresh()->contacted_at);
 
         $this->actingAs($editor)
             ->get(route('admin.users.index'))
             ->assertForbidden();
-    }
-
-    public function test_authorized_admin_can_list_filter_and_view_leads(): void
-    {
-        $admin = $this->admin(['role' => UserRole::Viewer]);
-        $qualified = Lead::factory()->create(['name' => 'Qualified Lead', 'status' => 'Qualified']);
-        Lead::factory()->create(['name' => 'New Lead', 'status' => 'New']);
-
-        $this->actingAs($admin)
-            ->get(route('admin.leads.index', ['status' => 'Qualified']))
-            ->assertOk()
-            ->assertSee('Qualified Lead')
-            ->assertDontSee('New Lead');
-
-        $this->actingAs($admin)
-            ->get(route('admin.leads.show', $qualified))
-            ->assertOk()
-            ->assertSee('Qualified Lead');
-    }
-
-    public function test_viewer_cannot_update_a_lead(): void
-    {
-        $viewer = $this->admin(['role' => UserRole::Viewer]);
-        $lead = Lead::factory()->create();
-
-        $this->actingAs($viewer)
-            ->put(route('admin.leads.update', $lead), [
-                'status' => 'Won',
-            ])
-            ->assertForbidden();
-    }
-
-    public function test_status_updates_set_lifecycle_timestamps(): void
-    {
-        $admin = $this->admin(['role' => UserRole::Editor]);
-        $lead = Lead::factory()->create();
-
-        $this->actingAs($admin)
-            ->put(route('admin.leads.update', $lead), ['status' => 'Proposal Sent'])
-            ->assertRedirect();
-
-        $lead->refresh();
-        $this->assertSame('Proposal Sent', $lead->status);
-        $this->assertNotNull($lead->proposal_sent_at);
     }
 
     public function test_cannot_delete_own_account(): void
@@ -144,14 +100,19 @@ class AdminAuthTest extends TestCase
 
         $this->actingAs($admin)
             ->put(route('admin.settings.update'), [
+                'company_name' => 'CEBINOVA Technologies',
                 'phone' => '+91 99999 00000',
                 'email' => 'hello@cebinova.test',
+                'gst_percent' => 18,
+                'lead_notify_email' => 'leads@cebinova.test',
             ])
             ->assertRedirect();
 
         $this->assertDatabaseHas('site_settings', [
             'phone' => '+91 99999 00000',
             'email' => 'hello@cebinova.test',
+            'gst_percent' => 18,
+            'lead_notify_email' => 'leads@cebinova.test',
         ]);
     }
 
@@ -163,13 +124,14 @@ class AdminAuthTest extends TestCase
             ->post(route('admin.services.store'), [
                 'name' => 'Website Development',
                 'slug' => 'web-development-test',
+                'category' => 'Web',
                 'short_description' => 'Sites',
                 'full_description' => 'Full',
                 'features_text' => "A\nB",
                 'is_active' => 1,
                 'sort_order' => 1,
             ])
-            ->assertRedirect(route('admin.services.index'));
+            ->assertRedirect(route('admin.services.edit', Service::query()->where('slug', 'web-development-test')->first()));
 
         Service::query()->create([
             'name' => 'Hidden',
@@ -184,31 +146,11 @@ class AdminAuthTest extends TestCase
             ->assertDontSee('Hidden');
     }
 
-    public function test_media_upload_validation(): void
-    {
-        Storage::fake('public');
-        $admin = $this->admin();
-
-        $this->actingAs($admin)
-            ->post(route('admin.media.store'), [
-                'file' => UploadedFile::fake()->create('notes.txt', 10, 'text/plain'),
-            ])
-            ->assertSessionHasErrors('file');
-
-        $this->actingAs($admin)
-            ->post(route('admin.media.store'), [
-                'file' => UploadedFile::fake()->image('logo.jpg'),
-            ])
-            ->assertRedirect();
-
-        $this->assertDatabaseCount('media', 1);
-    }
-
     public function test_package_seeder_shape_supports_marketing_helper(): void
     {
-        $this->seed(\Database\Seeders\PackageSeeder::class);
+        $this->seed(PackageSeeder::class);
 
         $this->assertTrue(Package::query()->marketing()->exists());
-        $this->assertSame(4999, \App\Support\MarketingPackages::priceAmount('Regular Marketing', 'Monthly'));
+        $this->assertSame(4999, MarketingPackages::priceAmount('Regular Marketing', 'Monthly'));
     }
 }

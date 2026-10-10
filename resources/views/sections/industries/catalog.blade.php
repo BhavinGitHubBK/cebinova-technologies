@@ -55,7 +55,7 @@
                         @endif
                     </div>
 
-                    <h3 class="ind-page-card-title">{{ $industry['title'] }}</h3>
+                    <h3 class="ind-page-card-title"><a href="{{ route('industries.show', $industry['slug']) }}">{{ $industry['title'] }}</a></h3>
                     <p class="ind-page-card-text">{{ $industry['need'] }}</p>
 
                     <p class="ind-page-solutions-label">Sample solutions</p>

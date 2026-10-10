@@ -99,11 +99,6 @@ return new class extends Migration
             $table->primary(['industry_id', 'solution_id']);
         });
 
-        Schema::table('faqs', function (Blueprint $table) {
-            $table->foreignId('solution_id')->nullable()->after('service_id')->constrained()->cascadeOnDelete();
-            $table->index(['solution_id', 'is_active', 'sort_order']);
-        });
-
         Schema::table('leads', function (Blueprint $table) {
             $table->foreignId('solution_id')->nullable()->after('service_snapshot')->constrained('solutions')->nullOnDelete();
             $table->json('solution_snapshot')->nullable()->after('solution_id');
@@ -159,7 +154,9 @@ return new class extends Migration
             $solutionId = DB::table('solutions')->where('slug', $solutionSlug)->value('id');
             foreach ($serviceSlugs as $order => $serviceSlug) {
                 $serviceId = DB::table('services')->where('slug', $serviceSlug)->value('id');
-                if ($solutionId && $serviceId) DB::table('solution_service')->insertOrIgnore(['solution_id' => $solutionId, 'service_id' => $serviceId, 'sort_order' => $order]);
+                if ($solutionId && $serviceId) {
+                    DB::table('solution_service')->insertOrIgnore(['solution_id' => $solutionId, 'service_id' => $serviceId, 'sort_order' => $order]);
+                }
             }
         }
 
@@ -168,15 +165,26 @@ return new class extends Migration
             $industryId = DB::table('industries')->where('slug', $industrySlug)->value('id');
             foreach ($solutionSlugs as $order => $solutionSlug) {
                 $solutionId = DB::table('solutions')->where('slug', $solutionSlug)->value('id');
-                if ($industryId && $solutionId) DB::table('industry_solution')->insertOrIgnore(['industry_id' => $industryId, 'solution_id' => $solutionId, 'sort_order' => $order]);
+                if ($industryId && $solutionId) {
+                    DB::table('industry_solution')->insertOrIgnore(['industry_id' => $industryId, 'solution_id' => $solutionId, 'sort_order' => $order]);
+                }
             }
         }
     }
 
     public function down(): void
     {
-        Schema::table('leads', function (Blueprint $table) { $table->dropConstrainedForeignId('solution_id'); $table->dropColumn('solution_snapshot'); $table->dropConstrainedForeignId('industry_id'); $table->dropColumn('industry_snapshot'); });
-        Schema::table('faqs', fn (Blueprint $table) => $table->dropConstrainedForeignId('solution_id'));
-        Schema::dropIfExists('industry_solution'); Schema::dropIfExists('solution_service'); Schema::dropIfExists('industries'); Schema::dropIfExists('solution_section_items'); Schema::dropIfExists('solution_sections'); Schema::dropIfExists('solutions');
+        Schema::table('leads', function (Blueprint $table) {
+            $table->dropConstrainedForeignId('solution_id');
+            $table->dropColumn('solution_snapshot');
+            $table->dropConstrainedForeignId('industry_id');
+            $table->dropColumn('industry_snapshot');
+        });
+        Schema::dropIfExists('industry_solution');
+        Schema::dropIfExists('solution_service');
+        Schema::dropIfExists('industries');
+        Schema::dropIfExists('solution_section_items');
+        Schema::dropIfExists('solution_sections');
+        Schema::dropIfExists('solutions');
     }
 };
