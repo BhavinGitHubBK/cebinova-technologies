@@ -27,7 +27,7 @@ class DashboardController extends Controller
                 'caption' => $data['range'] === 'all' ? 'Last 12 months' : $data['rangeLabel'],
                 'labels' => $data['trendLabels'],
                 'values' => $data['trendValues'],
-                'empty' => 'No enquiries in this period yet.',
+                'empty' => 'No data available for now.',
             ]);
         }
 
@@ -36,7 +36,7 @@ class DashboardController extends Controller
                 'caption' => $data['status'] !== '' ? $data['status'] : 'Top enquiry sources',
                 'labels' => $data['serviceLabels'],
                 'values' => $data['serviceValues'],
-                'empty' => 'No service-tagged leads yet.',
+                'empty' => 'No data available for now.',
             ]);
         }
 

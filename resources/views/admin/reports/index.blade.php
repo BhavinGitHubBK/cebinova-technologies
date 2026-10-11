@@ -41,7 +41,7 @@
         @if ($growth['has_data'])
             <div class="dash-trend-chart"><canvas id="mgmt-growth" aria-label="Enquiries and won deals over time"></canvas></div>
         @else
-            <div class="admin-empty">No enquiries recorded for this period.</div>
+            <div class="admin-empty">No data available for now.</div>
         @endif
     </div>
 
@@ -56,7 +56,7 @@
             @if ($sources !== [])
                 <div class="dash-service-chart" style="height: {{ max(180, count($sources) * 58 + 28) }}px"><canvas id="mgmt-sources" aria-label="Enquiries by source"></canvas></div>
             @else
-                <div class="admin-empty">No lead-source data available.</div>
+                <div class="admin-empty">No data available for now.</div>
             @endif
         </article>
 
@@ -78,7 +78,7 @@
                 @endif
                 <p class="mgmt-note">Based on each enquiry’s current status. Earlier stages are not stored separately.</p>
             @else
-                <div class="admin-empty">No enquiries recorded for this period.</div>
+                <div class="admin-empty">No data available for now.</div>
             @endif
         </article>
 
@@ -103,7 +103,7 @@
             @if ($services !== [])
                 <div class="dash-service-chart" style="height: {{ max(180, count($services) * 58 + 28) }}px"><canvas id="mgmt-services" aria-label="Enquiries by service"></canvas></div>
             @else
-                <div class="admin-empty">No service data for this period.</div>
+                <div class="admin-empty">No data available for now.</div>
             @endif
         </article>
 
@@ -124,7 +124,7 @@
                     </ul>
                 @endif
             @else
-                <div class="admin-empty">No won or lost deals in this period.</div>
+                <div class="admin-empty">No data available for now.</div>
             @endif
         </article>
     </section>
@@ -236,7 +236,13 @@
 <script>
 const mgmt = {!! json_encode(['growth' => $growth, 'sources' => $sources, 'funnel' => $funnel, 'services' => $services, 'closing' => ['won' => $closing['won'], 'lost' => $closing['lost']]], JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) !!};
 
-Chart.register({
+if (!window.Chart) {
+    document.querySelectorAll('[data-admin-page] canvas').forEach((canvas) => {
+        canvas.parentElement.outerHTML = '<div class="admin-empty">Chart could not load. Please refresh the page.</div>';
+    });
+}
+
+window.Chart && Chart.register({
     id: 'barValues',
     afterDatasetsDraw(chart) {
         if (chart.config.type !== 'bar') return;

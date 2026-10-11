@@ -104,7 +104,7 @@
         @include('admin.dashboard.partials.filters', ['fields' => ['range']])
         <div data-dash-body>
             @if (collect($trendValues)->sum() === 0)
-                <div class="admin-empty">No enquiries in this period yet.</div>
+                <div class="admin-empty">No data available for now.</div>
             @else
                 <div class="dash-trend-chart"><canvas id="monthlyChart" aria-label="Lead trend chart"></canvas></div>
             @endif
@@ -133,7 +133,7 @@
         @include('admin.dashboard.partials.filters', ['fields' => ['range', 'status']])
         <div data-dash-body>
             @if ($serviceLabels->isEmpty())
-                <div class="admin-empty">No service-tagged leads yet.</div>
+                <div class="admin-empty">No data available for now.</div>
             @else
                 <div class="dash-service-chart" style="height: {{ max(180, $serviceList->count() * 58 + 28) }}px"><canvas id="serviceChart" aria-label="Leads by service chart"></canvas></div>
             @endif
@@ -162,7 +162,13 @@ const navy = '#0b2c5f';
 const gold = '#d4a017';
 const charts = {};
 
-Chart.register({
+if (!window.Chart) {
+    document.querySelectorAll('[data-admin-page] canvas').forEach((canvas) => {
+        canvas.parentElement.outerHTML = '<div class="admin-empty">Chart could not load. Please refresh the page.</div>';
+    });
+}
+
+window.Chart && Chart.register({
     id: 'barValues',
     afterDatasetsDraw(chart) {
         if (chart.config.type !== 'bar') return;
@@ -313,7 +319,11 @@ function paintChart(section, payload) {
         charts[key]?.destroy();
         delete charts[key];
         body.innerHTML = '<div class="admin-empty"></div>';
-        body.querySelector('.admin-empty').textContent = payload.empty || 'Nothing to show.';
+        body.querySelector('.admin-empty').textContent = payload.empty || 'No data available for now.';
+        return;
+    }
+    if (!window.Chart) {
+        body.innerHTML = '<div class="admin-empty">Chart could not load. Please refresh the page.</div>';
         return;
     }
     let canvas = body.querySelector('canvas');
@@ -422,8 +432,8 @@ document.querySelectorAll('[data-chart] canvas').forEach((canvas) => {
     const section = canvas.closest('[data-dash-section]');
     if (!section || typeof Chart === 'undefined') return;
     const initial = section.dataset.chart === 'bar'
-        ? { labels: @json($serviceLabels), values: @json($serviceValues), caption: @json($status !== '' ? $status : 'Top enquiry sources'), empty: 'No service-tagged leads yet.' }
-        : { labels: @json($trendLabels), values: @json($trendValues), caption: @json($range === 'all' ? 'Last 12 months' : $rangeLabel), empty: 'No enquiries in this period yet.' };
+        ? { labels: @json($serviceLabels), values: @json($serviceValues), caption: @json($status !== '' ? $status : 'Top enquiry sources'), empty: 'No data available for now.' }
+        : { labels: @json($trendLabels), values: @json($trendValues), caption: @json($range === 'all' ? 'Last 12 months' : $rangeLabel), empty: 'No data available for now.' };
     paintChart(section, initial);
 });
 </script>

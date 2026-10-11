@@ -35,7 +35,7 @@ class BusinessReportsTest extends TestCase
             ->assertSee('No data available for selected period')->assertSee('No comparable previous-period data');
         $this->get(route('admin.reports.index'))->assertOk()
             ->assertSee('Business growth')
-            ->assertSee('No enquiries recorded for this period.')
+            ->assertSee('No data available for now.')
             ->assertSee('Track business growth');
         self::assertNull(BusinessMetrics::change(12, 0));
         self::assertSame(-50.0, BusinessMetrics::change(5, 10));

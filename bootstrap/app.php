@@ -20,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->redirectUsersTo(fn () => route('admin.dashboard'));
         $middleware->validateCsrfTokens(except: [
             'account/logout',
+            'admin/logout',
         ]);
         $middleware->web(append: [
             RespondJsonToAdminAjax::class,

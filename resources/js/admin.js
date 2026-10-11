@@ -457,6 +457,10 @@ async function loadAdminPage(href, options = {}) {
         const doc = new DOMParser().parseFromString(await response.text(), 'text/html');
         const next = doc.querySelector('[data-admin-page]');
         if (!next) throw new Error('Missing page');
+        if (doc.querySelector('[data-admin-page-scripts] script, [data-admin-page] script')) {
+            window.location.assign(url.href);
+            return;
+        }
         page.innerHTML = next.innerHTML;
         const list = next.getAttribute('data-admin-list');
         if (list) page.setAttribute('data-admin-list', list);

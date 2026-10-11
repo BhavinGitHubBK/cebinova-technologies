@@ -308,6 +308,8 @@
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.22.2/dist/sweetalert2.all.min.js"></script>
+<div data-admin-page-scripts>
 @stack('scripts')
+</div>
 </body>
 </html>
