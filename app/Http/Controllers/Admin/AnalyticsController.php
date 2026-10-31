@@ -15,6 +15,30 @@ class AnalyticsController extends Controller
     public function index(Request $request): View
     {
         $search = trim((string) $request->query('q', ''));
+        $visitorType = in_array($request->query('type'), ['named', 'anonymous'], true)
+            ? (string) $request->query('type')
+            : '';
+        $city = trim((string) $request->query('city', ''));
+        $source = trim((string) $request->query('source', ''));
+        $lastSeen = in_array($request->query('last_seen'), ['today', '7_days', '30_days'], true)
+            ? (string) $request->query('last_seen')
+            : '';
+
+        $cities = AnalyticsVisitor::query()
+            ->whereNotNull('city')
+            ->where('city', '<>', '')
+            ->distinct()
+            ->orderBy('city')
+            ->pluck('city');
+        $sources = AnalyticsVisitor::query()
+            ->whereNotNull('first_referrer_domain')
+            ->where('first_referrer_domain', '<>', '')
+            ->distinct()
+            ->orderBy('first_referrer_domain')
+            ->pluck('first_referrer_domain');
+        $hasDirectSource = AnalyticsVisitor::query()
+            ->where(fn ($query) => $query->whereNull('first_referrer_domain')->orWhere('first_referrer_domain', ''))
+            ->exists();
 
         $visitors = AnalyticsVisitor::query()
             ->when($search !== '', function ($query) use ($search) {
@@ -27,6 +51,21 @@ class AnalyticsController extends Controller
                         ->orWhere('first_referrer_domain', 'like', '%'.$search.'%');
                 });
             })
+            ->when($visitorType === 'named', fn ($query) => $query
+                ->whereNotNull('name')->where('name', '<>', '')
+                ->whereNotNull('mobile')->where('mobile', '<>', ''))
+            ->when($visitorType === 'anonymous', fn ($query) => $query->where(function ($anonymous) {
+                $anonymous->whereNull('name')->orWhere('name', '')
+                    ->orWhereNull('mobile')->orWhere('mobile', '');
+            }))
+            ->when($city !== '', fn ($query) => $query->where('city', $city))
+            ->when($source === '__direct', fn ($query) => $query->where(function ($direct) {
+                $direct->whereNull('first_referrer_domain')->orWhere('first_referrer_domain', '');
+            }))
+            ->when($source !== '' && $source !== '__direct', fn ($query) => $query->where('first_referrer_domain', $source))
+            ->when($lastSeen === 'today', fn ($query) => $query->where('last_seen_at', '>=', now()->startOfDay()))
+            ->when($lastSeen === '7_days', fn ($query) => $query->where('last_seen_at', '>=', now()->subDays(7)))
+            ->when($lastSeen === '30_days', fn ($query) => $query->where('last_seen_at', '>=', now()->subDays(30)))
             ->orderByDesc('last_seen_at')
             ->paginate(25)
             ->withQueryString();
@@ -37,6 +76,13 @@ class AnalyticsController extends Controller
         return view('admin.analytics.index', [
             'visitors' => $visitors,
             'search' => $search,
+            'visitorType' => $visitorType,
+            'city' => $city,
+            'source' => $source,
+            'lastSeen' => $lastSeen,
+            'cities' => $cities,
+            'sources' => $sources,
+            'hasDirectSource' => $hasDirectSource,
             'today' => AnalyticsVisitor::query()->where('last_seen_at', '>=', now()->startOfDay())->count(),
             'named' => AnalyticsVisitor::query()->whereNotNull('name')->whereNotNull('mobile')->count(),
         ]);

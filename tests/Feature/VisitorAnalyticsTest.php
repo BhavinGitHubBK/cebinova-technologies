@@ -273,6 +273,42 @@ class VisitorAnalyticsTest extends TestCase
             ->assertSee('Home');
     }
 
+    public function test_admin_can_filter_visitors_by_saved_analytics_data(): void
+    {
+        AnalyticsVisitor::query()->create([
+            'uuid' => (string) Str::uuid(),
+            'name' => 'Recent Ahmedabad Visitor',
+            'mobile' => '9876543210',
+            'city' => 'Ahmedabad',
+            'first_referrer_domain' => 'linkedin.com',
+            'first_seen_at' => now(),
+            'last_seen_at' => now(),
+        ]);
+        AnalyticsVisitor::query()->create([
+            'uuid' => (string) Str::uuid(),
+            'name' => 'Old Surat Visitor',
+            'city' => 'Surat',
+            'first_seen_at' => now()->subDays(40),
+            'last_seen_at' => now()->subDays(40),
+        ]);
+
+        $admin = User::factory()->create(['role' => UserRole::Viewer, 'is_active' => true]);
+
+        $this->actingAs($admin)->get(route('admin.analytics.index', [
+            'type' => 'named',
+            'city' => 'Ahmedabad',
+            'source' => 'linkedin.com',
+            'last_seen' => '7_days',
+        ]))
+            ->assertOk()
+            ->assertSee('Recent Ahmedabad Visitor')
+            ->assertDontSee('Old Surat Visitor')
+            ->assertSee('Ahmedabad')
+            ->assertSee('Surat')
+            ->assertSee('linkedin.com')
+            ->assertSee('Direct');
+    }
+
     public function test_identifying_a_visitor_logs_them_in_and_lists_them_for_admin(): void
     {
         $this->postJson(route('analytics.identify'), [

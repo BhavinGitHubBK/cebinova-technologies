@@ -762,6 +762,49 @@ body.admin-body.is-busy .admin-shell {
     white-space: nowrap;
 }
 
+.analytics-visitor-table {
+    min-width: 1000px;
+    table-layout: fixed;
+}
+
+.analytics-visitor-table .analytics-visitor-name { width: 16%; }
+.analytics-visitor-table .analytics-visitor-mobile { width: 14%; }
+.analytics-visitor-table .analytics-visitor-location { width: 38%; }
+.analytics-visitor-table .analytics-visitor-source { width: 16%; }
+.analytics-visitor-table .analytics-visitor-seen { width: 16%; }
+
+.analytics-visitor-table th,
+.analytics-visitor-table td {
+    overflow-wrap: anywhere;
+}
+
+.analytics-visitor-table .visitor-place {
+    white-space: normal;
+}
+
+.analytics-visitor-table th:last-child,
+.analytics-visitor-table td:last-child {
+    white-space: nowrap;
+}
+
+.analytics-filter-form {
+    flex-wrap: wrap;
+}
+
+.analytics-filter-form .admin-field {
+    flex: 1 1 10rem;
+}
+
+.analytics-filter-form .analytics-search-field {
+    flex: 2 1 20rem;
+}
+
+.analytics-filter-actions {
+    display: flex;
+    flex: 0 0 auto;
+    gap: 0.65rem;
+}
+
 .visitor-map,
 .lead-facts a.visitor-map {
     display: inline-flex;
