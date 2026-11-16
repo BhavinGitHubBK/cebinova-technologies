@@ -85,6 +85,17 @@
     </section>
 
     <section class="admin-card form-block">
+        <h2>Careers</h2>
+        <p class="form-hint">Controls the public Careers page and recruitment notifications.</p>
+        <div class="form-grid">
+            <div class="admin-field"><label class="admin-label" for="careers-heading">Page heading</label><input id="careers-heading" class="admin-input" name="careers_heading" value="{{ old('careers_heading', $settings->careers_heading) }}" placeholder="Build technology that helps businesses grow."></div>
+            <div class="admin-field"><label class="admin-label" for="recruitment-email">Recruitment email</label><input id="recruitment-email" class="admin-input" type="email" name="recruitment_email" value="{{ old('recruitment_email', $settings->recruitment_email) }}"></div>
+            <div class="admin-field is-wide"><label class="admin-label" for="careers-introduction">Introduction</label><textarea id="careers-introduction" class="admin-textarea" name="careers_introduction" rows="3">{{ old('careers_introduction', $settings->careers_introduction) }}</textarea></div>
+            <div class="admin-field is-wide"><label class="admin-label" for="application-confirmation">Application confirmation</label><textarea id="application-confirmation" class="admin-textarea" name="application_confirmation_text" rows="3">{{ old('application_confirmation_text', $settings->application_confirmation_text) }}</textarea></div>
+        </div>
+    </section>
+
+    <section class="admin-card form-block">
         <h2>Social</h2>
         <p class="form-hint">Full profile links. Leave a field empty when that profile is not ready.</p>
         <div class="form-grid">

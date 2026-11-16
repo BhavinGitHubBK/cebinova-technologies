@@ -18,6 +18,9 @@ class AnalyticsController extends Controller
         $visitorType = in_array($request->query('type'), ['named', 'anonymous'], true)
             ? (string) $request->query('type')
             : '';
+        $hasMobile = in_array($request->query('has_mobile'), ['yes', 'no'], true)
+            ? (string) $request->query('has_mobile')
+            : '';
         $city = trim((string) $request->query('city', ''));
         $source = trim((string) $request->query('source', ''));
         $lastSeen = in_array($request->query('last_seen'), ['today', '7_days', '30_days'], true)
@@ -58,6 +61,10 @@ class AnalyticsController extends Controller
                 $anonymous->whereNull('name')->orWhere('name', '')
                     ->orWhereNull('mobile')->orWhere('mobile', '');
             }))
+            ->when($hasMobile === 'yes', fn ($query) => $query->whereNotNull('mobile')->where('mobile', '<>', ''))
+            ->when($hasMobile === 'no', fn ($query) => $query->where(function ($withoutMobile) {
+                $withoutMobile->whereNull('mobile')->orWhere('mobile', '');
+            }))
             ->when($city !== '', fn ($query) => $query->where('city', $city))
             ->when($source === '__direct', fn ($query) => $query->where(function ($direct) {
                 $direct->whereNull('first_referrer_domain')->orWhere('first_referrer_domain', '');
@@ -77,6 +84,7 @@ class AnalyticsController extends Controller
             'visitors' => $visitors,
             'search' => $search,
             'visitorType' => $visitorType,
+            'hasMobile' => $hasMobile,
             'city' => $city,
             'source' => $source,
             'lastSeen' => $lastSeen,

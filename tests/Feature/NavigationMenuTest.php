@@ -33,27 +33,27 @@ class NavigationMenuTest extends TestCase
             ->assertDontSee('Upcoming Offer');
     }
 
-    public function test_single_running_offer_shows_its_name_in_the_menu(): void
+    public function test_single_running_offer_stays_out_of_navigation(): void
     {
         $this->offer('Navratri Special', now()->subHour(), now()->addDays(5));
 
         $this->get(route('about'))
             ->assertOk()
-            ->assertSee(route('offers.show', 'navratri-special'), false)
-            ->assertSee('Navratri Special')
-            ->assertSee('20% off')
+            ->assertDontSee(route('offers.show', 'navratri-special'), false)
+            ->assertDontSee('Navratri Special')
             ->assertDontSee('Running Offers');
     }
 
-    public function test_several_running_offers_are_listed_in_a_dropdown(): void
+    public function test_several_running_offers_stay_out_of_navigation(): void
     {
         $this->offer('Diwali Special', now()->subHour(), now()->addDays(30));
         $this->offer('Navratri Special', now()->subHour(), now()->addDays(5));
 
         $this->get(route('about'))
             ->assertOk()
-            ->assertSee('2 live')
-            ->assertSeeInOrder(['Running Offers', 'Navratri Special', 'Diwali Special', 'View All Offers']);
+            ->assertDontSee('2 live')
+            ->assertDontSee('Running Offers')
+            ->assertDontSee('View All Offers');
     }
 
     private function offer(string $name, $starts, $ends): void

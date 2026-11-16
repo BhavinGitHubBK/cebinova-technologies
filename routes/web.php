@@ -4,6 +4,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\CareerController;
 use App\Http\Controllers\DemoSiteController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PromotionController;
@@ -70,6 +71,12 @@ Route::get('/demos/{demo}/{path?}', [DemoSiteController::class, 'show'])
     ->whereIn('demo', ['kirana', 'professional-services', 'jewellery-retail'])
     ->where('path', '.*')
     ->name('demos.show');
+
+Route::get('/careers', [CareerController::class, 'index'])->name('careers.index');
+Route::get('/careers/{job:slug}', [CareerController::class, 'show'])->name('careers.show');
+Route::get('/careers/{job:slug}/apply', [CareerController::class, 'apply'])->name('careers.apply');
+Route::post('/careers/{job:slug}/apply', [CareerController::class, 'store'])
+    ->middleware('throttle:career-applications')->name('careers.store');
 
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])

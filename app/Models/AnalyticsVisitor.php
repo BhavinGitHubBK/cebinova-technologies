@@ -89,6 +89,41 @@ class AnalyticsVisitor extends Model
         return $parts !== [] ? implode(', ', $parts) : 'Not available yet';
     }
 
+    public function listPlace(): string
+    {
+        $addressParts = $this->addressParts();
+        $hasWeakPlace = blank($this->city) || $this->city === 'Local network';
+
+        if ($hasWeakPlace && count($addressParts) >= 3) {
+            return implode(', ', array_slice($addressParts, -4));
+        }
+
+        $placeParts = array_values(array_filter([$this->city, $this->region, $this->country]));
+        $knownParts = array_map(fn ($part) => mb_strtolower($part), $placeParts);
+        $areaCandidates = array_values(array_filter($addressParts, function ($part) use ($knownParts) {
+            return ! in_array(mb_strtolower($part), $knownParts, true);
+        }));
+        $area = $areaCandidates !== [] ? end($areaCandidates) : null;
+
+        if ($area && ! preg_match('/^\d|\b(?:road|street|avenue|lane|highway|marg|rd)\b/iu', $area)) {
+            array_unshift($placeParts, $area);
+        }
+
+        return $placeParts !== [] ? implode(', ', array_unique($placeParts)) : $this->place();
+    }
+
+    private function addressParts(): array
+    {
+        if (blank($this->address)) {
+            return [];
+        }
+
+        return array_values(array_filter(
+            array_map('trim', explode(',', $this->address)),
+            fn ($part) => $part !== '' && ! preg_match('/^\d[\d -]{3,10}$/u', $part),
+        ));
+    }
+
     public function mapUrl(): ?string
     {
         if ($this->latitude === null || $this->longitude === null) {

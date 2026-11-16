@@ -35,6 +35,10 @@ class SiteSetting extends Model
         'copyright_text',
         'gst_percent',
         'lead_notify_email',
+        'careers_heading',
+        'careers_introduction',
+        'recruitment_email',
+        'application_confirmation_text',
     ];
 
     protected function casts(): array

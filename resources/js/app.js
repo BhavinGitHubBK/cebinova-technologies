@@ -7,7 +7,7 @@ import { initProblemPicker } from './problem-picker';
 import { initWhatsappFloat } from './whatsapp-float';
 import { initLiveChat } from './live-chat';
 
-document.addEventListener('DOMContentLoaded', () => {
+const initializeApp = () => {
     initNavbar();
     initAnimations();
     initContactForm();
@@ -16,4 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
     initProblemPicker();
     initWhatsappFloat();
     initLiveChat();
-});
+};
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeApp, { once: true });
+} else {
+    initializeApp();
+}

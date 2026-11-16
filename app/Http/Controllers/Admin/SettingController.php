@@ -47,6 +47,10 @@ class SettingController extends Controller
             'copyright_text' => ['nullable', 'string', 'max:255'],
             'gst_percent' => ['required', 'integer', 'min:0', 'max:100'],
             'lead_notify_email' => ['nullable', 'email', 'max:190'],
+            'careers_heading' => ['nullable', 'string', 'max:190'],
+            'careers_introduction' => ['nullable', 'string', 'max:3000'],
+            'recruitment_email' => ['nullable', 'email', 'max:190'],
+            'application_confirmation_text' => ['nullable', 'string', 'max:3000'],
         ]);
 
         $settings = SiteSetting::current();

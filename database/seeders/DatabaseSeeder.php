@@ -16,6 +16,8 @@ class DatabaseSeeder extends Seeder
             SiteSettingSeeder::class,
             ServiceSeeder::class,
             PackageSeeder::class,
+            DemoSeeder::class,
+            CareerSampleSeeder::class,
             PageSectionSeeder::class,
             LeadSeeder::class,
         ]);

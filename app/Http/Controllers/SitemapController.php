@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Demo;
+use App\Models\CareerJob;
 use App\Models\PromotionCampaign;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Schema;
@@ -21,6 +22,7 @@ class SitemapController extends Controller
             route('pricing'),
             route('offers.index'),
             route('demos'),
+            route('careers.index'),
             route('contact'),
             route('privacy'),
             route('terms'),
@@ -63,6 +65,12 @@ class SitemapController extends Controller
 
                 foreach ($localDemos as $demo) {
                     $urls[] = route('demos.show', ['demo' => $demo]);
+                }
+            }
+
+            if (Schema::hasTable('career_jobs')) {
+                foreach (CareerJob::query()->published()->get() as $job) {
+                    $urls[] = route('careers.show', $job);
                 }
             }
 

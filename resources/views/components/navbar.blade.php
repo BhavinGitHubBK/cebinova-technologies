@@ -10,9 +10,10 @@
     $navServices ??= [];
     $navOffers ??= [];
     $navItems = collect(config('cebinova.nav'))
-        ->reject(fn ($item) => ($item['type'] ?? null) === 'offers' && $navOffers === [])
+        ->reject(fn ($item) => ($item['type'] ?? null) === 'offers')
         ->map(function ($item) use ($navOffers, $navServices) {
             $item['type'] ??= null;
+            $item['promotional'] = $item['type'] === 'offers';
             $item['href'] = route($item['route']);
             $item['badge'] = trim((string) ($item['badge'] ?? ''));
             $item['active'] = nav_item_active($item);
@@ -47,15 +48,18 @@
                         $badge = $item['badge'];
                         $linkClass = 'nav-link'
                             .($active ? ' nav-link-active' : '')
-                            .($badge !== '' ? ' nav-link-has-badge' : '');
+                            .($badge !== '' ? ' nav-link-has-badge' : '')
+                            .($item['promotional'] ? ' nav-link-promo' : '');
                     @endphp
                     @if ($item['type'] === 'services')
-                        <div class="nav-dropdown">
-                            <a href="{{ $item['href'] }}" class="{{ $linkClass }}">
-                                {{ $item['label'] }}
-                                <svg class="nav-link-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg>
-                            </a>
-                            <div class="nav-mega" role="menu">
+                        <div class="nav-dropdown" data-nav-dropdown>
+                            <div class="nav-dropdown-control">
+                                <a href="{{ $item['href'] }}" class="{{ $linkClass }}" @if ($active) aria-current="page" @endif>{{ $item['label'] }}</a>
+                                <button type="button" class="nav-dropdown-toggle" data-nav-dropdown-toggle aria-label="Open {{ $item['label'] }} menu" aria-controls="nav-services-menu" aria-expanded="false">
+                                    <svg class="nav-link-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg>
+                                </button>
+                            </div>
+                            <div id="nav-services-menu" class="nav-mega" data-nav-dropdown-menu aria-hidden="true">
                                 <div class="nav-mega-col">
                                     <p class="nav-mega-heading">
                                         <span class="nav-mega-dot" aria-hidden="true"></span>
@@ -91,7 +95,7 @@
                         </div>
                     @elseif ($item['type'] === 'offers')
                         <div class="nav-dropdown">
-                            <a href="{{ $item['href'] }}" class="{{ $linkClass }} nav-link-offers">
+                            <a href="{{ $item['href'] }}" class="{{ $linkClass }} nav-link-offers" @if ($active) aria-current="page" @endif>
                                 <span class="nav-link-label">{{ $item['label'] }}</span>
                                 <span class="nav-link-badge">{{ $badge }}</span>
                                 <svg class="nav-link-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg>
@@ -121,12 +125,14 @@
                             </div>
                         </div>
                     @elseif ($item['type'] === 'mega')
-                        <div class="nav-dropdown">
-                            <a href="{{ route($item['route']) }}" class="{{ $linkClass }}">
-                                {{ $item['label'] }}
-                                <svg class="nav-link-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg>
-                            </a>
-                            <div class="nav-mega" role="menu">
+                        <div class="nav-dropdown" data-nav-dropdown>
+                            <div class="nav-dropdown-control">
+                                <a href="{{ route($item['route']) }}" class="{{ $linkClass }}" @if ($active) aria-current="page" @endif>{{ $item['label'] }}</a>
+                                <button type="button" class="nav-dropdown-toggle" data-nav-dropdown-toggle aria-label="Open {{ $item['label'] }} menu" aria-controls="nav-solutions-menu" aria-expanded="false">
+                                    <svg class="nav-link-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg>
+                                </button>
+                            </div>
+                            <div id="nav-solutions-menu" class="nav-mega" data-nav-dropdown-menu aria-hidden="true">
                                 <div class="nav-mega-grid">
                                     <div class="nav-mega-col">
                                         <p class="nav-mega-heading">
@@ -166,7 +172,7 @@
                             </div>
                         </div>
                     @else
-                        <a href="{{ $item['href'] }}" class="{{ $linkClass }}">
+                        <a href="{{ $item['href'] }}" class="{{ $linkClass }}" @if ($active) aria-current="page" @endif>
                             <span class="nav-link-label">{{ $item['label'] }}</span>
                             @if ($badge !== '')
                                 <span class="nav-link-badge">{{ $badge }}</span>
@@ -210,24 +216,34 @@
             @php
                 $active = $item['active'];
                 $badge = $item['badge'];
+                $expandable = in_array($item['type'], ['services', 'mega', 'offers'], true);
+                $mobilePanelId = 'mobile-'.($item['type'] ?: $item['route']).'-menu';
             @endphp
-            <a href="{{ $item['href'] }}" class="mobile-menu-link{{ $active ? ' is-active' : '' }}{{ $badge !== '' ? ' has-badge' : '' }}">
-                <span class="mobile-menu-link-copy">
-                    <span>{{ $item['label'] }}</span>
-                    @if ($badge !== '')
-                        <span class="nav-link-badge">{{ $badge }}</span>
+            <div class="mobile-menu-item">
+                <div class="mobile-menu-row">
+                    <a href="{{ $item['href'] }}" class="mobile-menu-link{{ $active ? ' is-active' : '' }}{{ $badge !== '' ? ' has-badge' : '' }}" @if ($active) aria-current="page" @endif>
+                        <span class="mobile-menu-link-copy">
+                            <span>{{ $item['label'] }}</span>
+                            @if ($item['promotional'] && $badge !== '')
+                                <span class="nav-link-badge">{{ $badge }}</span>
+                            @endif
+                        </span>
+                    </a>
+                    @if ($expandable)
+                        <button type="button" class="mobile-submenu-toggle" data-mobile-submenu-toggle aria-label="Expand {{ $item['label'] }} menu" aria-controls="{{ $mobilePanelId }}" aria-expanded="false">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg>
+                        </button>
                     @endif
-                </span>
-            </a>
+                </div>
             @if ($item['type'] === 'services')
-                <div class="mobile-menu-group">
+                <div id="{{ $mobilePanelId }}" class="mobile-menu-group" data-mobile-submenu hidden>
                     @foreach ($navServices as $service)
                         <a href="{{ route('services.show', $service['slug']) }}" class="mobile-menu-sublink">{{ $service['name'] }}</a>
                     @endforeach
                     <a href="{{ route('services.index') }}" class="mobile-menu-sublink">View All Services</a>
                 </div>
             @elseif ($item['type'] === 'offers')
-                <div class="mobile-menu-group">
+                <div id="{{ $mobilePanelId }}" class="mobile-menu-group" data-mobile-submenu hidden>
                     @foreach ($navOffers as $offer)
                         <a href="{{ route('offers.show', $offer['slug']) }}" class="mobile-menu-sublink">
                             {{ $offer['name'] }}
@@ -239,7 +255,7 @@
                     <a href="{{ route('offers.index') }}" class="mobile-menu-sublink">View All Offers</a>
                 </div>
             @elseif ($item['type'] === 'mega')
-                <div class="mobile-menu-group">
+                <div id="{{ $mobilePanelId }}" class="mobile-menu-group" data-mobile-submenu hidden>
                     <p class="mobile-menu-heading">
                         <span class="nav-mega-dot" aria-hidden="true"></span>
                         Business Solutions
@@ -255,6 +271,7 @@
                     <a href="{{ route('solutions') }}" class="mobile-menu-sublink">View All Solutions</a>
                 </div>
             @endif
+            </div>
         @endforeach
     </nav>
     <div class="mobile-menu-actions">

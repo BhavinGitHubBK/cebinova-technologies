@@ -222,8 +222,17 @@ class VisitorAnalyticsTest extends TestCase
 
         $visitor = AnalyticsVisitor::query()->where('uuid', $uuid)->first();
         $this->assertSame('12 Satellite Road, Satellite, Ahmedabad, Gujarat, 380015, India', $visitor->place());
+        $this->assertSame('Satellite, Ahmedabad, Gujarat, India', $visitor->listPlace());
         $this->assertSame(18, $visitor->location_accuracy);
         $this->assertStringContainsString('23.022505', (string) $visitor->mapUrl());
+
+        $visitor->forceFill([
+            'city' => 'Ahmedabad',
+            'region' => 'Gujarat',
+            'country' => 'India',
+            'address' => 'Cement Road, Ranip, Ahmedabad, Gujarat, 382480, India',
+        ]);
+        $this->assertSame('Ranip, Ahmedabad, Gujarat, India', $visitor->listPlace());
     }
 
     public function test_admin_sees_a_simple_visitor_list(): void
@@ -296,6 +305,7 @@ class VisitorAnalyticsTest extends TestCase
 
         $this->actingAs($admin)->get(route('admin.analytics.index', [
             'type' => 'named',
+            'has_mobile' => 'yes',
             'city' => 'Ahmedabad',
             'source' => 'linkedin.com',
             'last_seen' => '7_days',
@@ -307,6 +317,11 @@ class VisitorAnalyticsTest extends TestCase
             ->assertSee('Surat')
             ->assertSee('linkedin.com')
             ->assertSee('Direct');
+
+        $this->actingAs($admin)->get(route('admin.analytics.index', ['has_mobile' => 'no']))
+            ->assertOk()
+            ->assertSee('Old Surat Visitor')
+            ->assertDontSee('Recent Ahmedabad Visitor');
     }
 
     public function test_identifying_a_visitor_logs_them_in_and_lists_them_for_admin(): void

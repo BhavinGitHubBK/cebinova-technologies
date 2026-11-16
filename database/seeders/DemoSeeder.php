@@ -13,16 +13,17 @@ class DemoSeeder extends Seeder
     {
         DB::transaction(function () {
             foreach (config('cebinova.business_solutions', []) as $order => $item) {
-                if (Demo::withTrashed()->where('slug', $item['slug'])->exists()) {
-                    continue;
-                }
-                $demo = Demo::create([
+                $demo = Demo::withTrashed()->firstOrNew(['slug' => $item['slug']]);
+                $demo->fill([
                     'name' => $item['title'], 'slug' => $item['slug'], 'short_description' => $item['summary'],
                     'thumbnail' => $item['preview'] ? 'assets/'.$item['preview'] : null,
                     'local_demo' => $item['demo'], 'badge' => $item['label'],
                     'features' => array_map(fn ($name) => ['name' => $name, 'description' => null, 'is_active' => true], $item['capabilities']),
                     'technologies' => [], 'is_active' => true, 'is_featured' => $item['label'] === 'LIVE DEMO', 'sort_order' => $order,
                 ]);
+                $demo->deleted_at = null;
+                $demo->save();
+
                 $solution = Solution::with(['services', 'industries'])->where('slug', $item['slug'])->first();
                 if ($solution) {
                     $demo->solutions()->sync([$solution->id]);

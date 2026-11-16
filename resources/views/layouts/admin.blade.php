@@ -91,6 +91,9 @@
     $newLeads = \Illuminate\Support\Facades\Schema::hasTable('leads')
         ? \App\Models\Lead::query()->where('status', 'New')->count()
         : 0;
+    $newApplications = \Illuminate\Support\Facades\Schema::hasTable('career_applications')
+        ? \App\Models\CareerApplication::query()->where('status', 'new')->count()
+        : 0;
 @endphp
 <div class="admin-shell" data-admin-shell inert>
     <div class="admin-backdrop" data-sidebar-backdrop></div>
@@ -146,6 +149,19 @@
                     </a>
                 @endcan
             </div>
+
+            @can('admin.recruitment.view')
+                <div class="admin-nav-block">
+                    <p class="admin-nav-label">Recruitment</p>
+                    <a href="{{ route('admin.recruitment.jobs.index') }}" class="{{ request()->routeIs('admin.recruitment.jobs.*') ? 'is-active' : '' }}">
+                        <x-mark name="briefcase" class="h-4 w-4" /> Jobs
+                    </a>
+                    <a href="{{ route('admin.recruitment.applications.index') }}" class="{{ request()->routeIs('admin.recruitment.applications.*') ? 'is-active' : '' }}">
+                        <x-mark name="users" class="h-4 w-4" /> Applications
+                        @if($newApplications)<span class="admin-nav-count"><strong>{{ $newApplications }}</strong><em>new</em></span>@endif
+                    </a>
+                </div>
+            @endcan
 
             <div class="admin-nav-group" data-nav-group="website">
                 <button type="button" class="admin-nav-label admin-nav-toggle" data-nav-toggle aria-expanded="true">

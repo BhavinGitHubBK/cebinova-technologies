@@ -45,6 +45,7 @@ return [
         ['label' => 'Pricing', 'route' => 'pricing', 'badge' => 'Hot'],
         ['label' => 'Offers', 'route' => 'offers.index', 'type' => 'offers'],
         ['label' => 'Demos', 'route' => 'demos'],
+        ['label' => 'Careers', 'route' => 'careers.index'],
         ['label' => 'About', 'route' => 'about'],
         ['label' => 'Contact', 'route' => 'contact'],
     ],

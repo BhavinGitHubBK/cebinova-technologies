@@ -27,6 +27,14 @@
                 </select>
             </div>
             <div class="admin-field">
+                <label class="admin-label" for="visitor-has-mobile">Has mobile</label>
+                <select id="visitor-has-mobile" class="admin-select" name="has_mobile">
+                    <option value="">Any</option>
+                    <option value="yes" @selected($hasMobile === 'yes')>Yes</option>
+                    <option value="no" @selected($hasMobile === 'no')>No</option>
+                </select>
+            </div>
+            <div class="admin-field">
                 <label class="admin-label" for="visitor-city">City</label>
                 <select id="visitor-city" class="admin-select" name="city">
                     <option value="">All cities</option>
@@ -58,7 +66,7 @@
             </div>
             <div class="analytics-filter-actions">
                 <button class="admin-btn" type="submit">Apply filters</button>
-            @if ($search !== '' || $visitorType !== '' || $city !== '' || $source !== '' || $lastSeen !== '')
+            @if ($search !== '' || $visitorType !== '' || $hasMobile !== '' || $city !== '' || $source !== '' || $lastSeen !== '')
                 <a class="admin-btn admin-btn-ghost" href="{{ route('admin.analytics.index') }}">Clear</a>
             @endif
             </div>
@@ -89,12 +97,14 @@
                         <td><a href="{{ route('admin.analytics.visitors.show', $visitor) }}">{{ $visitor->label() }}</a></td>
                         <td>{{ $visitor->mobileDisplay() }}</td>
                         <td class="visitor-place">
-                            <span>{{ $visitor->place() }}</span>
-                            @if ($visitor->mapUrl())
-                                <a class="visitor-map" href="{{ $visitor->mapUrl() }}" target="_blank" rel="noopener">Map</a>
-                            @endif
+                            <div class="visitor-place-content">
+                                <span title="{{ $visitor->place() }}">{{ $visitor->listPlace() }}</span>
+                                @if ($visitor->mapUrl())
+                                    <a class="visitor-map" href="{{ $visitor->mapUrl() }}" target="_blank" rel="noopener">Map</a>
+                                @endif
+                            </div>
                         </td>
-                        <td>{{ $visitor->cameFrom() }}</td>
+                        <td><span class="visitor-source" title="{{ $visitor->cameFrom() }}">{{ $visitor->cameFrom() }}</span></td>
                         <td>{{ ist($visitor->last_seen_at) }}</td>
                     </tr>
                 @empty

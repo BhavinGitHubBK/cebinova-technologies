@@ -119,6 +119,18 @@ class HomepageConversionTest extends TestCase
             ->assertSee('#plans', false);
     }
 
+    public function test_navigation_renders_accessible_desktop_and_mobile_controls(): void
+    {
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('aria-current="page"', false)
+            ->assertSee('data-nav-dropdown-toggle', false)
+            ->assertSee('aria-controls="nav-solutions-menu"', false)
+            ->assertSee('data-mobile-submenu-toggle', false)
+            ->assertSee('id="mobile-menu"', false)
+            ->assertSee('aria-hidden="true"', false);
+    }
+
     private function solution(string $name, string $audience, string $outcome): void
     {
         Solution::query()->create([

@@ -68,6 +68,7 @@
                     <li><a href="{{ route('solutions') }}">Solutions</a></li>
                     <li><a href="{{ route('marketing-packages') }}">Marketing Packages</a></li>
                     <li><a href="{{ route('demos') }}">Demos</a></li>
+                    <li><a href="{{ route('careers.index') }}">Careers</a></li>
                     <li><a href="{{ route('pricing') }}">Pricing</a></li>
                     <li><a href="{{ route('about') }}">About</a></li>
                     <li><a href="{{ route('industries') }}">Industries</a></li>

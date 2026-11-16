@@ -115,4 +115,14 @@ class AdminAccessPolicy
     {
         return $user->canWriteContent();
     }
+
+    public function viewRecruitment(User $user): bool
+    {
+        return true;
+    }
+
+    public function manageRecruitment(User $user): bool
+    {
+        return $user->canWriteContent();
+    }
 }

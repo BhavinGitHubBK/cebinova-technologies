@@ -61,6 +61,15 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perMinute(20)->by($request->ip());
         });
 
+        RateLimiter::for('career-applications', function (Request $request) {
+            $job = $request->route('job');
+            $jobKey = $job instanceof \Illuminate\Database\Eloquent\Model ? $job->getKey() : (string) $job;
+            return [
+                Limit::perHour(5)->by($request->ip()),
+                Limit::perDay(3)->by(strtolower((string) $request->input('email')).'|'.$jobKey),
+            ];
+        });
+
         $policy = app(AdminAccessPolicy::class);
         Gate::define('admin.dashboard', [$policy, 'viewDashboard']);
         Gate::define('admin.leads.view', [$policy, 'viewLeads']);
@@ -84,6 +93,8 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('admin.promotions.view', [$policy, 'viewPromotions']);
         Gate::define('admin.promotions.manage', [$policy, 'managePromotions']);
         Gate::define('admin.promotions.publish', [$policy, 'publishPromotions']);
+        Gate::define('admin.recruitment.view', [$policy, 'viewRecruitment']);
+        Gate::define('admin.recruitment.manage', [$policy, 'manageRecruitment']);
         Gate::define('admin.reports.view', fn () => true);
         Gate::define('admin.analytics.view', fn () => true);
     }

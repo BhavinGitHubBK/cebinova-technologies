@@ -5,6 +5,9 @@ use App\Http\Controllers\Admin\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Admin\Auth\NewPasswordController;
 use App\Http\Controllers\Admin\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Admin\CacheController;
+use App\Http\Controllers\Admin\CareerApplicationController;
+use App\Http\Controllers\Admin\CareerDepartmentController;
+use App\Http\Controllers\Admin\CareerJobController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\IndustryController;
@@ -194,6 +197,31 @@ Route::middleware('web')->prefix('admin')->name('admin.')->group(function () {
         Route::middleware('can:admin.users.view')->get('users', [UserController::class, 'index'])->name('users.index');
 
         Route::middleware('can:admin.activity.view')->get('activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
+
+        Route::prefix('recruitment')->name('recruitment.')->group(function () {
+            Route::middleware('can:admin.recruitment.view')->group(function () {
+                Route::get('jobs', [CareerJobController::class, 'index'])->name('jobs.index');
+                Route::get('jobs/{job}/preview', [CareerJobController::class, 'preview'])->name('jobs.preview');
+                Route::get('applications/export', [CareerApplicationController::class, 'export'])->name('applications.export');
+                Route::get('applications', [CareerApplicationController::class, 'index'])->name('applications.index');
+                Route::get('applications/{application}', [CareerApplicationController::class, 'show'])->name('applications.show');
+                Route::get('applications/{application}/resume', [CareerApplicationController::class, 'resume'])->name('applications.resume');
+                Route::get('departments', [CareerDepartmentController::class, 'index'])->name('departments.index');
+            });
+            Route::middleware('can:admin.recruitment.manage')->group(function () {
+                Route::get('jobs/create', [CareerJobController::class, 'create'])->name('jobs.create');
+                Route::post('jobs', [CareerJobController::class, 'store'])->name('jobs.store');
+                Route::get('jobs/{job}/edit', [CareerJobController::class, 'edit'])->name('jobs.edit');
+                Route::put('jobs/{job}', [CareerJobController::class, 'update'])->name('jobs.update');
+                Route::patch('jobs/{job}/status', [CareerJobController::class, 'status'])->name('jobs.status');
+                Route::delete('jobs/{job}', [CareerJobController::class, 'destroy'])->name('jobs.destroy');
+                Route::put('applications/{application}', [CareerApplicationController::class, 'update'])->name('applications.update');
+                Route::delete('applications/{application}', [CareerApplicationController::class, 'destroy'])->name('applications.destroy');
+                Route::post('departments', [CareerDepartmentController::class, 'store'])->name('departments.store');
+                Route::put('departments/{department}', [CareerDepartmentController::class, 'update'])->name('departments.update');
+                Route::delete('departments/{department}', [CareerDepartmentController::class, 'destroy'])->name('departments.destroy');
+            });
+        });
 
         require __DIR__.'/reports.php';
         require __DIR__.'/analytics.php';
