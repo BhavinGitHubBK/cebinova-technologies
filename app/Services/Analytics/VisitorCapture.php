@@ -162,40 +162,10 @@ class VisitorCapture
 
     public function locate(AnalyticsVisitor $visitor, string $ip): void
     {
-        $lookupIp = $ip;
         $private = $this->isPrivate($ip);
-
-        if ($private) {
-            if (! app()->environment('local')) {
-                $visitor->forceFill([
-                    'country' => 'Local network',
-                ])->save();
-
-                return;
-            }
-
-            $lookupIp = '';
-        }
-
-        try {
-            $response = Http::timeout(4)
-                ->acceptJson()
-                ->get($lookupIp === '' ? 'https://ipwho.is/' : 'https://ipwho.is/'.$lookupIp);
-
-            if (! $response->ok() || $response->json('success') === false) {
-                $this->markLocal($visitor, $private);
-
-                return;
-            }
-
-            $visitor->forceFill([
-                'city' => Str::limit((string) $response->json('city'), 80, '') ?: null,
-                'region' => Str::limit((string) $response->json('region'), 80, '') ?: null,
-                'country' => Str::limit((string) $response->json('country'), 80, '') ?: null,
-            ])->save();
-        } catch (\Throwable) {
-            $this->markLocal($visitor, $private);
-        }
+        $place = app(IpLocationLookup::class)->lookup($ip, app()->environment('local'));
+        if ($place) $visitor->forceFill($place)->save();
+        else $this->markLocal($visitor, $private);
     }
 
     public function fillMissingLocalPlaces(iterable $visitors): void

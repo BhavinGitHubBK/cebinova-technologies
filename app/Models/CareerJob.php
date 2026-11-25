@@ -43,9 +43,22 @@ class CareerJob extends Model
             && (! $this->application_deadline || $this->application_deadline->isFuture());
     }
 
+    public function scopeOpen(Builder $query): Builder
+    {
+        return $query->published()->where(fn ($q) => $q->whereNull('application_deadline')->orWhere('application_deadline', '>', now()));
+    }
+
+    public function skillTags(): array
+    {
+        // Use the administrator's skill list; do not infer or invent skills.
+        $text = preg_replace('/<\/(?:li|p)>|<br\s*\/?\s*>/i', ',', $this->required_skills ?? '');
+        return array_slice(array_values(array_filter(array_map('trim', preg_split('/[,;\r\n]+/', html_entity_decode(strip_tags($text), ENT_QUOTES, 'UTF-8'))), fn ($tag) => $tag !== '' && mb_strlen($tag) <= 45)), 0, 6);
+    }
+
     public function experienceLabel(): string
     {
         if ($this->experience_min === null && $this->experience_max === null) return 'Open experience level';
+        if ($this->experience_min === 0 && $this->experience_max === null) return 'Freshers & experienced';
         if ($this->experience_max === null) return $this->experience_min.'+ years';
         return $this->experience_min.'–'.$this->experience_max.' years';
     }

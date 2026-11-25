@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             PackageSeeder::class,
             DemoSeeder::class,
             CareerSampleSeeder::class,
+            MarketingExecutiveJobSeeder::class,
             PageSectionSeeder::class,
             LeadSeeder::class,
         ]);

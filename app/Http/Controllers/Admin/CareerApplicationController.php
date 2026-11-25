@@ -71,7 +71,7 @@ class CareerApplicationController extends Controller
             $out = fopen('php://output', 'wb');
             fputcsv($out, ['Applied at', 'Job', 'Employment type', 'Status', 'Name', 'Email', 'Phone', 'Location', 'Experience', 'Skills', 'Availability', 'Portfolio', 'GitHub', 'LinkedIn']);
             $this->filtered($request)->latest()->chunkById(200, function ($rows) use ($out) {
-                foreach ($rows as $row) fputcsv($out, array_map([$this, 'csvSafe'], [$row->created_at?->toDateTimeString(), $row->job?->title, CareerJob::EMPLOYMENT_TYPES[$row->job?->employment_type] ?? '', CareerApplication::STATUSES[$row->status] ?? $row->status, $row->name, $row->email, $row->phone, $row->current_location, $row->experience, $row->skills, $row->availability, $row->portfolio_url, $row->github_url, $row->linkedin_url]));
+                foreach ($rows as $row) fputcsv($out, array_map([$this, 'csvSafe'], [$row->created_at?->toDateTimeString(), $row->job?->title ?? 'General profile: '.$row->area_of_interest, CareerJob::EMPLOYMENT_TYPES[$row->job?->employment_type] ?? '', CareerApplication::STATUSES[$row->status] ?? $row->status, $row->name, $row->email, $row->phone, $row->current_location, $row->experience, $row->skills, $row->availability, $row->portfolio_url, $row->github_url, $row->linkedin_url]));
             });
             fclose($out);
         }, $name, ['Content-Type' => 'text/csv; charset=UTF-8']);

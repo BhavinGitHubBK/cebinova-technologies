@@ -6,6 +6,7 @@
         'csrf' => csrf_token(),
         'path' => '/'.ltrim(request()->path(), '/'),
         'loggedOut' => session()->has('logged_out'),
+        'requestLocation' => !request()->routeIs('careers.apply', 'careers.profile'),
     ];
 @endphp
 <script type="application/json" id="cebinova-analytics">@json($visitorBoot)</script>
@@ -45,4 +46,4 @@
 .cn-visitor-popup button:hover{background:#ffc62a}
 .cn-visitor-error{margin:.1rem 0 .7rem !important;color:#9b1c1c !important;font-size:.9rem}
 </style>
-<script src="{{ asset('assets/analytics.js') }}?v=11" defer></script>
+<script src="{{ asset('assets/analytics.js') }}?v=12" defer></script>

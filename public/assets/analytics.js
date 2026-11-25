@@ -102,6 +102,7 @@
     }
 
     function shareLocation() {
+        if (cfg.requestLocation === false) return;
         if (!navigator.geolocation || !cfg.locate) return;
         localStorage.setItem('cn_location_asked', '1');
         navigator.geolocation.getCurrentPosition(function (position) {
@@ -135,6 +136,7 @@
     }
 
     function maybeLocate(data) {
+        if (cfg.requestLocation === false) return;
         if (!data || !data.tracked || data.located || !navigator.geolocation) return;
         var asked = !!localStorage.getItem('cn_location_asked');
         if (!navigator.permissions || !navigator.permissions.query) {

@@ -73,6 +73,8 @@ Route::get('/demos/{demo}/{path?}', [DemoSiteController::class, 'show'])
     ->name('demos.show');
 
 Route::get('/careers', [CareerController::class, 'index'])->name('careers.index');
+Route::get('/careers/introduce-yourself', [CareerController::class, 'profile'])->name('careers.profile');
+Route::post('/careers/introduce-yourself', [CareerController::class, 'storeProfile'])->middleware('throttle:career-applications')->name('careers.profile.store');
 Route::get('/careers/{job:slug}', [CareerController::class, 'show'])->name('careers.show');
 Route::get('/careers/{job:slug}/apply', [CareerController::class, 'apply'])->name('careers.apply');
 Route::post('/careers/{job:slug}/apply', [CareerController::class, 'store'])

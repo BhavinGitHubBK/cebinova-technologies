@@ -4481,3 +4481,98 @@ button.dash-pipe {
 .lead-acquisition { margin-top: 1rem; }
 .career-editor-field{margin:1.1rem 0}.career-editor-toolbar{display:flex;flex-wrap:wrap;gap:.35rem;padding:.5rem;border:1px solid #d5deea;border-bottom:0;background:#f7f9fc}.career-editor-toolbar button{min-height:2rem;border:1px solid #cbd7e8;background:#fff;color:#013a9d;font:inherit;font-weight:700;cursor:pointer}.career-editor{min-height:10rem;padding:1rem;border:1px solid #d5deea;background:#fff;color:#142033;line-height:1.65;outline:none}.career-editor:focus{border-color:#013a9d;box-shadow:0 0 0 3px rgba(1,58,157,.1)}.recruitment-status-actions{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem;margin-top:1rem}.recruitment-status-actions form{margin:0}.recruitment-filter{flex:1;grid-template-columns:1.2fr 1fr 1fr .7fr .7fr auto}.recruitment-detail-grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(18rem,.65fr);gap:1rem;align-items:start}.recruitment-candidate section{padding-top:1rem;border-top:1px solid #e2e8f0}.recruitment-dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem;margin:1.2rem 0}.recruitment-dl div{padding:.8rem;background:#f7f9fc}.recruitment-dl dt{color:#66758a;font-size:.78rem;font-weight:700;text-transform:uppercase}.recruitment-dl dd{margin:.3rem 0 0;color:#142033;font-weight:600}.recruitment-history{list-style:none;margin:0;padding:0}.recruitment-history li{padding:.8rem 0;border-top:1px solid #e2e8f0}.recruitment-history span{display:block;color:#66758a;font-size:.82rem}.admin-btn-danger{background:#b42318;color:#fff;border-color:#b42318}@media(max-width:1100px){.recruitment-detail-grid{grid-template-columns:1fr}.recruitment-filter{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:700px){.recruitment-dl,.recruitment-filter{grid-template-columns:1fr}}
 .analytics-visitor-head p { color: #516074; }
+
+/* Recruitment editors follow the Promotions campaign form layout. */
+.recruitment-form-nav{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;margin:0 0 1rem;padding:.45rem;border:1px solid #e2e8f0;background:#fff;box-shadow:0 8px 24px rgba(1,58,157,.05)}
+.recruitment-form-nav a{display:inline-flex;align-items:center;min-height:2.45rem;padding:.4rem 1rem;border:1px solid transparent;color:#013a9d;font-weight:700;text-decoration:none;transition:background-color .28s ease,color .28s ease,transform .28s ease,box-shadow .28s ease}
+.recruitment-form-nav a:hover,.recruitment-form-nav a:focus-visible{background:#013a9d;color:#fff;box-shadow:inset 3px 0 #fbb50b}
+.recruitment-form-nav a.is-current{background:#013a9d;color:#fff;box-shadow:inset 0 -3px 0 #fbb50b}
+.recruitment-form-nav a.is-create{margin-left:auto;background:#fbb50b;color:#010b24;box-shadow:0 8px 18px rgba(251,181,11,.28)}
+.recruitment-form-nav a.is-create:hover{background:#ffc62a}
+.recruitment-job-status{display:flex;align-items:center;gap:.75rem;margin:0 0 .85rem;padding:.7rem .9rem;border:1px solid #e2e8f0;border-top:3px solid #fbb50b;background:#fff}
+.recruitment-job-status p{margin:0;color:#334155;font-weight:650}
+.recruitment-job-pill{display:inline-flex;align-items:center;padding:.16rem .45rem;background:#e8f0fb;color:#013a9d;font-size:.72rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+.recruitment-job-pill.is-published{background:rgba(251,181,11,.22);color:#8a6400}
+.recruitment-job-pill.is-draft{background:#fff7e6;color:#92400e}
+.recruitment-job-pill.is-closed,.recruitment-job-pill.is-archived{background:#f1f5f9;color:#64748b}
+.recruitment-job-actions{display:flex;flex-wrap:wrap;gap:.5rem;margin:0 0 1rem}
+.recruitment-job-actions form{margin:0}
+.recruitment-job-form .form-block h2{color:#013a9d;margin-bottom:1rem}
+.recruitment-job-form .form-block + .form-block{margin-top:.25rem;padding-top:1.45rem}
+.recruitment-job-form .form-hint{max-width:42rem;margin:0 0 1rem}
+.recruitment-job-form .admin-field .form-hint{margin:.5rem 0 0}
+.recruitment-job-form .form-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:1.35rem 1.5rem}
+.recruitment-job-form .admin-field{min-width:0}
+.recruitment-job-form textarea.admin-input{resize:vertical;min-height:2.75rem}
+.recruitment-job-form .career-editor-toolbar{gap:.4rem;padding:.6rem .7rem;border-color:#dbe3ee;background:#f8fafc}
+.recruitment-job-form .career-editor-toolbar button{min-width:2.1rem;padding:.3rem .65rem;border-color:#dbe3ee;font-size:.82rem}
+.recruitment-job-form .career-editor-toolbar button:hover,.recruitment-job-form .career-editor-toolbar button:focus-visible{border-color:#013a9d;background:#eef4ff;outline:2px solid #fbb50b;outline-offset:1px}
+.recruitment-job-form .career-editor{min-height:10rem;overflow-wrap:anywhere;border-color:#dbe3ee;font:inherit;line-height:1.65}
+.recruitment-job-form .career-editor h3{margin:1rem 0 .5rem;color:#013a9d;font-size:1.05rem;font-weight:700}
+.recruitment-job-form .career-editor p{margin:.5rem 0}
+.recruitment-job-form .career-editor ul,.recruitment-job-form .career-editor ol{margin:.6rem 0;padding-left:1.35rem;list-style:revert}
+.recruitment-job-picks{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));gap:1rem;margin:1.45rem 0 0}
+.recruitment-job-pick{display:flex;align-items:flex-start;gap:.65rem;margin:0;padding:.75rem .8rem;border:1px solid #e2e8f0;background:#fff;cursor:pointer;transition:border-color .25s ease,background-color .25s ease,box-shadow .25s ease}
+.recruitment-job-pick:hover{border-color:#013a9d;box-shadow:0 10px 22px rgba(1,58,157,.12)}
+.recruitment-job-pick:has(:checked){border-color:#013a9d;background:#f4f7ff;box-shadow:inset 3px 0 0 #fbb50b}
+.recruitment-job-pick span{display:grid;gap:.1rem}
+.recruitment-job-pick strong{color:#010b24;font-size:.92rem}
+.recruitment-job-pick small{color:#5c6168;font-weight:500}
+.recruitment-job-form .recruitment-draft-note{margin:1rem 0 0}
+.recruitment-job-form .form-footer>a{margin-left:0}
+@media(max-width:720px){.recruitment-form-nav a.is-create{margin-left:0}.recruitment-job-status{align-items:flex-start;flex-direction:column}.recruitment-job-form .form-grid{grid-template-columns:minmax(0,1fr)}.recruitment-job-form .form-footer{align-items:stretch;flex-direction:column}.recruitment-job-form .form-footer .admin-btn{width:100%;margin-left:0}}
+@media(prefers-reduced-motion:reduce){.recruitment-form-nav a,.recruitment-job-pick{transition:none}}
+
+/* Application review uses the same admin cards and controls as job editors. */
+.recruitment-review-header{display:grid;gap:1rem;margin-bottom:1rem;border-top:3px solid #fbb50b}
+.recruitment-review-meta,.recruitment-review-actions{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem .85rem}
+.recruitment-review-meta{color:#64748b;font-size:.82rem}
+.recruitment-review-layout{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(19rem,.75fr);align-items:start;gap:1rem}
+.recruitment-review-main,.recruitment-review-sidebar{display:grid;min-width:0;gap:1rem}
+.recruitment-review-page .admin-card{min-width:0}
+.recruitment-review-card>h2,.recruitment-review-delete>h2{margin:0 0 1rem;color:#013a9d;font-size:.74rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+.recruitment-applied-role{padding:.9rem 1rem;border-left:3px solid #fbb50b;background:#f5f8fe}
+.recruitment-applied-role>span{color:#64748b;font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.recruitment-applied-role h3{margin:.3rem 0;color:#0b2c5f;font-size:1.05rem;font-weight:700;line-height:1.5}
+.recruitment-applied-role p{margin:.3rem 0 0;color:#64748b;font-size:.82rem}
+.recruitment-review-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.2rem 1.5rem;margin:1.3rem 0}
+.recruitment-review-facts dt{color:#64748b;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.recruitment-review-facts dd{margin:.35rem 0 0;color:#173659;font-size:.9rem;font-weight:600;overflow-wrap:anywhere}
+.recruitment-review-facts a{color:#013a9d;text-decoration:none}
+.recruitment-review-facts a:hover{text-decoration:underline}
+.recruitment-review-section{padding-top:1.15rem;border-top:1px solid #eef2f6}
+.recruitment-review-section+.recruitment-review-section{margin-top:1.15rem}
+.recruitment-review-section h3{margin:0 0 .65rem;color:#013a9d;font-size:.85rem;font-weight:700}
+.recruitment-candidate-text{margin:0;color:#475569;font-size:.9rem;line-height:1.75;white-space:pre-wrap;overflow-wrap:anywhere}
+.recruitment-empty-value{color:#94a3b8;font-weight:400}
+.recruitment-resume-document{display:flex;flex-wrap:wrap;align-items:center;gap:.85rem;padding:1rem;border:1px solid #e2e8f0;background:#f8fafc}
+.recruitment-document-icon{display:grid;place-items:center;flex:0 0 auto;width:2.75rem;height:2.75rem;background:#e8f0fb;color:#013a9d}
+.recruitment-resume-document>div{flex:1;min-width:8rem}
+.recruitment-resume-document strong{display:block;color:#173659;font-size:.88rem;overflow-wrap:anywhere}
+.recruitment-resume-document>div>span{display:block;margin-top:.3rem;color:#64748b;font-size:.75rem}
+.recruitment-review-links{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1rem}
+.recruitment-review-page .recruitment-link-note{margin:1rem 0 0}
+.recruitment-record-details summary{color:#013a9d;font-size:.85rem;font-weight:700;cursor:pointer}
+.recruitment-record-details .form-hint{margin:0}
+.recruitment-review-page .form-hint{font-size:.82rem;line-height:1.6}
+.recruitment-review-form{gap:1.3rem}
+.recruitment-review-form .form-hint{margin:.5rem 0 0}
+.recruitment-review-form .admin-label>span{color:#64748b;font-weight:400;font-size:.75rem}
+.recruitment-review-form textarea{resize:vertical}
+.recruitment-review-form .form-footer{padding-top:1rem}
+.recruitment-review-error{margin:.4rem 0 0;color:#b42318;font-size:.8rem}
+.recruitment-review-form [aria-invalid=true]{border-color:#b42318}
+.recruitment-review-timeline{margin:0;padding:0;list-style:none}
+.recruitment-review-timeline>li{position:relative;margin-left:.3rem;padding:0 0 1.2rem 1.2rem;border-left:1px solid #dbe3ee}
+.recruitment-review-timeline>li:last-child{padding-bottom:0}
+.recruitment-review-timeline>li::before{content:'';position:absolute;left:-.28rem;top:.2rem;width:.5rem;height:.5rem;background:#fbb50b;box-shadow:0 0 0 3px #fff}
+.recruitment-history-status{display:block;color:#013a9d;font-size:.85rem;font-weight:700}
+.recruitment-review-timeline time,.recruitment-history-author{display:block;margin-top:.25rem;color:#64748b;font-size:.75rem}
+.recruitment-review-timeline .recruitment-candidate-text{margin-top:.55rem;font-size:.82rem}
+.recruitment-review-timeline>li.recruitment-history-empty{margin:0;padding:0;border:0;color:#64748b;font-size:.85rem}
+.recruitment-review-timeline>li.recruitment-history-empty::before{display:none}
+.recruitment-review-delete{border-top:3px solid #b91c1c}
+.recruitment-review-delete>h2{color:#991b1b}
+.recruitment-review-delete .admin-btn{width:100%;white-space:normal;text-align:center}
+@media(max-width:1100px){.recruitment-review-layout{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:640px){.recruitment-review-facts{grid-template-columns:minmax(0,1fr);gap:1rem}.recruitment-review-actions{align-items:stretch;flex-direction:column}.recruitment-resume-document>.admin-btn{width:100%}}

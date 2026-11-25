@@ -15,7 +15,7 @@ class CareerApplicationReceived extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
     public function __construct(public CareerApplication $application) {}
-    public function envelope(): Envelope { return new Envelope(subject: 'New application: '.$this->application->job->title); }
+    public function envelope(): Envelope { return new Envelope(subject: 'New application: '.($this->application->job?->title ?? 'General profile: '.$this->application->area_of_interest)); }
     public function content(): Content { return new Content(view: 'mail.careers.received'); }
     public function failed(\Throwable $exception): void { Log::error('Recruitment notification failed.', ['application_id' => $this->application->id, 'error' => $exception->getMessage()]); }
 }

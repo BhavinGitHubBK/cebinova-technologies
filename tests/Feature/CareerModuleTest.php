@@ -26,7 +26,7 @@ class CareerModuleTest extends TestCase
     {
         $this->seed(CareerSampleSeeder::class);
         $this->assertSame(3, CareerJob::where('status', 'draft')->count());
-        $this->get('/careers')->assertOk()->assertSee('No positions are open right now.')->assertDontSee('Android Developer');
+        $this->get('/careers')->assertOk()->assertSee('We’re not hiring for a specific role right now, but we’d still love to know you.', false)->assertDontSee('Android Developer');
     }
 
     public function test_published_jobs_are_filterable_and_closed_or_expired_jobs_reject_applications(): void
@@ -78,6 +78,40 @@ class CareerModuleTest extends TestCase
         $this->assertStringNotContainsString('onclick', $html);
         $this->assertStringNotContainsString('javascript:', $html);
         $this->assertSame("'=SUM(A1:A2)", app(CareerApplicationController::class)->csvSafe('=SUM(A1:A2)'));
+    }
+
+    public function test_search_and_filters_only_show_open_roles_and_recover_from_no_matches(): void
+    {
+        $department = CareerDepartment::create(['name' => 'Engineering', 'slug' => 'engineering', 'is_active' => true]);
+        $job = $this->job($department, ['status' => 'published', 'published_at' => now(), 'required_skills' => '<ul><li>Laravel</li><li>MySQL</li></ul>']);
+        $this->get('/careers?q=Laravel')->assertOk()->assertSee('Apply now')->assertSee('MySQL')->assertDontSee('<option value="freelance"', false);
+        $this->get('/careers?q=unmatched')->assertOk()->assertSee('No roles match these filters.')->assertSee('Clear filters')->assertSee('Search roles');
+        $job->update(['application_deadline' => now()->subMinute()]);
+        $this->get('/careers')->assertOk()->assertDontSee($job->title)->assertDontSee('Remote roles available');
+        $job->update(['application_deadline' => null, 'published_at' => now()->addDay()]);
+        $this->get('/careers')->assertDontSee($job->title);
+    }
+
+    public function test_general_profile_is_saved_privately_without_a_job_or_phone(): void
+    {
+        Storage::fake('local'); Mail::fake();
+        $this->get(route('careers.profile'))->assertOk()->assertSee('Area of interest');
+        $payload = ['name' => 'Candidate', 'email' => 'candidate@example.com', 'area_of_interest' => 'Software engineering', 'current_location' => 'Ahmedabad', 'experience' => '2 years', 'skills' => 'Laravel', 'availability' => '30 days', 'consent' => '1'];
+        $this->post(route('careers.profile.store'), $payload)->assertSessionHasErrors('resume');
+        $this->assertSame(0, CareerApplication::count());
+        $this->post(route('careers.profile.store'), $payload + ['resume' => UploadedFile::fake()->create('resume.pdf', 50, 'application/pdf')])->assertRedirect(route('careers.profile'))->assertSessionHas('career_success');
+        $application = CareerApplication::firstOrFail();
+        $this->assertNull($application->career_job_id);
+        $this->assertNull($application->phone);
+        $this->assertSame('Software engineering', $application->area_of_interest);
+        Storage::disk('local')->assertExists($application->resume_path);
+        $this->assertSame(1, $application->statusHistory()->count());
+        Mail::assertQueued(CareerApplicationReceived::class);
+        $this->assertStringContainsString('Software engineering', (new CareerApplicationReceived($application))->render());
+        $this->assertStringContainsString('Software engineering', (new CareerApplicationAcknowledgement($application))->render());
+        $viewer = User::factory()->create(['role' => UserRole::Viewer, 'is_active' => true]);
+        $this->actingAs($viewer)->get(route('admin.recruitment.applications.index'))->assertOk()->assertSee('General profile: Software engineering');
+        $this->actingAs($viewer)->get(route('admin.recruitment.applications.show', $application))->assertOk()->assertSee('Software engineering');
     }
 
     private function job(CareerDepartment $department, array $attributes = []): CareerJob
