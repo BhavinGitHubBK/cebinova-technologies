@@ -14,6 +14,7 @@ class IpLocationLookup
         if (! $public && ! $allowServerLookup) return ['country' => 'Local network'];
         try {
             $response = Http::timeout(4)->acceptJson()->get($public ? 'https://ipwho.is/'.$ip : 'https://ipwho.is/');
+            if (! $response->ok() || $response->json('success') === false) return [];
             $place = [];
             foreach (['city', 'region', 'country'] as $field) {
                 $value = $response->json($field);
